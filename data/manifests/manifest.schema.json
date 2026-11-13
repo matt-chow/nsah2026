@@ -1,0 +1,685 @@
+{
+  "$defs": {
+    "Assets": {
+      "additionalProperties": false,
+      "properties": {
+        "science_fits": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Science cutout (FITS, original HDUs) path",
+          "title": "Science Fits"
+        },
+        "display_png": {
+          "description": "8-bit display rendering; never used for measurement",
+          "title": "Display Png",
+          "type": "string"
+        },
+        "display_stretch": {
+          "description": "Stretch used for display_png",
+          "title": "Display Stretch",
+          "type": "string"
+        }
+      },
+      "required": [
+        "science_fits",
+        "display_png",
+        "display_stretch"
+      ],
+      "title": "Assets",
+      "type": "object"
+    },
+    "Candidate": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "unreviewed",
+            "needs_followup",
+            "known_object",
+            "likely_artifact",
+            "rejected"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "observation_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Observation Ids",
+          "type": "array"
+        },
+        "ra_deg": {
+          "exclusiveMaximum": 360.0,
+          "minimum": 0.0,
+          "title": "Ra Deg",
+          "type": "number"
+        },
+        "dec_deg": {
+          "maximum": 90.0,
+          "minimum": -90.0,
+          "title": "Dec Deg",
+          "type": "number"
+        },
+        "evidence": {
+          "description": "Measured facts supporting/refuting the candidate",
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "status",
+        "observation_ids",
+        "ra_deg",
+        "dec_deg",
+        "evidence",
+        "method"
+      ],
+      "title": "Candidate",
+      "type": "object"
+    },
+    "Comparison": {
+      "additionalProperties": false,
+      "properties": {
+        "reference_id": {
+          "title": "Reference Id",
+          "type": "string"
+        },
+        "target_id": {
+          "title": "Target Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "compatible",
+            "incompatible",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reasons": {
+          "description": "Every failed or unknown check, human readable",
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reference_id",
+        "target_id",
+        "status",
+        "reasons"
+      ],
+      "title": "Comparison",
+      "type": "object"
+    },
+    "Dataset": {
+      "additionalProperties": false,
+      "properties": {
+        "mission": {
+          "enum": [
+            "SPHEREx",
+            "SIMULATED"
+          ],
+          "title": "Mission",
+          "type": "string"
+        },
+        "archive": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "e.g. 'IRSA'; null for simulations",
+          "title": "Archive"
+        },
+        "collection": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Archive collection, e.g. 'spherex_qr'",
+          "title": "Collection"
+        },
+        "data_release": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Release label exactly as the archive states it",
+          "title": "Data Release"
+        },
+        "citation": {
+          "title": "Citation",
+          "type": "string"
+        },
+        "acknowledgement": {
+          "title": "Acknowledgement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mission",
+        "archive",
+        "collection",
+        "data_release",
+        "citation",
+        "acknowledgement"
+      ],
+      "title": "Dataset",
+      "type": "object"
+    },
+    "Epoch": {
+      "additionalProperties": false,
+      "properties": {
+        "mjd_mid": {
+          "description": "Mid-exposure Modified Julian Date",
+          "exclusiveMinimum": 0.0,
+          "title": "Mjd Mid",
+          "type": "number"
+        },
+        "time_scale": {
+          "enum": [
+            "utc",
+            "tt",
+            "tai",
+            "tdb"
+          ],
+          "title": "Time Scale",
+          "type": "string"
+        },
+        "exposure_s": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exposure S"
+        },
+        "source_keyword": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "FITS keyword the time came from",
+          "title": "Source Keyword"
+        }
+      },
+      "required": [
+        "mjd_mid",
+        "time_scale"
+      ],
+      "title": "Epoch",
+      "type": "object"
+    },
+    "GeneratedBy": {
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "command": {
+          "title": "Command",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "version",
+        "command"
+      ],
+      "title": "GeneratedBy",
+      "type": "object"
+    },
+    "Image": {
+      "additionalProperties": false,
+      "properties": {
+        "width_px": {
+          "exclusiveMinimum": 0,
+          "maximum": 4096,
+          "title": "Width Px",
+          "type": "integer"
+        },
+        "height_px": {
+          "exclusiveMinimum": 0,
+          "maximum": 4096,
+          "title": "Height Px",
+          "type": "integer"
+        },
+        "pixel_scale_arcsec": {
+          "exclusiveMinimum": 0.0,
+          "title": "Pixel Scale Arcsec",
+          "type": "number"
+        },
+        "units": {
+          "description": "Science array units, e.g. 'MJy/sr'",
+          "title": "Units",
+          "type": "string"
+        },
+        "wcs": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "description": "Celestial FITS WCS cards of the science array",
+          "title": "Wcs",
+          "type": "object"
+        }
+      },
+      "required": [
+        "width_px",
+        "height_px",
+        "pixel_scale_arcsec",
+        "units",
+        "wcs"
+      ],
+      "title": "Image",
+      "type": "object"
+    },
+    "Observation": {
+      "additionalProperties": false,
+      "properties": {
+        "observation_id": {
+          "pattern": "^[A-Za-z0-9._-]{1,128}$",
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "data_kind": {
+          "enum": [
+            "real",
+            "simulated"
+          ],
+          "title": "Data Kind",
+          "type": "string"
+        },
+        "epoch": {
+          "$ref": "#/$defs/Epoch"
+        },
+        "spectral": {
+          "$ref": "#/$defs/Spectral"
+        },
+        "image": {
+          "$ref": "#/$defs/Image"
+        },
+        "quality": {
+          "$ref": "#/$defs/Quality"
+        },
+        "assets": {
+          "$ref": "#/$defs/Assets"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "observation_id",
+        "data_kind",
+        "epoch",
+        "spectral",
+        "image",
+        "quality",
+        "assets",
+        "provenance"
+      ],
+      "title": "Observation",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Original archive URL; required for real data",
+          "title": "Source Url"
+        },
+        "source_id": {
+          "description": "Stable archive identifier (or simulation id)",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "retrieved_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved Utc"
+        },
+        "source_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Sha256"
+        },
+        "calibration_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calibration Version"
+        },
+        "processing": {
+          "description": "Exact command/parameters that produced the assets",
+          "title": "Processing",
+          "type": "string"
+        },
+        "cache_key": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Cache Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_url",
+        "source_id",
+        "processing",
+        "cache_key"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Quality": {
+      "additionalProperties": false,
+      "properties": {
+        "flags_available": {
+          "title": "Flags Available",
+          "type": "boolean"
+        },
+        "variance_available": {
+          "title": "Variance Available",
+          "type": "boolean"
+        },
+        "masked_fraction": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Masked Fraction"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "flags_available",
+        "variance_available"
+      ],
+      "title": "Quality",
+      "type": "object"
+    },
+    "Spectral": {
+      "additionalProperties": false,
+      "properties": {
+        "detector": {
+          "anyOf": [
+            {
+              "maximum": 6,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "SPHEREx detector/band 1-6",
+          "title": "Detector"
+        },
+        "wavelength_center_um": {
+          "description": "Wavelength at cutout center, micron",
+          "exclusiveMinimum": 0.0,
+          "title": "Wavelength Center Um",
+          "type": "number"
+        },
+        "wavelength_min_um": {
+          "exclusiveMinimum": 0.0,
+          "title": "Wavelength Min Um",
+          "type": "number"
+        },
+        "wavelength_max_um": {
+          "exclusiveMinimum": 0.0,
+          "title": "Wavelength Max Um",
+          "type": "number"
+        },
+        "basis": {
+          "description": "How wavelengths were derived; SPHEREx wavelength varies across each detector",
+          "enum": [
+            "spectral-wcs",
+            "header",
+            "simulated"
+          ],
+          "title": "Basis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "detector",
+        "wavelength_center_um",
+        "wavelength_min_um",
+        "wavelength_max_um",
+        "basis"
+      ],
+      "title": "Spectral",
+      "type": "object"
+    },
+    "Target": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "ra_deg": {
+          "description": "Right ascension, degrees",
+          "exclusiveMaximum": 360.0,
+          "minimum": 0.0,
+          "title": "Ra Deg",
+          "type": "number"
+        },
+        "dec_deg": {
+          "description": "Declination, degrees",
+          "maximum": 90.0,
+          "minimum": -90.0,
+          "title": "Dec Deg",
+          "type": "number"
+        },
+        "frame": {
+          "const": "icrs",
+          "default": "icrs",
+          "title": "Frame",
+          "type": "string"
+        },
+        "radius_arcsec": {
+          "description": "Cutout half-size, arcsec",
+          "exclusiveMinimum": 0.0,
+          "maximum": 3600.0,
+          "title": "Radius Arcsec",
+          "type": "number"
+        }
+      },
+      "required": [
+        "label",
+        "ra_deg",
+        "dec_deg",
+        "radius_arcsec"
+      ],
+      "title": "Target",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "manifest_id": {
+      "pattern": "^[A-Za-z0-9._-]{1,128}$",
+      "title": "Manifest Id",
+      "type": "string"
+    },
+    "data_kind": {
+      "enum": [
+        "real",
+        "simulated"
+      ],
+      "title": "Data Kind",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "notice": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Shown prominently in the UI; required for simulations",
+      "title": "Notice"
+    },
+    "target": {
+      "$ref": "#/$defs/Target"
+    },
+    "dataset": {
+      "$ref": "#/$defs/Dataset"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/Observation"
+      },
+      "maxItems": 200,
+      "minItems": 1,
+      "title": "Observations",
+      "type": "array"
+    },
+    "comparisons": {
+      "items": {
+        "$ref": "#/$defs/Comparison"
+      },
+      "title": "Comparisons",
+      "type": "array"
+    },
+    "candidates": {
+      "items": {
+        "$ref": "#/$defs/Candidate"
+      },
+      "title": "Candidates",
+      "type": "array"
+    },
+    "generated_by": {
+      "$ref": "#/$defs/GeneratedBy"
+    }
+  },
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "data_kind",
+    "title",
+    "notice",
+    "target",
+    "dataset",
+    "observations",
+    "generated_by"
+  ],
+  "title": "Manifest",
+  "type": "object"
+}

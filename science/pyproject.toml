@@ -1,0 +1,38 @@
+[project]
+name = "parallax-science"
+version = "0.1.0"
+description = "PARALLAX preprocessing pipeline: SPHEREx cutouts -> validated science/display assets + JSON manifests"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "numpy>=1.26",
+    "astropy>=6.0",
+    "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+# Archive access is added when Phase 1 implements a real adapter.
+archive = ["pyvo>=1.5"]
+
+[project.scripts]
+parallax = "parallax_science.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/parallax_science"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "NPY", "RUF"]

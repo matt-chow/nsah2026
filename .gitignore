@@ -1,0 +1,39 @@
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.netrc
+credentials*.json
+
+# Disposable caches and raw downloads (never publish; see docs/ARCHITECTURE.md)
+.cache/
+data/raw/
+data/cache/
+*.fits.gz
+*.fits.fz
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+build/
+
+# Node / web
+node_modules/
+web/dist/
+*.tsbuildinfo
+.vite/
+
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
