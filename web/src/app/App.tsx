@@ -1,4 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ComponentType,
+  type LazyExoticComponent,
+} from 'react';
 import { SkyCanvas, STRETCH, type Layer, type Stretch } from '../components/SkyCanvas.tsx';
 import { Term } from '../components/Term.tsx';
 import { AnalyzePanel } from '../features/analysis/AnalyzePanel.tsx';
@@ -8,15 +17,35 @@ import {
   EvidenceReport,
 } from '../features/candidates/CandidatesPanel.tsx';
 import { buildStory, DiscoverPanel, storyCandidate } from '../features/discover/DiscoverPanel.tsx';
+import { BookmarkButton } from '../features/journal/BookmarkButton.tsx';
 import { CoordinateSearch } from '../features/sky-explorer/CoordinateSearch.tsx';
 import { Timeline } from '../features/timeline/Timeline.tsx';
 import { checkPair, type PairCheck } from '../lib/compare.ts';
+import { changeEntry, observationEntry } from '../lib/journal.ts';
 import { loadIndex, loadManifest } from '../lib/manifest.ts';
 import { skyToPixel, tanWcs } from '../lib/sky.ts';
 import { isoDate, longDate } from '../lib/time.ts';
 import type { FieldSummary, Manifest, Observation } from '../types/manifest.ts';
 import { Intro } from './Intro.tsx';
+import { SiteNav, type Section } from './SiteNav.tsx';
 import { ViewGuide } from './ViewGuide.tsx';
+
+// Everything beyond the observatory loads on first visit, so the science viewer stays light.
+const named = <K extends string>(load: () => Promise<Record<K, ComponentType<PageProps>>>, k: K) =>
+  lazy(() => load().then((m) => ({ default: m[k] })));
+export interface PageProps {
+  fields: FieldSummary[] | null;
+}
+const PAGES: Record<
+  Exclude<Section, 'observatory'>,
+  LazyExoticComponent<ComponentType<PageProps>>
+> = {
+  sky: named(() => import('../features/globe/GlobePage.tsx'), 'GlobePage'),
+  spacecraft: named(() => import('../features/spacecraft/SpacecraftPage.tsx'), 'SpacecraftPage'),
+  spectrum: named(() => import('../features/spectrum/SpectrumPage.tsx'), 'SpectrumPage'),
+  journal: named(() => import('../features/journal/JournalPage.tsx'), 'JournalPage'),
+  arcade: named(() => import('../features/arcade/ArcadePage.tsx'), 'ArcadePage'),
+};
 
 const BASE = import.meta.env.BASE_URL;
 const DEMO_FIELD = 'nep-d2';
@@ -33,9 +62,13 @@ type Load<T> =
 const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/** `#/sky` names a page; `#nep-d2/c012` opens a field (and change) in the observatory. */
 function readHash() {
-  const [field, cand] = decodeURIComponent(location.hash.slice(1)).split('/');
-  return { field: field || null, cand: cand || null };
+  const h = decodeURIComponent(location.hash.slice(1));
+  const page = h.startsWith('/') ? h.slice(1).split('/')[0] : '';
+  const section: Section = page && page in PAGES ? (page as Section) : 'observatory';
+  const [field, cand] = section === 'observatory' ? h.split('/') : [];
+  return { section, field: field || null, cand: cand || null };
 }
 
 const seenIntro = () => {
@@ -50,8 +83,9 @@ export function App() {
   const [index, setIndex] = useState<Load<FieldSummary[]>>({ status: 'loading' });
   const [fieldId, setFieldId] = useState(() => readHash().field ?? DEMO_FIELD);
   const [loaded, setLoaded] = useState<Load<Manifest> & { path?: string }>({ status: 'loading' });
+  const [section, setSection] = useState<Section>(() => readHash().section);
   const [intro, setIntro] = useState<'shown' | 'leaving' | 'gone'>(() =>
-    seenIntro() || readHash().field ? 'gone' : 'shown',
+    seenIntro() || readHash().field || readHash().section !== 'observatory' ? 'gone' : 'shown',
   );
   const [tab, setTab] = useState<Tab>(() => (readHash().cand ? 'explore' : 'discover'));
   const [online, setOnline] = useState(() => navigator.onLine);
@@ -84,6 +118,20 @@ export function App() {
   const manifest: Load<Manifest> = loaded.path === path ? loaded : { status: 'loading' };
 
   useEffect(() => {
+    const onHash = () => {
+      const h = readHash();
+      setSection(h.section);
+      if (h.field) setFieldId(h.field);
+      if (h.section !== 'observatory') {
+        setIntro('gone');
+        window.scrollTo(0, 0);
+      }
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  useEffect(() => {
     const up = () => setOnline(true);
     const down = () => setOnline(false);
     window.addEventListener('online', up);
@@ -114,9 +162,15 @@ export function App() {
         ? manifest.message
         : null;
 
+  const Page = section === 'observatory' ? null : PAGES[section];
   return (
     <div className="app">
-      {intro !== 'gone' && (
+      <SiteNav
+        section={section}
+        fieldId={fieldId}
+        inert={intro !== 'gone' && section === 'observatory'}
+      />
+      {intro !== 'gone' && section === 'observatory' && (
         <Intro
           fields={index.status === 'ready' ? index.value : null}
           leaving={intro === 'leaving'}
@@ -129,7 +183,17 @@ export function App() {
           reconnect.
         </p>
       )}
-      {failure ? (
+      {Page ? (
+        <Suspense
+          fallback={
+            <div className="state" role="status">
+              <span className="spinner" aria-hidden="true" /> Opening…
+            </div>
+          }
+        >
+          <Page fields={index.status === 'ready' ? index.value : null} />
+        </Suspense>
+      ) : failure ? (
         <div className="state error" role="alert">
           <h2>The observations could not be loaded</h2>
           <p>{failure}</p>
@@ -356,7 +420,6 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
   return (
     <div className="workspace" inert={inert}>
       <header className="topbar">
-        <p className="wordmark">PARALLAX</p>
         <nav className="tabs" aria-label="Mode">
           {TABS.map((t) => (
             <button
@@ -578,13 +641,48 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
           />
 
           <div className="viewer-caption">
-            <p className="showing" aria-live="polite">
-              <span
-                className={`frame-tag ${mode === 'blink' && showRef && comparable ? 'ref' : ''}`}
-              >
-                {showing}
-              </span>
-            </p>
+            <div className="caption-row">
+              <p className="showing" aria-live="polite">
+                <span
+                  className={`frame-tag ${mode === 'blink' && showRef && comparable ? 'ref' : ''}`}
+                >
+                  {showing}
+                </span>
+              </p>
+              <ul className="validity" aria-label="What this view can be trusted for">
+                {mode === 'difference' ? (
+                  <li data-ok={diff ? diff.status === 'validated' : undefined}>
+                    {!diff
+                      ? 'Not evaluated'
+                      : diff.status === 'validated'
+                        ? 'Noise check passed'
+                        : 'Picture only'}
+                  </li>
+                ) : (
+                  <li
+                    data-ok={
+                      pair.status === 'same' || pair.status === 'unknown' ? undefined : comparable
+                    }
+                  >
+                    {pair.status === 'same'
+                      ? 'One date'
+                      : comparable
+                        ? 'Fair comparison'
+                        : pair.status === 'unknown'
+                          ? 'Comparison unverified'
+                          : 'Comparison refused'}
+                  </li>
+                )}
+                <li data-ok={manifest.data_kind === 'real'}>
+                  {manifest.data_kind === 'real' ? 'Real SPHEREx data' : 'Simulated'}
+                </li>
+              </ul>
+              <BookmarkButton
+                id={`obs:${epoch.observation_id}`}
+                make={() => observationEntry(manifest, epoch)}
+                label={`the ${longDate(epoch.epoch.mjd_mid)} observation`}
+              />
+            </div>
             {comparing && !comparable && 'reasons' in pair && (
               <p className="warn" role="alert">
                 These two dates cannot be compared fairly: {pair.reasons.join('; ')}. Showing date A
@@ -664,6 +762,18 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 onSelect={selectCandidate}
                 plain={plain}
               />
+              {cand && (
+                <div className="rail-actions">
+                  <BookmarkButton
+                    id={`cand:${cand.candidate_id}`}
+                    make={() => changeEntry(manifest, cand)}
+                    label="this change"
+                  />
+                  <a className="button-link" href="#/journal">
+                    Open journal
+                  </a>
+                </div>
+              )}
               {cand ? (
                 plain ? (
                   <ChangeSummary

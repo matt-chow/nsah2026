@@ -39,6 +39,8 @@ interface Props {
   pixelScale: number; // arcsec per image pixel
   stretch: Stretch;
   loupe: boolean;
+  /** Any click (or Enter, at the view centre) as a FITS pixel position, for point-and-click tasks. */
+  onPoint?: (x: number, y: number) => void;
 }
 
 const NICE_ARCSEC = [10, 20, 30, 60, 120, 300, 600, 900];
@@ -448,6 +450,9 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
       '=': () => zoomAt(1.25),
       '-': () => zoomAt(0.8),
       '0': () => setView(fit(size.w, size.h)),
+      ...(props.onPoint && view
+        ? { Enter: () => props.onPoint?.(view.cx - 0.5, height - view.cy - 0.5) }
+        : {}),
     };
     const act = actions[e.key];
     if (act) {
@@ -489,7 +494,13 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
           drag.current = null;
           if (d && !d.moved) {
             const rect = e.currentTarget.getBoundingClientRect();
-            pick(e.clientX - rect.left, e.clientY - rect.top);
+            const sx = e.clientX - rect.left;
+            const sy = e.clientY - rect.top;
+            if (props.onPoint && view) {
+              const p = toFits(view, sx, sy);
+              props.onPoint(p.x, p.y);
+            }
+            pick(sx, sy);
           }
         }}
         onPointerLeave={() => {

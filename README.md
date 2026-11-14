@@ -50,6 +50,28 @@ is an unconfirmed lead that needs an independent detection.
 - **Search.** Enter an RA/Dec. If a prepared field covers it, PARALLAX pins it. Otherwise, on
   Vercel, a serverless lookup (`api/sia.mjs`) asks IRSA how many SPHEREx exposures exist there,
   then gives the exact pipeline command that would build that field.
+- **The Living Observatory.** Five lazy-loaded pages sit beside the observatory in the top
+  navigation. None of them adds data or changes a measurement.
+  - **Sky globe** (`#/sky`): a draggable, zoomable celestial sphere (canvas, inertia, keyboard)
+    with an RA/Dec grid, the ecliptic and galactic plane, a few bright stars for orientation and
+    every prepared field. Pick a field to see its release, wavelength, dates and change count,
+    then open it in the observatory. Constellation figures are left out.
+  - **Spacecraft** (`#/spacecraft`): a rotatable wireframe schematic of SPHEREx with hotspots
+    for the shields, telescope, detectors and filters, bus and solar panel, each with a plain
+    explanation and optional detail. A step-through scan demo shows how 51 pointings sample all
+    102 channels. Both are labelled as illustrations.
+  - **Spectrum** (`#/spectrum`): visible light against SPHEREx's six bands and 102 channels.
+    Pick a channel to see its range, the spectral features in that band and the real fields
+    observed there, with links into the observatory.
+  - **Journal** (`#/journal`): bookmark observations and changes from the observatory or the
+    Arcade. Each entry keeps the pipeline record (position, wavelength, dates, release, archive
+    links, triage) apart from your own hypothesis and notes. Stored in this browser only; export
+    as Markdown or JSON.
+  - **Discovery Arcade** (`#/arcade`, optional): three replayable investigations. *The one that
+    appeared* walks Observe → Compare → Identify → Evaluate → Conclude on a real change the
+    pipeline flagged; *Glitch or genuine?* sorts six real residuals; *Fair comparison?* uses the
+    simulated field to practise refusing mismatched pairs. Feedback says whether you agree with
+    the pipeline's (unconfirmed) triage. There is no score, only a count of finished runs.
 - **States.** The app also covers reduced motion, offline, loading, error and
   empty states, and widths down to 360 px.
 
@@ -96,6 +118,9 @@ still works for prepared fields and reports that the live lookup is unavailable.
   bright stars are artifacts. The classifier marks them as artifacts, but it is heuristic.
 - Residuals are not cross-matched against catalogues (Gaia, AllWISE, JPL Horizons/MPC).
 - The comparison uses a single wavelength on a single detector.
+- The spacecraft model is a schematic drawn on a canvas, not an engineering model. The
+  channel layout on the Spectrum page is an even split of each published band; real images
+  carry their own spectral WCS. No spectra are extracted.
 - Error bars come from the archive variance rescaled by an empirical factor, plus an error floor
   calibrated on bright pixels (see [SCIENCE.md](docs/SCIENCE.md)).
 

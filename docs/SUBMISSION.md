@@ -30,6 +30,12 @@ The noise model is calibrated on the data, not assumed. The pipeline:
 
 Injection tests show that real changes are recovered and that blank sky produces no detections.
 
+Around the observatory, a sky globe shows where the fields are, a spacecraft schematic and scan
+demo explain how SPHEREx builds a spectrum, a spectrum explorer places each field among the 102
+channels, a journal keeps your bookmarks and hypotheses apart from the pipeline record, and an
+optional Discovery Arcade turns real flagged changes into short investigations. Illustrations
+and the simulated field are labelled wherever they appear.
+
 The app is static, with free hosting, no database and no GPU. One optional serverless function
 asks IRSA whether SPHEREx has observed any coordinate you type.
 
@@ -123,6 +129,8 @@ illustrative.
 - There is no PSF matching, and the classifier is heuristic. Labels describe resemblance.
 - Residuals are not cross-matched against Gaia, AllWISE, or JPL Horizons/MPC in this build.
 - Each comparison uses a single detector and a single wavelength. No spectra are used.
+- The spacecraft is a labelled schematic, not a 3D engineering model. Constellation figures are
+  not drawn. Arcade feedback compares you with the pipeline's heuristic triage, not with truth.
 - The time scale of `MJD-AVG` is recorded as UTC, pending confirmation against the Explanatory
   Supplement.
 

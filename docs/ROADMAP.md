@@ -54,4 +54,5 @@ phase. Times are per-team estimates of focused hours.
 | 2026-11-13 | Initial JS bundle (bootstrap) | 72.7 kB gzip |
 | 2026-11-13 | Initial JS, full workspace (React + app, fonts as CSS) | 83.3 kB gzip JS, 4.0 kB gzip CSS |
 | 2026-11-13 | Initial JS + CSS after Discover/Explore/Analyze redesign (adds Instrument Serif, CSS only) | 88.4 kB gzip JS, 4.8 kB gzip CSS |
+| 2026-11-14 | Initial JS after Living Observatory (globe, spacecraft, spectrum, journal, arcade as lazy chunks) | 93.8 kB gzip JS, 5.3 kB gzip CSS; pages 2.0–6.4 kB gzip each |
 | 2026-11-13 | `data/` total (2 real fields × 10 epochs + fixture) | 6.88 MB |

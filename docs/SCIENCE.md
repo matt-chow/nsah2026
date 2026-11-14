@@ -226,6 +226,13 @@ the Phase 3 acceptance test.
 5. < 0.2 px registration residual threshold.
 6. FLAGS bits that should mask (from Explanatory Supplement Table 10).
 7. Calibration version: taken from the file name (`l2b-v27`). Both releases share it.
+8. Spectrum page channels: each published band (Crill et al. 2020) is split into 17 channels
+   spaced at constant resolving power. The LVF makes wavelength continuous, so this is a teaching
+   convention; band edges and resolving powers are rounded. Observations use their own spectral
+   WCS, never this table.
+9. Globe and spacecraft: star positions (J2000) and the spacecraft wireframe are illustrations for
+   orientation, labelled as such; fields are drawn from their manifest ICRS centre and radius.
+   The scan demo's brightness curve is invented and labelled.
 
 ## References
 

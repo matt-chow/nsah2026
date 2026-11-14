@@ -17,6 +17,8 @@
   --signal: #f2a33a;
   --signal-ink: #1a1206;
   --cold: #609cec;
+  /* illustrative and schematic material, never data */
+  --cyan: #7cc8d6;
   --ok: #8fc79a;
   --alert: #ef7a6a;
   --sans: 'Schibsted Grotesk', system-ui, sans-serif;
@@ -296,13 +298,175 @@ button[aria-pressed='true'] .mono {
 /* Workspace shell */
 
 .app {
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
+}
+
+.app:has(.workspace) {
+  height: 100dvh;
 }
 
 .workspace {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Site navigation */
+
+.sitenav {
+  display: flex;
+  align-items: center;
+  gap: 8px 24px;
+  padding: 0 16px;
+  background: var(--ink);
+  border-bottom: 1px solid var(--hair);
+}
+
+.sitenav .wordmark {
+  text-decoration: none;
+}
+
+.sitenav nav {
+  flex: 1;
+  min-width: 0;
+}
+
+.sitenav ul {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sitenav li a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 10px;
+  color: var(--paper-dim);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 160ms var(--ease-out);
+}
+
+.sitenav li a:hover {
+  color: var(--paper);
+}
+
+.sitenav li a[aria-current='page'] {
+  color: var(--paper);
+  box-shadow: inset 0 -2px 0 var(--signal);
+}
+
+.sitenav .arcade-link {
+  margin-left: auto;
+}
+
+.sitenav .arcade-link a {
+  color: var(--signal);
+}
+
+.sitenav .count {
+  min-width: 18px;
+  padding: 0 5px;
+  font-size: 0.6875rem;
+  line-height: 16px;
+  text-align: center;
+  color: var(--signal-ink);
+  background: var(--signal);
+}
+
+/* Shared small parts */
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bookmark,
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.bookmark[aria-pressed='true'] {
+  color: var(--signal);
+  border-color: var(--signal);
+}
+
+.button-link {
+  color: var(--paper);
+  background: var(--rail-2);
+  border: 1px solid var(--hair-2);
+  text-decoration: none;
+}
+
+.button-link:hover {
+  border-color: var(--paper-dim);
+}
+
+.caption-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.caption-row > p {
+  flex: 1 1 20rem;
+}
+
+.validity {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.validity li {
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--hair-2);
+  color: var(--paper-dim);
+}
+
+.validity li[data-ok='true'] {
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 45%, transparent);
+}
+
+.validity li[data-ok='false'] {
+  color: var(--alert);
+  border-color: color-mix(in srgb, var(--alert) 45%, transparent);
+}
+
+.rail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .topbar {
@@ -1325,8 +1489,30 @@ button[aria-pressed='true'] .mono {
 /* Responsive */
 
 @media (max-width: 900px) {
-  .workspace {
+  .app:has(.workspace) {
     height: auto;
+  }
+
+  .sitenav {
+    flex-wrap: wrap;
+    padding-top: 6px;
+  }
+
+  /* wrap rather than hide Journal and the Arcade behind a sideways scroll */
+  .sitenav ul {
+    flex-wrap: wrap;
+  }
+
+  .sitenav li a {
+    height: 38px;
+  }
+
+  .sitenav nav {
+    flex-basis: 100%;
+  }
+
+  .sitenav .arcade-link {
+    margin-left: 0;
   }
 
   .search {

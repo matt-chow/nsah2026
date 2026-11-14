@@ -39,6 +39,7 @@ results; it never decides scientific compatibility.
 | CLI | `cli.py` | `validate`, `schema`, `make-fixture`, `build-field`, `index` | |
 | Web shell | `web/src/app/` | load manifest, layout, state | compute science |
 | Features | `web/src/features/{sky-explorer,timeline,candidates,discover,analysis}` | search, date axis, "What changed?" list + summary + evidence report + light curve, the Discover story (built from the manifest), Analyze checks + calibration table | import each other's internals |
+| Living Observatory | `web/src/features/{globe,spacecraft,spectrum,journal,arcade}` | lazy pages behind `#/sky`, `#/spacecraft`, `#/spectrum`, `#/journal`, `#/arcade`; they read the same manifests and index, write only to `localStorage` (journal, arcade progress) | change measurements, import observatory internals |
 | Shared UI | `web/src/components/` | `SkyCanvas` (pan/zoom, blink/overlay/split/difference, stretch, loupe, scale bar, markers), `Term` (glossary popovers via native `popover`), `ObservationDetails` | |
 | Live lookup | `api/sia.mjs` | optional Vercel function: exposure counts from IRSA SIA2 | proxy images, keep state |
 | Web libs | `web/src/lib/` | `checkPair` (reads the pipeline verdict for an A/B pair; never recomputes it), readable dates, manifest/index parsing, TAN pixel↔sky for display, σ decoding, image cache | |
@@ -74,6 +75,10 @@ failure, or a host without functions, degrades to "live lookup not available". D
 - The viewer draws with `drawImage` and nearest-neighbour scaling, and redraws only on image or
   resize changes (`ResizeObserver`), so idle CPU is zero. Decoded images sit in a bounded
   12-entry cache; nothing is preloaded.
+- The five Living Observatory pages are separate chunks (2 to 6.5 kB gzip each) loaded on
+  navigation. The globe and spacecraft use Canvas 2D (no WebGL, no 3D library), cap DPR at 2,
+  redraw only on input or resize, and run `requestAnimationFrame` only while inertia or a fly-to
+  is in motion; reduced motion disables both. The scan demo's timer exists only while playing.
 - Blink (P1) will toggle between two already decoded images with a timer. Each tick does one
   `drawImage` and no allocation or fetch.
 - **Measuring:** bundle size comes from `vite build` output. Rendering is checked in the Chrome

@@ -13,7 +13,7 @@ export const STATUS_LABEL: Record<Candidate['status'], string> = {
   rejected: 'Rejected',
 };
 
-const KIND: Record<CandidateKind, { label: string; plain: string }> = {
+export const KIND: Record<CandidateKind, { label: string; plain: string }> = {
   new_source_like: {
     label: 'New-source-like',
     plain: 'Light appeared on one date where the other dates show nothing steady.',
