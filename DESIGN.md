@@ -1,18 +1,18 @@
 ---
 name: PARALLAX
-description: An open observatory for the changing infrared sky, set as an astronomical telegram.
+description: An open observatory for the changing infrared sky, set as a retro-futurist instrument (v3.1).
 colors:
-  ink: "#0b0d12"
-  sky-well: "#07080b"
-  rail: "#10141b"
-  rail-2: "#161b24"
-  hair: "#262d39"
-  hair-2: "#343c4b"
-  paper: "#e9e4d8"
-  paper-dim: "#a8a395"
-  paper-faint: "#8a8679"
-  signal: "#f2a33a"
-  signal-hover: "#f7b558"
+  ink: "#101923"
+  sky-well: "#0a1119"
+  rail: "#142030"
+  rail-2: "#1a2838"
+  hair: "#23374a"
+  hair-2: "#35506a"
+  paper: "#e9e1d0"
+  paper-dim: "#aba595"
+  signal: "#c99058"
+  signal-hover: "#d9a571"
+  instrument-teal: "#82a8ab"
   signal-ink: "#1a1206"
   cold: "#609cec"
   alert: "#ef7a6a"
@@ -135,6 +135,17 @@ Density is instrument-grade: 15px body, 34px controls, monospace columns for eve
 - Status is stamped, never celebrated; candidates are always "unconfirmed".
 - Meaning never rides on colour alone: shape glyphs, dashes and labels carry it too.
 
+## v3.1: the retro-futurist observatory
+
+A refinement, not a rebuild: the same layout, data and safeguards, re-set as a calibrated instrument.
+
+- **Palette:** midnight navy (ink #101923), slate (hair #23374a), ivory (paper #e9e1d0), amber (signal #c99058), muted teal (#82a8ab, illustration and schematic material only, never data). The difference-map colours are unchanged because they must match the published PNG colormap.
+- **Surfaces:** a faint 48px coordinate grid on the page; fine rulers and tick marks on the timeline, globe bezel and plots.
+- **Controls:** tactile: 2px radius, a one-pixel bevel, a 1px press on :active. No glow, glass, neon or gradient text.
+- **Type:** Instrument Serif for headings (words only), Schibsted Grotesk for UI, IBM Plex Mono for every measurement.
+- **Illustration:** thin line drawings (Discover steps, mission cards, kinds-of-change figure) are labelled as drawings, not data. The spacecraft is a solid-shaded schematic, labelled as such.
+- **Motion:** exponential ease-out; every animation (focus glide, globe fly-in, exploded view, wavelength sweep) is user-triggered, stops when done, and jumps under reduced motion.
+
 ## Colors
 
 A dark observatory palette: cool blue-black surfaces, warm paper type, a single amber accent and a cold blue that exists only as its counterweight in the difference map.
@@ -151,7 +162,7 @@ A dark observatory palette: cool blue-black surfaces, warm paper type, a single 
 - **Graphite Rail / Rail Raised** (rail, rail-2): top bar and right rail; buttons and hover rows.
 - **Hairline / Hairline Strong** (hair, hair-2): dividers and control borders.
 - **Bulletin Paper** (paper): primary text; the inverse ground of pressed segments.
-- **Paper Dim / Paper Faint** (paper-dim, paper-faint): secondary text; tertiary metadata (timeline years, epoch release tags, placeholders, axis ticks).
+- **Paper Dim** (paper-dim): secondary text and tertiary metadata (timeline years, epoch release tags, placeholders, axis ticks). Paper Faint was retired in v3.1 for contrast.
 - **Alert Coral** (alert): errors only.
 - **Caution Umber** (caution-bg, caution-text): the simulated-data banner and incompatibility warnings.
 
@@ -214,7 +225,7 @@ Square corners throughout (0 radius); the loading spinner is the only circle. Bo
 Joined square buttons; the pressed one inverts to paper fill with ink text. Used for view mode (Switch dates / Fade / Split / Highlight changes) and candidate filter. The Discover / Explore / Analyze tabs use the same frame with an amber underline on the current mode.
 
 ### Inputs / Fields
-Ink fill, hair-2 border, square, amber caret, paper-faint placeholder. Errors render below in alert coral, inside an `aria-live` line.
+Ink fill, hair-2 border, square, amber caret, paper-dim placeholder. Errors render below in alert coral, inside an `aria-live` line.
 
 ### Candidate list
 Full-width rows on a hairline grid: shape glyph, mono ID, class, mono sigma, mono date. Selected row gets rail-2 fill, a 1px inset amber rule and an amber glyph.

@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { isSafeRelativePath, ManifestError, parseIndex, parseManifest } from './manifest.ts';
+import {
+  displayTitle,
+  isSafeRelativePath,
+  ManifestError,
+  parseIndex,
+  parseManifest,
+} from './manifest.ts';
 import {
   decodeSigma,
   divergingRgb,
@@ -128,4 +134,12 @@ test('significance decoding and diverging colour are symmetric and not colour-on
   assert.ok(lum(divergingRgb(128)) < 25);
   assert.equal(formatRa(270), '18h00m00.0s');
   assert.equal(formatDec(-66.5607), '−66°33′39″');
+});
+
+test('displayTitle shows microns as µm without touching other words', () => {
+  assert.equal(
+    displayTitle('North Ecliptic Pole, 1.45 um (SPHEREx detector 2)'),
+    'North Ecliptic Pole, 1.45 µm (SPHEREx detector 2)',
+  );
+  assert.equal(displayTitle('Synthetic fixture: um, drum'), 'Synthetic fixture: um, drum');
 });

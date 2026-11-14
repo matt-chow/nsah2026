@@ -113,8 +113,9 @@ export function ScanDemo() {
           <text x={PLOT.x + PLOT.w / 2} y={PLOT.y + PLOT.h + 34} className="svg-label">
             wavelength (µm)
           </text>
-          <text x={PLOT.x - 8} y={PLOT.y + 8} className="svg-label" textAnchor="end">
-            bright
+          <line x1={PLOT.x} y1={PLOT.y} x2={PLOT.x} y2={PLOT.y + PLOT.h} />
+          <text x={PLOT.x + 6} y={PLOT.y + 4} className="svg-label" textAnchor="start">
+            brighter
           </text>
         </g>
         {samples.map((c, i) => (

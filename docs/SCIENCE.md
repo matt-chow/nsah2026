@@ -230,9 +230,14 @@ the Phase 3 acceptance test.
    spaced at constant resolving power. The LVF makes wavelength continuous, so this is a teaching
    convention; band edges and resolving powers are rounded. Observations use their own spectral
    WCS, never this table.
-9. Globe and spacecraft: star positions (J2000) and the spacecraft wireframe are illustrations for
+9. Globe and spacecraft: star positions (J2000) and the solid-shaded spacecraft schematic are illustrations for
    orientation, labelled as such; fields are drawn from their manifest ICRS centre and radius.
    The scan demo's brightness curve is invented and labelled.
+10. Light-curve display scale (visualization only): by default the y range covers zero and every
+    epoch within 5 × max(1.4826·MAD, median error) of the median, error bars included. Epochs
+    outside it are drawn as edge triangles with their value ± error printed; "Fit all" shows them
+    in place. No measurement is removed or altered.
+11. Globe bezel: north up and east left, because the sphere is seen from inside (sky view).
 
 ## References
 

@@ -93,3 +93,6 @@ export const loadManifest = async (url: string, signal?: AbortSignal) =>
 
 export const loadIndex = async (url: string, signal?: AbortSignal) =>
   parseIndex(await getJson(url, 'field index', signal));
+
+/** Display only: archive titles spell microns "um"; the screen shows "µm". Data is untouched. */
+export const displayTitle = (title: string) => title.replace(/(\d) um\b/g, '$1 µm');

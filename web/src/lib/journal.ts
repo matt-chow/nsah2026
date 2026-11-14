@@ -27,6 +27,8 @@ export interface JournalEntry {
   hypothesis: string;
   notes: string;
   outcome: string | null;
+  /** Display PNG path relative to the site root, for a thumbnail; absent on older saves. */
+  preview?: string;
 }
 
 export const JOURNAL_KEY = 'parallax.journal.v1';
@@ -87,6 +89,7 @@ export function observationEntry(m: Manifest, o: Observation): JournalEntry {
     wavelength_um: o.spectral.wavelength_center_um,
     dates: [{ observation_id: o.observation_id, mjd_mid: o.epoch.mjd_mid }],
     sources: o.provenance.source_url ? [o.provenance.source_url] : [],
+    preview: o.assets.display_png,
     pipeline: null,
   };
 }
@@ -104,6 +107,7 @@ export function changeEntry(m: Manifest, c: Candidate): JournalEntry {
     wavelength_um: obs[0]?.spectral.wavelength_center_um ?? null,
     dates: obs.map((o) => ({ observation_id: o.observation_id, mjd_mid: o.epoch.mjd_mid })),
     sources: obs.flatMap((o) => (o.provenance.source_url ? [o.provenance.source_url] : [])),
+    ...(obs[0] ? { preview: obs[0].assets.display_png } : {}),
     pipeline: {
       status: c.status,
       kind: c.kind,

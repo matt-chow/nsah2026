@@ -1,7 +1,9 @@
 import { memo, useEffect, useRef, type ReactNode } from 'react';
 import { Term } from '../../components/Term.tsx';
+import { displayTitle } from '../../lib/manifest.ts';
 import { interval, longDate } from '../../lib/time.ts';
 import type { Candidate, Manifest, Observation } from '../../types/manifest.ts';
+import { StoryArt, StorySigns } from './StoryArt.tsx';
 
 export interface StoryView {
   mode: 'blink' | 'difference';
@@ -57,7 +59,7 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
       body: (
         <>
           <p>
-            This is <strong>{manifest.target.label}</strong>, a square of sky about{' '}
+            This is <strong>{displayTitle(manifest.target.label)}</strong>, a square of sky about{' '}
             {widthArcmin.toFixed(0)} arcminutes across (the full Moon is about 31).
           </p>
           <p>
@@ -177,6 +179,7 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
               detector: from one date, they look alike. It stays <strong>unconfirmed</strong> until
               someone sees it again.
             </p>
+            <StorySigns />
             <p className="dim">
               For honesty: {artifacts} of the {all} spots flagged in this field are probably
               artifacts, mostly bright stars that do not subtract cleanly.
@@ -238,9 +241,20 @@ export const DiscoverPanel = memo(function DiscoverPanel(props: Props) {
         ))}
       </ol>
       <div className="story-body" key={index}>
-        <p className="story-kicker mono">
-          Step {index + 1} of {chapters.length}
-        </p>
+        <div
+          className="story-progress"
+          role="progressbar"
+          aria-label="Story progress"
+          aria-valuemin={1}
+          aria-valuemax={chapters.length}
+          aria-valuenow={index + 1}
+          aria-valuetext={`Step ${index + 1} of ${chapters.length}`}
+        >
+          {chapters.map((x, i) => (
+            <span key={x.title} data-done={i <= index || undefined} />
+          ))}
+        </div>
+        <StoryArt index={index} />
         <h2 id="story-h" ref={heading} tabIndex={-1}>
           {ch.title}
         </h2>

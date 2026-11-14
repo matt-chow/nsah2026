@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { PageProps } from '../../app/App.tsx';
 import { Icon } from '../../components/Icon.tsx';
+import { displayTitle } from '../../lib/manifest.ts';
 import { BANDS, channelAt, CHANNELS, FEATURES, type Band, type Channel } from './channels.ts';
 import '../../styles/pages.css';
 
@@ -29,6 +30,24 @@ const VISIBLE: [number, string][] = [
 export function SpectrumPage({ fields }: PageProps) {
   const start = fields?.find((f) => f.data_kind === 'real');
   const [index, setIndex] = useState(() => channelAt(start?.wavelength_um ?? 1.45)?.index ?? 20);
+  const [sweeping, setSweeping] = useState(false);
+
+  // the sweep steps through all 102 channels once; the timer exists only while it runs
+  useEffect(() => {
+    if (!sweeping) return;
+    const t = setInterval(
+      () =>
+        setIndex((i) => {
+          if (i >= CHANNELS.length - 1) {
+            setSweeping(false);
+            return i;
+          }
+          return i + 1;
+        }),
+      90,
+    );
+    return () => clearInterval(t);
+  }, [sweeping]);
   const ch = CHANNELS[index] ?? (CHANNELS[0] as Channel);
   const band = BANDS.find((b) => b.detector === ch.detector) ?? (BANDS[0] as Band);
   const near = FEATURES.filter((f) => f.um >= band.min && f.um <= band.max);
@@ -94,7 +113,7 @@ export function SpectrumPage({ fields }: PageProps) {
             <text
               key={b.detector}
               x={(x(b.min) + x(b.max)) / 2}
-              y={BAR_BOTTOM + 16}
+              y={BAR_BOTTOM + 28}
               className="svg-label"
             >
               band {b.detector}
@@ -108,12 +127,28 @@ export function SpectrumPage({ fields }: PageProps) {
           ))}
 
           {(fields ?? []).map((f) => (
-            <path
-              key={f.manifest_id}
-              d={`M${x(f.wavelength_um)} ${BAR_BOTTOM + 2}l-5 9h10z`}
-              className={f.data_kind === 'real' ? 'field-mark' : 'field-mark sim'}
-            />
+            <a key={f.manifest_id} href={`#${f.manifest_id}`} className="field-link">
+              <title>{`${displayTitle(f.title)}: open in the observatory`}</title>
+              <rect
+                x={x(f.wavelength_um) - 9}
+                y={BAR_BOTTOM}
+                width={18}
+                height={16}
+                fill="transparent"
+              />
+              <path
+                d={`M${x(f.wavelength_um)} ${BAR_BOTTOM + 2}l-5 9h10z`}
+                className={f.data_kind === 'real' ? 'field-mark' : 'field-mark sim'}
+              />
+            </a>
           ))}
+          <line
+            x1={x(ch.center)}
+            x2={x(ch.center)}
+            y1={BAR_TOP - 4}
+            y2={BAR_BOTTOM + 4}
+            className="sweep-line"
+          />
 
           <line x1={PAD} x2={W - PAD} y1={H - 36} y2={H - 36} className="axis" />
           {TICKS.map((t) => (
@@ -128,7 +163,8 @@ export function SpectrumPage({ fields }: PageProps) {
         <figcaption className="small dim">
           Visible hues are approximate and shown for the eye. Infrared channels are drawn in grey
           because infrared has no colour we can see; observatory images are brightness only.
-          Triangles mark the wavelength of each field in this release.
+          Triangles mark the measured wavelength of each field in this release; select one to open
+          it in the observatory.
         </figcaption>
       </figure>
 
@@ -147,7 +183,17 @@ export function SpectrumPage({ fields }: PageProps) {
               aria-valuetext={`Channel ${index + 1}, ${ch.center.toFixed(3)} micrometres, band ${ch.detector}`}
             />
           </label>
-          <dl className="facts">
+          <button
+            type="button"
+            aria-pressed={sweeping}
+            onClick={() => {
+              if (!sweeping && index >= CHANNELS.length - 1) setIndex(0);
+              setSweeping((s) => !s);
+            }}
+          >
+            <Icon name={sweeping ? 'pause' : 'play'} /> {sweeping ? 'Stop sweep' : 'Sweep all 102'}
+          </button>
+          <dl className="facts" aria-live={sweeping ? 'off' : 'polite'}>
             <dt>Centre</dt>
             <dd className="mono">{ch.center.toFixed(3)} µm</dd>
             <dt>Covers</dt>
@@ -196,7 +242,7 @@ export function SpectrumPage({ fields }: PageProps) {
               {inBand.map((f) => (
                 <li key={f.manifest_id}>
                   <a href={`#${f.manifest_id}`} className="inline-link">
-                    {f.title} <Icon name="arrow" />
+                    {displayTitle(f.title)} <Icon name="arrow" />
                   </a>
                   {f.data_kind === 'simulated' && <span className="sim-tag">Simulated</span>}
                   <span className="mono dim small">

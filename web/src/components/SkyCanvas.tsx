@@ -214,13 +214,32 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
   );
 
   const { focus } = props;
+  const viewRef = useRef(view);
+  viewRef.current = view;
   useEffect(() => {
     if (!focus) return;
-    setView((v) => ({
-      scale: Math.max(v?.scale ?? 1, Math.min(size.w, size.h) / 40),
+    const from = viewRef.current;
+    const to = {
+      scale: Math.max(from?.scale ?? 1, Math.min(size.w, size.h) / 40),
       cx: focus.x + 0.5,
       cy: height - focus.y - 0.5,
-    }));
+    };
+    if (!from || matchMedia('(prefers-reduced-motion: reduce)').matches) return setView(to);
+    // one bounded glide (700 ms, exponential ease-out); it stops itself, so no idle loop
+    let raf = 0;
+    const t0 = performance.now();
+    const step = (t: number) => {
+      const k = Math.min(1, (t - t0) / 700);
+      const e = k === 1 ? 1 : 1 - 2 ** (-10 * k);
+      setView({
+        scale: from.scale * (to.scale / from.scale) ** e,
+        cx: from.cx + (to.cx - from.cx) * e,
+        cy: from.cy + (to.cy - from.cy) * e,
+      });
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
   }, [focus, height, size.w, size.h]);
 
   const current = sources?.key === key ? sources : null;
@@ -258,7 +277,7 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
       ctx.restore();
     }
     ctx.filter = 'none';
-    ctx.strokeStyle = 'rgba(233, 228, 216, 0.25)';
+    ctx.strokeStyle = 'rgba(233, 225, 208, 0.25)';
     ctx.lineWidth = 1;
     ctx.strokeRect(x0 - 0.5, y0 - 0.5, width * view.scale + 1, height * view.scale + 1);
 
@@ -269,7 +288,7 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
       const here = c.observation_ids.includes(activeEpochId);
       ctx.lineWidth = here ? 1.75 : 1;
       ctx.setLineDash(here ? [] : [2, 3]);
-      ctx.strokeStyle = here ? 'rgba(233, 228, 216, 0.95)' : 'rgba(233, 228, 216, 0.45)';
+      ctx.strokeStyle = here ? 'rgba(233, 225, 208, 0.95)' : 'rgba(233, 225, 208, 0.45)';
       drawGlyph(ctx, c.kind, p.x, p.y, r);
     }
     ctx.setLineDash([]);
@@ -280,7 +299,7 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
       ctx.strokeStyle = 'rgba(11, 13, 18, 0.85)';
       drawGlyph(ctx, sel.kind, p.x, p.y, r + 4);
       ctx.lineWidth = 2;
-      ctx.strokeStyle = '#f2a33a';
+      ctx.strokeStyle = '#d9a571';
       drawGlyph(ctx, sel.kind, p.x, p.y, r + 4);
       // reticle ticks keep the selection findable even where the glyph sits on a bright star
       ctx.beginPath();
@@ -296,7 +315,7 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
       ctx.stroke();
     }
     if (layer.kind === 'split') {
-      ctx.fillStyle = 'rgba(242, 163, 58, 0.9)';
+      ctx.fillStyle = 'rgba(217, 165, 113, 0.9)';
       ctx.fillRect(splitX - 1, 0, 2, size.h);
       ctx.font = '500 11px "IBM Plex Mono", monospace';
       ctx.textBaseline = 'top';
@@ -308,7 +327,7 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
         ctx.fillStyle = 'rgba(5, 8, 15, 0.82)';
         ctx.fillRect(align === 'right' ? x - tw - 6 : x - 6, 8, tw + 12, 20);
         ctx.textAlign = align;
-        ctx.fillStyle = '#e9e4d8';
+        ctx.fillStyle = '#e9e1d0';
         ctx.fillText(text, x, 13);
       }
       ctx.textAlign = 'start';
@@ -332,13 +351,13 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
         ctx.filter = filter;
         ctx.drawImage(src, cx - f.ix * z, cy - f.iy * z, width * z, height * z);
         ctx.filter = 'none';
-        ctx.strokeStyle = 'rgba(242, 163, 58, 0.9)';
+        ctx.strokeStyle = 'rgba(217, 165, 113, 0.9)';
         ctx.lineWidth = 1;
         const px = cx - (f.ix % 1) * z;
         const py = cy - (f.iy % 1) * z;
         ctx.strokeRect(Math.round(px) + 0.5, Math.round(py) + 0.5, z, z);
         ctx.restore();
-        ctx.strokeStyle = 'rgba(233, 228, 216, 0.85)';
+        ctx.strokeStyle = 'rgba(233, 225, 208, 0.85)';
         ctx.beginPath();
         ctx.arc(cx, cy, R, 0, Math.PI * 2);
         ctx.stroke();
@@ -346,7 +365,7 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
     }
     if (props.pin) {
       const p = toScreen(view, props.pin.x, props.pin.y);
-      ctx.strokeStyle = '#e9e4d8';
+      ctx.strokeStyle = '#e9e1d0';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(p.x - 18, p.y);

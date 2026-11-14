@@ -214,6 +214,15 @@
   border-top-style: dashed;
 }
 
+.key-star {
+  width: 5px;
+  height: 5px;
+  margin: 0 6.5px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
 .key-ecl {
   color: var(--cyan);
 }
@@ -438,7 +447,7 @@
 }
 
 .chan[data-band='0'] {
-  fill: #3a4866;
+  fill: #35506a;
 }
 
 .chan:hover {
@@ -460,6 +469,17 @@
 
 .field-mark.sim {
   fill: var(--paper-dim);
+}
+
+.field-link:hover .field-mark,
+.field-link:focus-visible .field-mark {
+  fill: var(--paper);
+}
+
+.sweep-line {
+  stroke: var(--paper);
+  stroke-width: 1;
+  pointer-events: none;
 }
 
 .spectrum-layout {
@@ -521,8 +541,64 @@
 }
 
 .entry {
+  position: relative;
   display: grid;
   gap: 14px;
+  padding-left: 36px;
+}
+
+/* notebook binding: a stitched margin rule */
+.entry::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 18px;
+  border-left: 1px dashed var(--hair-2);
+}
+
+.page .entry h2 {
+  font: 400 1.375rem / 1.2 var(--serif);
+}
+
+.entry-plate {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  align-content: start;
+}
+
+.entry-plate img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  background: var(--ink);
+  border: 1px solid var(--hair-2);
+  padding: 4px;
+  image-rendering: pixelated;
+}
+
+.source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.source-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+}
+
+.mine textarea {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(1.5em - 1px),
+    rgba(130, 168, 171, 0.14) calc(1.5em - 1px) 1.5em
+  );
+  background-attachment: local;
+  line-height: 1.5;
 }
 
 .entry-head {
@@ -541,6 +617,10 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 20px;
+}
+
+.entry-body:has(.entry-plate) {
+  grid-template-columns: 170px minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .record,
@@ -595,9 +675,40 @@
   padding: 20px;
 }
 
-.mission-num {
-  font-size: 0.8125rem;
-  color: var(--signal);
+.mission-art {
+  width: 100%;
+  height: auto;
+  max-height: 110px;
+  padding: 10px;
+  background: var(--ink);
+  border: 1px solid var(--hair);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+.mission {
+  transition:
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mission:hover {
+  border-color: var(--hair-2);
+  transform: translateY(-2px);
+}
+
+.mission[data-finished='true'] .mission-art {
+  border-color: var(--signal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission,
+  .mission:hover {
+    transition: none;
+    transform: none;
+  }
 }
 
 .page .mission h2 {
@@ -801,6 +912,7 @@
   .craft-layout,
   .spectrum-layout,
   .entry-body,
+  .entry-body:has(.entry-plate),
   .mission-grid,
   .investigation-layout,
   .clue-layout {

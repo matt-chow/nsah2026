@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Icon } from '../../components/Icon.tsx';
 import { toMarkdown, type JournalEntry } from '../../lib/journal.ts';
+import { displayTitle, isSafeRelativePath } from '../../lib/manifest.ts';
 import { isoDate } from '../../lib/time.ts';
 import { journal, useJournal } from './store.ts';
 import '../../styles/pages.css';
 
 const origin = () => `${location.origin}${location.pathname}`;
+const BASE = import.meta.env.BASE_URL;
 
 function download(name: string, text: string, type: string) {
   const url = URL.createObjectURL(new Blob([text], { type }));
@@ -103,7 +105,7 @@ export function JournalPage() {
                   <p className="small dim">
                     {KIND_LABEL[e.kind]} · saved {e.saved_utc.slice(0, 10)}
                   </p>
-                  <h2>{e.title}</h2>
+                  <h2>{displayTitle(e.title)}</h2>
                   {e.data_kind === 'simulated' && (
                     <span className="sim-tag">Simulated, not NASA data</span>
                   )}
@@ -123,6 +125,21 @@ export function JournalPage() {
               </header>
 
               <div className="entry-body">
+                {e.preview && isSafeRelativePath(e.preview) && (
+                  <figure className="entry-plate">
+                    <img
+                      src={`${BASE}${e.preview}`}
+                      alt=""
+                      loading="lazy"
+                      width={160}
+                      height={160}
+                    />
+                    <figcaption className="small dim">
+                      {e.data_kind === 'simulated' ? 'Simulated image' : 'SPHEREx image'}, first
+                      date; display stretch only
+                    </figcaption>
+                  </figure>
+                )}
                 <section className="record" aria-label="Pipeline record">
                   <h3>Record</h3>
                   <dl className="facts">
@@ -147,10 +164,18 @@ export function JournalPage() {
                     {e.sources.length > 0 && (
                       <>
                         <dt>Archive</dt>
-                        <dd>
+                        <dd className="source-links">
                           {e.sources.map((s, i) => (
-                            <a key={s} href={s} className="small" rel="noreferrer" target="_blank">
-                              source {i + 1}{' '}
+                            <a
+                              key={s}
+                              href={s}
+                              className="inline-link"
+                              rel="noreferrer"
+                              target="_blank"
+                            >
+                              IRSA archive file{e.sources.length > 1 ? `, date ${i + 1}` : ''}{' '}
+                              <Icon name="open" />
+                              <span className="visually-hidden"> (opens in a new tab)</span>
                             </a>
                           ))}
                         </dd>

@@ -135,3 +135,102 @@ export function view([x, y, z]: P3, c: Camera): { x: number; y: number; depth: n
   const k = DISTANCE / (DISTANCE + depth);
   return { x: x1 * k * c.scale, y: -up * k * c.scale, depth };
 }
+
+// ---- solid schematic: the same parts as faces, lit and painted back to front ----
+
+export interface Face {
+  part: Part;
+  pts: P3[];
+}
+
+function coneFaces(part: Part, r0: number, r1: number, z0: number, z1: number, sides = 40): Face[] {
+  const a = ring(r0, z0, sides);
+  const b = ring(r1, z1, sides);
+  return Array.from({ length: sides }, (_, i) => ({
+    part,
+    pts: [a[i], a[i + 1], b[i + 1], b[i]] as P3[],
+  }));
+}
+
+function boxFaces(part: Part, [x0, y0, z0]: P3, [x1, y1, z1]: P3): Face[] {
+  const quads: P3[][] = [
+    [
+      [x0, y0, z0],
+      [x1, y0, z0],
+      [x1, y1, z0],
+      [x0, y1, z0],
+    ],
+    [
+      [x0, y0, z1],
+      [x1, y0, z1],
+      [x1, y1, z1],
+      [x0, y1, z1],
+    ],
+    [
+      [x0, y0, z0],
+      [x1, y0, z0],
+      [x1, y0, z1],
+      [x0, y0, z1],
+    ],
+    [
+      [x0, y1, z0],
+      [x1, y1, z0],
+      [x1, y1, z1],
+      [x0, y1, z1],
+    ],
+    [
+      [x0, y0, z0],
+      [x0, y1, z0],
+      [x0, y1, z1],
+      [x0, y0, z1],
+    ],
+    [
+      [x1, y0, z0],
+      [x1, y1, z0],
+      [x1, y1, z1],
+      [x1, y0, z1],
+    ],
+  ];
+  return quads.map((pts) => ({ part, pts }));
+}
+
+export const FACES: Face[] = [
+  ...coneFaces('shields', 0.72, 1.05, 0.12, 1.55),
+  ...coneFaces('shields', 0.8, 1.18, 0.1, 1.68),
+  ...coneFaces('shields', 0.88, 1.3, 0.08, 1.8),
+  ...coneFaces('telescope', 0.26, 0.26, 0.18, 1.0, 16),
+  { part: 'telescope', pts: ring(0.1, 0.22, 24) },
+  ...boxFaces('focal', [-0.22, -0.14, 0.02], [0.22, 0.14, 0.14]),
+  ...coneFaces('bus', 0.62, 0.62, -0.62, 0, 6),
+  { part: 'bus', pts: ring(0.62, 0, 6) },
+  { part: 'bus', pts: ring(0.62, -0.62, 6) },
+  ...boxFaces('solar', [-1.02, -0.75, -0.55], [-1.0, 0.75, 0.05]),
+];
+
+/** How far each part travels in the exploded view (metres), so inner parts come into sight. */
+export const EXPLODE: Record<Part, P3> = {
+  shields: [0, 0, 0.75],
+  telescope: [0, 0, 0.38],
+  focal: [0, 0, 0],
+  bus: [0, 0, -0.55],
+  solar: [-0.8, 0, 0],
+};
+
+export const shift = ([x, y, z]: P3, part: Part, e: number): P3 => {
+  const [dx, dy, dz] = EXPLODE[part];
+  return [x + dx * e, y + dy * e, z + dz * e];
+};
+
+const LIGHT: P3 = [-0.45, -0.55, 0.7]; // from the upper left, in camera space (x right, y down, z toward viewer)
+
+/** Lambert brightness 0..1 of a face for this camera; two-sided, because the cones are thin shells. */
+export function shade(pts: P3[], c: Camera): number {
+  const s = pts.map((p) => view(p, { ...c, scale: 1 }));
+  const [a, b, d] = [s[0], s[1], s[2]];
+  if (!a || !b || !d) return 0;
+  const u: P3 = [b.x - a.x, b.y - a.y, b.depth - a.depth];
+  const v: P3 = [d.x - a.x, d.y - a.y, d.depth - a.depth];
+  const n: P3 = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+  const len = Math.hypot(...n) * Math.hypot(...LIGHT);
+  return len ? Math.abs(n[0] * LIGHT[0] + n[1] * LIGHT[1] - n[2] * LIGHT[2]) / len : 0;
+}

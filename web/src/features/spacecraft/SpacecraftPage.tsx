@@ -1,11 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Icon } from '../../components/Icon.tsx';
-import { ANCHORS, view, WIRES, type Camera, type Part } from './model.ts';
+import { ANCHORS, FACES, shade, shift, view, WIRES, type Camera, type Part } from './model.ts';
 import { ScanDemo } from './ScanDemo.tsx';
 import '../../styles/pages.css';
 
 const HOME: Camera = { yaw: -0.6, pitch: 0.32, scale: 1 };
 const css = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name);
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// schematic materials: foil shields, enamel tube, gold detectors, slate bus, dark solar cells
+const MATERIAL: Record<Part, [number, number, number]> = {
+  shields: [233, 225, 208],
+  telescope: [130, 168, 171],
+  focal: [201, 144, 88],
+  bus: [70, 98, 124],
+  solar: [96, 128, 162],
+};
 
 const SPOTS: { part: Part; title: string; plain: string; depth: string }[] = [
   {
@@ -57,6 +67,23 @@ export function SpacecraftPage() {
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [active, setActive] = useState<Part>('focal');
   const [failed, setFailed] = useState(false);
+  const [explode, setExplode] = useState(0);
+  const exploded = explode > 0.5;
+
+  // ease the parts apart or back together; jumps under reduced motion
+  const toggleExplode = () => {
+    const from = explode;
+    const to = exploded ? 0 : 1;
+    if (reduced()) return setExplode(to);
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const k = Math.min(1, (now - t0) / 600);
+      setExplode(from + (to - from) * (1 - 2 ** (-10 * k)));
+      if (k < 1) requestAnimationFrame(step);
+      else setExplode(to);
+    };
+    requestAnimationFrame(step);
+  };
   const base = Math.min(size.w, size.h) * 0.24;
 
   useEffect(() => {
@@ -83,24 +110,49 @@ export function SpacecraftPage() {
     canvas.height = Math.round(size.h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, (size.w / 2) * dpr, (size.h / 2) * dpr);
     const c = { ...cam, scale: base * cam.scale };
-    const cyan = css('--cyan');
-    const signal = css('--signal');
+    const signal = css('--signal-hi');
     ctx.lineJoin = 'round';
+    // painter's algorithm: far faces first, each lit by one lamp from the upper left
+    const inner = active === 'telescope' || active === 'focal';
+    const faces = FACES.map((f) => {
+      const pts = f.pts.map((p) => shift(p, f.part, explode));
+      const s = pts.map((p) => view(p, c));
+      return {
+        part: f.part,
+        s,
+        depth: s.reduce((a, p) => a + p.depth, 0) / s.length,
+        lit: shade(pts, c),
+      };
+    }).sort((a, b) => b.depth - a.depth);
+    for (const f of faces) {
+      const k = 0.28 + 0.72 * f.lit;
+      const [r, g, b] = MATERIAL[f.part];
+      ctx.fillStyle = `rgb(${r * k},${g * k},${b * k})`;
+      ctx.strokeStyle = 'rgba(16,25,35,0.35)';
+      ctx.globalAlpha = f.part === 'shields' && inner && explode < 0.5 ? 0.22 : 1;
+      ctx.lineWidth = 0.6;
+      ctx.beginPath();
+      f.s.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+    // the chosen part keeps a fine amber outline on top so it reads through the shields
+    ctx.globalAlpha = 0.95;
+    ctx.strokeStyle = signal;
+    ctx.lineWidth = 1.4;
     for (const w of WIRES) {
-      const on = w.part === active;
-      ctx.strokeStyle = on ? signal : cyan;
-      ctx.globalAlpha = on ? 0.95 : 0.4;
-      ctx.lineWidth = on ? 1.6 : 1;
+      if (w.part !== active) continue;
       ctx.beginPath();
       w.pts.forEach((p, i) => {
-        const s = view(p, c);
+        const s = view(shift(p, w.part, explode), c);
         if (i) ctx.lineTo(s.x, s.y);
         else ctx.moveTo(s.x, s.y);
       });
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
-  }, [cam, size, base, active]);
+  }, [cam, size, base, active, explode]);
 
   const turn = useCallback(
     (dYaw: number, dPitch: number) =>
@@ -148,7 +200,7 @@ export function SpacecraftPage() {
             ref={canvasRef}
             tabIndex={0}
             role="img"
-            aria-label="Schematic SPHEREx spacecraft. Drag or use arrow keys to turn it, plus and minus to zoom, 0 to reset. The labelled parts are buttons."
+            aria-label="Schematic SPHEREx spacecraft, not an engineering model. Drag or use arrow keys to turn it, plus and minus to zoom, 0 to reset, E to pull the parts apart. The numbered parts are buttons."
             onPointerDown={(e) => {
               e.currentTarget.setPointerCapture(e.pointerId);
               drag.current = { x: e.clientX, y: e.clientY };
@@ -171,6 +223,7 @@ export function SpacecraftPage() {
                 '=': () => zoom(1.2),
                 '-': () => zoom(1 / 1.2),
                 '0': () => setCam(HOME),
+                e: toggleExplode,
               };
               const fn = keys[e.key];
               if (!fn) return;
@@ -181,7 +234,7 @@ export function SpacecraftPage() {
           {!failed &&
             size.w > 0 &&
             SPOTS.map((s, i) => {
-              const p = view(ANCHORS[s.part], c);
+              const p = view(shift(ANCHORS[s.part], s.part, explode), c);
               return (
                 <button
                   key={s.part}
@@ -204,6 +257,9 @@ export function SpacecraftPage() {
             </button>
             <button type="button" onClick={() => zoom(0.8)} aria-label="Zoom out">
               −
+            </button>
+            <button type="button" aria-pressed={exploded} onClick={toggleExplode}>
+              {exploded ? 'Assemble' : 'Exploded view'}
             </button>
             <button type="button" onClick={() => setCam(HOME)}>
               <Icon name="reset" /> Reset view

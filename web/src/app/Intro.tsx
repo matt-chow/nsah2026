@@ -55,7 +55,7 @@ function Starfield({ still }: { still: boolean }) {
         const y = s.y * h;
         const r = 0.4 + s.depth * 1.5;
         ctx.globalAlpha = 0.25 + s.depth * 0.75;
-        ctx.fillStyle = s.warm ? '#f2c38a' : '#e9e4d8';
+        ctx.fillStyle = s.warm ? '#f2c38a' : '#e9e1d0';
         ctx.fillRect(x, y, r, r);
       }
       if (!reduce) raf = requestAnimationFrame(draw);

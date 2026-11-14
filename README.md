@@ -22,7 +22,8 @@ is an unconfirmed lead that needs an independent detection.
     what changed → weigh the evidence. Every sentence is filled from the manifest, so nothing
     about the sky is pre-written.
   - **Explore**: pick dates A and B and compare them by **Switch dates** (blink), **Fade**
-    (opacity), **Split** (draggable divider) or **Highlight changes** (difference). The canvas
+    (opacity), **Split** (draggable divider) or **Highlight changes** (difference). **Play all dates** (P) steps through every date in order as a time-lapse,
+    skipping any date the pipeline judged not comparable with the rest. The canvas
     pans and zooms, with an angular scale bar, an optional loupe, a display stretch
     (visualization only) and a live sky-coordinate readout.
   - **Analyze**: the pipeline's compatibility verdict for the A/B pair, a per-date calibration
@@ -54,18 +55,19 @@ is an unconfirmed lead that needs an independent detection.
   navigation. None of them adds data or changes a measurement.
   - **Sky globe** (`#/sky`): a draggable, zoomable celestial sphere (canvas, inertia, keyboard)
     with an RA/Dec grid, the ecliptic and galactic plane, a few bright stars for orientation and
-    every prepared field. Pick a field to see its release, wavelength, dates and change count,
-    then open it in the observatory. Constellation figures are left out.
-  - **Spacecraft** (`#/spacecraft`): a rotatable wireframe schematic of SPHEREx with hotspots
+    every prepared field, lit like an instrument with a calibrated N/E/S/W bezel. Pick a field to
+    see its release, wavelength, dates and change count, then open it: the globe flies in and
+    hands over to the observatory. Constellation figures are left out.
+  - **Spacecraft** (`#/spacecraft`): a rotatable, solid-shaded schematic of SPHEREx with an exploded view (E) with hotspots
     for the shields, telescope, detectors and filters, bus and solar panel, each with a plain
     explanation and optional detail. A step-through scan demo shows how 51 pointings sample all
     102 channels. Both are labelled as illustrations.
   - **Spectrum** (`#/spectrum`): visible light against SPHEREx's six bands and 102 channels.
-    Pick a channel to see its range, the spectral features in that band and the real fields
-    observed there, with links into the observatory.
+    Pick a channel, or sweep all 102, to see its range, the spectral features in that band and
+    the real fields observed there; the field markers on the scale open them in the observatory.
   - **Journal** (`#/journal`): bookmark observations and changes from the observatory or the
     Arcade. Each entry keeps the pipeline record (position, wavelength, dates, release, archive
-    links, triage) apart from your own hypothesis and notes. Stored in this browser only; export
+    links, triage) and a thumbnail of the image apart from your own hypothesis and notes. Stored in this browser only; export
     as Markdown or JSON.
   - **Discovery Arcade** (`#/arcade`, optional): three replayable investigations. *The one that
     appeared* walks Observe → Compare → Identify → Evaluate → Conclude on a real change the

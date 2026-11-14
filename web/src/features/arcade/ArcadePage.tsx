@@ -61,6 +61,43 @@ const MISSIONS: { id: MissionId; title: string; text: string; data: 'real' | 'si
   },
 ];
 
+// small line drawings for the mission cards: illustration only, nothing here is data
+const MISSION_ART: Record<MissionId, React.ReactNode> = {
+  appeared: (
+    <>
+      <rect x="8" y="8" width="44" height="44" className="a-frame dim" />
+      <circle cx="22" cy="22" r="1.4" className="a-star" />
+      <circle cx="38" cy="40" r="1.4" className="a-star" />
+      <rect x="68" y="8" width="44" height="44" className="a-frame" />
+      <circle cx="82" cy="22" r="1.4" className="a-star" />
+      <circle cx="98" cy="40" r="1.4" className="a-star" />
+      <circle cx="96" cy="20" r="2.6" className="a-gold" />
+      <circle cx="96" cy="20" r="7" className="a-ring" />
+      <path d="M54 30h12M62 27l4 3-4 3" className="a-line" />
+    </>
+  ),
+  glitch: (
+    <>
+      <rect x="8" y="8" width="44" height="44" className="a-frame" />
+      <path d="M30 21a9 9 0 0 1 0 18" className="a-arc gold" />
+      <path d="M30 39a9 9 0 0 1 0-18" className="a-arc blue" />
+      <circle cx="30" cy="30" r="2.4" className="a-star" />
+      <rect x="68" y="8" width="44" height="44" className="a-frame" />
+      <rect x="88" y="28" width="4" height="4" className="a-gold" />
+      <path d="M76 46h28" className="a-tick" />
+    </>
+  ),
+  fair: (
+    <>
+      <rect x="10" y="12" width="36" height="36" className="a-frame" />
+      <rect x="70" y="6" width="44" height="44" className="a-frame dim" />
+      <path d="M10 54h36M10 51v6M46 51v6M70 56h44M70 53v6M114 53v6" className="a-tick" />
+      <path d="M52 26h12M52 32h12" className="a-line" />
+      <path d="M55 36l6-14" className="a-line gold" />
+    </>
+  ),
+};
+
 const STEPS = ['Observe', 'Compare', 'Identify', 'Evaluate', 'Conclude'] as const;
 
 export function ArcadePage({ fields }: PageProps) {
@@ -123,11 +160,11 @@ export function ArcadePage({ fields }: PageProps) {
         </p>
       )}
       <ul className="mission-grid">
-        {MISSIONS.map((m, i) => (
-          <li key={m.id} className="mission panel">
-            <span className="mission-num mono" aria-hidden="true">
-              0{i + 1}
-            </span>
+        {MISSIONS.map((m) => (
+          <li key={m.id} className="mission panel" data-finished={!!progress.finished[m.id]}>
+            <svg className="mission-art" viewBox="0 0 120 60" aria-hidden="true">
+              {MISSION_ART[m.id]}
+            </svg>
             <h2>{m.title}</h2>
             <p className="dim">{m.text}</p>
             <p className="mission-meta small">

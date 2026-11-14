@@ -12,6 +12,7 @@ import {
   type Vec3,
   type View,
 } from '../../lib/sphere.ts';
+import { displayTitle } from '../../lib/manifest.ts';
 import type { FieldSummary } from '../../types/manifest.ts';
 import '../../styles/pages.css';
 
@@ -92,6 +93,8 @@ export function GlobePage({ fields }: PageProps) {
     const dpr = Math.min(2, devicePixelRatio || 1);
     const ink = {
       rail: css('--rail'),
+      ink: css('--ink'),
+      lit: css('--hair'),
       hair: css('--hair-2'),
       cyan: css('--cyan'),
       paper: css('--paper'),
@@ -109,11 +112,22 @@ export function GlobePage({ fields }: PageProps) {
       return { sx: cx + x * f.r, sy: cy - y * f.r, z };
     };
 
-    // the sphere, seen from inside
+    // the sphere, seen from inside, lit from the upper left like a brass-and-enamel instrument
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, f.r, 0, Math.PI * 2);
-    ctx.fillStyle = ink.rail;
+    const light = ctx.createRadialGradient(
+      cx - f.r * 0.38,
+      cy - f.r * 0.42,
+      f.r * 0.04,
+      cx,
+      cy,
+      f.r,
+    );
+    light.addColorStop(0, ink.lit);
+    light.addColorStop(0.65, ink.rail);
+    light.addColorStop(1, ink.ink);
+    ctx.fillStyle = light;
     ctx.fill();
     ctx.clip();
 
@@ -153,6 +167,22 @@ export function GlobePage({ fields }: PageProps) {
     );
     ctx.setLineDash([]);
     ctx.globalAlpha = 1;
+
+    // name each reference line where it faces the viewer most directly
+    ctx.font = ink.mono;
+    ctx.fillStyle = ink.cyan;
+    ctx.textAlign = 'center';
+    for (const [name, fn] of [
+      ['ecliptic', ecliptic],
+      ['Milky Way plane', galactic],
+    ] as const) {
+      let best = { sx: 0, sy: 0, z: 0.35 };
+      for (let l = 0; l < 360; l += 10) {
+        const p = at(fn(l));
+        if (p.z > best.z) best = p;
+      }
+      if (best.z > 0.35) ctx.fillText(name, best.sx + 34, best.sy - 7);
+    }
 
     // grid labels: hours along the equator, degrees along the central meridian
     ctx.font = ink.mono;
@@ -207,12 +237,36 @@ export function GlobePage({ fields }: PageProps) {
     }
     ctx.restore();
 
-    // horizon
+    // horizon and a calibrated bezel: position angle every 5°, N up and E left (seen from inside)
     ctx.strokeStyle = ink.hair;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.arc(cx, cy, f.r, 0, Math.PI * 2);
     ctx.stroke();
+    const R = f.r + 8;
+    if (R < Math.hypot(f.w, f.h) / 2) {
+      ctx.beginPath();
+      for (let a = 0; a < 360; a += 5) {
+        const t = (a * Math.PI) / 180;
+        const len = a % 90 === 0 ? 10 : a % 30 === 0 ? 7 : 3;
+        ctx.moveTo(cx - Math.sin(t) * R, cy - Math.cos(t) * R);
+        ctx.lineTo(cx - Math.sin(t) * (R + len), cy - Math.cos(t) * (R + len));
+      }
+      ctx.stroke();
+      ctx.fillStyle = ink.dim;
+      ctx.font = ink.mono;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (const [label, a] of [
+        ['N', 0],
+        ['E', 90],
+        ['S', 180],
+        ['W', 270],
+      ] as const) {
+        const t = (a * Math.PI) / 180;
+        ctx.fillText(label, cx - Math.sin(t) * (R + 20), cy - Math.cos(t) * (R + 20));
+      }
+    }
   }, []);
 
   const schedule = useCallback(() => {
@@ -405,6 +459,14 @@ export function GlobePage({ fields }: PageProps) {
     return () => c.removeEventListener('wheel', onWheel);
   }, [setZoom]);
 
+  // the globe dives into the field, then hands over to the observatory
+  const open = (e: React.MouseEvent, f: FieldSummary) => {
+    if (reduced()) return;
+    e.preventDefault();
+    flyTo({ ra: f.ra_deg, dec: f.dec_deg }, ZOOM_MAX);
+    setTimeout(() => (location.hash = f.manifest_id), 950);
+  };
+
   const go = (f: FieldSummary) => {
     setSelected(f);
     flyTo({ ra: f.ra_deg, dec: f.dec_deg }, 40);
@@ -443,7 +505,7 @@ export function GlobePage({ fields }: PageProps) {
           />
           {hover && hover.manifest_id !== selected?.manifest_id && (
             <p className="globe-tip">
-              {hover.title}
+              {displayTitle(hover.title)}
               <span className="dim"> · click to select</span>
             </p>
           )}
@@ -479,7 +541,7 @@ export function GlobePage({ fields }: PageProps) {
                   data-kind={f.data_kind}
                   onClick={() => go(f)}
                 >
-                  <strong>{f.title}</strong>
+                  <strong>{displayTitle(f.title)}</strong>
                   <span className="mono small dim">
                     RA {f.ra_deg.toFixed(3)}° · Dec {f.dec_deg.toFixed(3)}°
                   </span>
@@ -493,7 +555,7 @@ export function GlobePage({ fields }: PageProps) {
 
           {selected && (
             <section className="field-detail" aria-live="polite">
-              <h3>{selected.title}</h3>
+              <h3>{displayTitle(selected.title)}</h3>
               <dl className="facts">
                 <dt>Data</dt>
                 <dd>
@@ -512,7 +574,11 @@ export function GlobePage({ fields }: PageProps) {
                 <dt>Marked changes</dt>
                 <dd className="mono">{selected.candidates}</dd>
               </dl>
-              <a className="button-link" href={`#${selected.manifest_id}`}>
+              <a
+                className="button-link"
+                href={`#${selected.manifest_id}`}
+                onClick={(e) => open(e, selected)}
+              >
                 Open in the observatory <Icon name="arrow" />
               </a>
             </section>
@@ -529,7 +595,12 @@ export function GlobePage({ fields }: PageProps) {
 
           <ul className="globe-legend small">
             <li>
-              <span className="key key-field" aria-hidden="true" /> SPHEREx field (real data)
+              <span className="key key-field" aria-hidden="true" /> SPHEREx field (real data). The
+              ring is enlarged so it can be found; the small square is the true footprint.
+            </li>
+            <li>
+              <span className="key key-star" aria-hidden="true" /> Bright star, for orientation only
+              (not SPHEREx data)
             </li>
             <li>
               <span className="key key-sim" aria-hidden="true" /> Simulated test field
@@ -543,10 +614,10 @@ export function GlobePage({ fields }: PageProps) {
             </li>
           </ul>
           <p className="small dim">
-            Grid every 30° (2 h of right ascension). Star positions are J2000 and shown only for
-            orientation; they are not SPHEREx data. Field rings are enlarged so they can be found;
-            zoom in to see the true square footprint. Constellation figures are left out because
-            they are not part of the data.
+            Grid every 30° (2 h of right ascension), ICRS. The outer bezel marks direction on the
+            sky: north up, east left, because we look at the sky from inside the sphere. Star
+            positions are J2000. Constellation figures are left out because they are not part of the
+            data.
           </p>
         </aside>
       </div>

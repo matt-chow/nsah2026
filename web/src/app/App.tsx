@@ -5,6 +5,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
   type ComponentType,
   type LazyExoticComponent,
 } from 'react';
@@ -21,8 +22,9 @@ import { BookmarkButton } from '../features/journal/BookmarkButton.tsx';
 import { CoordinateSearch } from '../features/sky-explorer/CoordinateSearch.tsx';
 import { Timeline } from '../features/timeline/Timeline.tsx';
 import { checkPair, type PairCheck } from '../lib/compare.ts';
+import { loadImage } from '../lib/imageCache.ts';
 import { changeEntry, observationEntry } from '../lib/journal.ts';
-import { loadIndex, loadManifest } from '../lib/manifest.ts';
+import { displayTitle, loadIndex, loadManifest } from '../lib/manifest.ts';
 import { skyToPixel, tanWcs } from '../lib/sky.ts';
 import { isoDate, longDate } from '../lib/time.ts';
 import type { FieldSummary, Manifest, Observation } from '../types/manifest.ts';
@@ -61,6 +63,11 @@ type Load<T> =
   { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; value: T };
 const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const NARROW = matchMedia('(max-width: 900px)');
+const onNarrow = (f: () => void) => {
+  NARROW.addEventListener('change', f);
+  return () => NARROW.removeEventListener('change', f);
+};
 
 /** `#/sky` names a page; `#nep-d2/c012` opens a field (and change) in the observatory. */
 function readHash() {
@@ -254,6 +261,15 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
   const initialCand = readHash().cand;
   const initial = manifest.candidates.find((c) => c.candidate_id.endsWith(initialCand ?? '\0'));
   const [candId, setCandId] = useState<string | null>(initial?.candidate_id ?? null);
+  // phones: the rail becomes a bottom sheet over the image, collapsed so the image comes
+  // first; collapsed content is inert
+  const narrow = useSyncExternalStore(onNarrow, () => NARROW.matches);
+  const [sheet, setSheet] = useState(false);
+  const [sheetTab, setSheetTab] = useState(tab);
+  if (sheetTab !== tab) {
+    setSheetTab(tab);
+    setSheet(false);
+  }
   const [epochId, setEpochId] = useState(initial?.observation_ids[0] ?? first.observation_id);
   const [refId, setRefId] = useState<string>(
     manifest.template ? 'template' : (observations[1] ?? first).observation_id,
@@ -262,6 +278,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
   const [chapter, setChapter] = useState(0);
   const [showRef, setShowRef] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [lapse, setLapse] = useState<string[] | null>(null); // time-lapse frame ids
   const [opacity, setOpacity] = useState(0.5);
   const [splitAt, setSplitAt] = useState(0.5);
   const [stretch, setStretch] = useState<Stretch>('archive');
@@ -302,9 +319,47 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
     return () => window.clearInterval(id);
   }, [playing, mode, comparable]);
 
+  // Time-lapse plays only dates the pipeline judged comparable with the current one, in date order.
+  const lapseFrames = useMemo(
+    () =>
+      observations
+        .filter((o) => {
+          const s = checkPair(manifest, o.observation_id, epochId).status;
+          return s === 'same' || s === 'compatible';
+        })
+        .map((o) => o.observation_id),
+    [observations, manifest, epochId],
+  );
+  const skipped = observations.length - (lapse ?? lapseFrames).length;
+
+  useEffect(() => {
+    if (!lapse) return;
+    const id = window.setInterval(
+      () => setEpochId((e) => lapse[(lapse.indexOf(e) + 1) % lapse.length] ?? e),
+      800,
+    );
+    return () => window.clearInterval(id);
+  }, [lapse]);
+
+  const toggleLapse = useCallback(() => {
+    if (lapse) return setLapse(null);
+    setPlaying(false);
+    setShowRef(false);
+    // decode every frame up front so playback never waits on the network
+    for (const id of lapseFrames) {
+      const png =
+        mode === 'difference'
+          ? differences.get(id)?.display_png
+          : observations.find((o) => o.observation_id === id)?.assets.display_png;
+      if (png) loadImage(`${BASE}${png}`).catch(() => {});
+    }
+    setLapse(lapseFrames);
+  }, [lapse, lapseFrames, mode, differences, observations]);
+
   const selectCandidate = useCallback(
     (id: string | null) => {
       setCandId(id);
+      if (id) setSheet(true);
       const c = manifest.candidates.find((x) => x.candidate_id === id);
       if (!c) return;
       setEpochId((e) => (c.observation_ids.includes(e) ? e : (c.observation_ids[0] ?? e)));
@@ -364,8 +419,10 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
         l: () => setLoupe((x) => !x),
         ' ': () => {
           if (mode !== 'blink') setMode('blink');
+          setLapse(null);
           setPlaying((p) => !p);
         },
+        p: toggleLapse,
         r: () => mode === 'blink' && setShowRef((s) => !s),
         j: () => pickAt(ci + 1),
         k: () => pickAt(ci - 1),
@@ -379,7 +436,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [inert, manifest, candId, step, hasDiff, mode, selectCandidate]);
+  }, [inert, manifest, candId, step, hasDiff, mode, selectCandidate, toggleLapse]);
 
   const aSrc = `${BASE}${epoch.assets.display_png}`;
   const bSrc = `${BASE}${ref.src}`;
@@ -442,7 +499,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             {fields.map((f) => (
               <option key={f.manifest_id} value={f.manifest_id}>
                 {f.data_kind === 'simulated' ? 'SIMULATED · ' : ''}
-                {f.title}
+                {displayTitle(f.title)}
               </option>
             ))}
           </select>
@@ -469,6 +526,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             ['← →', 'previous / next date'],
             ['B F S D', 'switch, fade, split, highlight changes'],
             ['Space', 'start or stop switching'],
+            ['P', 'play all dates as a time-lapse'],
             ['R', 'flip to date B once'],
             ['L', 'pixel loupe on / off'],
             ['J K', 'next / previous change'],
@@ -493,6 +551,12 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
 
       <main className="stage" data-tab={tab}>
         <section className="viewer" aria-label="Sky viewer">
+          <h1 className="field-title">
+            {displayTitle(manifest.title)}
+            <span className="field-sub">
+              {observations.length} dates · {manifest.dataset.data_release ?? 'simulated data'}
+            </span>
+          </h1>
           <div className="viewer-bar">
             <div className="segmented" role="group" aria-label="View" data-tour="modes">
               {MODES.map((m) => {
@@ -518,7 +582,14 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             </div>
             {mode === 'blink' && comparable && (
               <>
-                <button type="button" onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLapse(null);
+                    setPlaying((p) => !p);
+                  }}
+                  aria-pressed={playing}
+                >
                   {playing ? 'Stop' : 'Play'}
                 </button>
                 <button type="button" onClick={() => setShowRef((s) => !s)} disabled={playing}>
@@ -526,6 +597,20 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 </button>
               </>
             )}
+            <button
+              type="button"
+              aria-pressed={lapse != null}
+              aria-keyshortcuts="P"
+              onClick={toggleLapse}
+              disabled={!lapse && lapseFrames.length < 2}
+              title={
+                lapseFrames.length < 2
+                  ? 'No other date can be compared fairly with this one'
+                  : `Step through ${lapseFrames.length} dates in order (P)${skipped ? `; ${skipped} left out as not comparable` : ''}`
+              }
+            >
+              {lapse ? 'Stop time-lapse' : 'Play all dates'}
+            </button>
             {mode === 'overlay' && comparable && (
               <label className="slider">
                 <span>B</span>
@@ -642,7 +727,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
 
           <div className="viewer-caption">
             <div className="caption-row">
-              <p className="showing" aria-live="polite">
+              <p className="showing" aria-live={lapse || playing ? 'off' : 'polite'}>
                 <span
                   className={`frame-tag ${mode === 'blink' && showRef && comparable ? 'ref' : ''}`}
                 >
@@ -683,6 +768,15 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 label={`the ${longDate(epoch.epoch.mjd_mid)} observation`}
               />
             </div>
+            {lapse && (
+              <p className="small dim">
+                Time-lapse: {lapse.length} dates in order, {lapse.indexOf(epoch.observation_id) + 1}{' '}
+                of {lapse.length}
+                {skipped
+                  ? `. ${skipped} date${skipped > 1 ? 's' : ''} left out: not comparable with these.`
+                  : '.'}
+              </p>
+            )}
             {comparing && !comparable && 'reasons' in pair && (
               <p className="warn" role="alert">
                 These two dates cannot be compared fairly: {pair.reasons.join('; ')}. Showing date A
@@ -741,98 +835,119 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             selectedId={epoch.observation_id}
             onSelect={setEpochId}
             highlight={new Set(cand?.observation_ids ?? [])}
+            quiet={lapse != null || playing}
           />
         </section>
 
-        <aside className="rail" aria-label={TABS.find((t) => t.id === tab)?.hint}>
-          {tab === 'discover' ? (
-            <DiscoverPanel
-              chapters={chapters}
-              index={chapter}
-              onIndex={goChapter}
-              onExplore={() => onTab('explore')}
-              onAnalyze={() => onTab('analyze')}
-              hasCandidate={storyCand != null}
-            />
-          ) : (
-            <>
-              <CandidateList
-                manifest={manifest}
-                selectedId={candId}
-                onSelect={selectCandidate}
-                plain={plain}
+        <aside
+          className="rail"
+          data-open={sheet || undefined}
+          aria-label={TABS.find((t) => t.id === tab)?.hint}
+        >
+          <button
+            type="button"
+            className="sheet-handle"
+            aria-expanded={sheet}
+            onClick={() => setSheet((s) => !s)}
+          >
+            <span className="sheet-grip" aria-hidden="true" />
+            {tab === 'discover'
+              ? `Guided story · ${chapter + 1} of ${chapters.length}`
+              : cand
+                ? 'The selected change'
+                : `${manifest.candidates.length} marked changes`}
+            <span className="dim">{sheet ? 'Hide' : 'Show'}</span>
+          </button>
+          <div className="rail-body" inert={narrow && !sheet}>
+            {tab === 'discover' ? (
+              <DiscoverPanel
+                chapters={chapters}
+                index={chapter}
+                onIndex={goChapter}
+                onExplore={() => onTab('explore')}
+                onAnalyze={() => onTab('analyze')}
+                hasCandidate={storyCand != null}
               />
-              {cand && (
-                <div className="rail-actions">
-                  <BookmarkButton
-                    id={`cand:${cand.candidate_id}`}
-                    make={() => changeEntry(manifest, cand)}
-                    label="this change"
-                  />
-                  <a className="button-link" href="#/journal">
-                    Open journal
-                  </a>
-                </div>
-              )}
-              {cand ? (
-                plain ? (
-                  <ChangeSummary
-                    candidate={cand}
-                    manifest={manifest}
-                    activeEpochId={epoch.observation_id}
-                    onSelectEpoch={setEpochId}
-                    onAnalyze={() => onTab('analyze')}
-                  />
-                ) : (
-                  <EvidenceReport
-                    candidate={cand}
-                    manifest={manifest}
-                    activeEpochId={epoch.observation_id}
-                    onSelectEpoch={setEpochId}
-                  />
-                )
-              ) : (
-                manifest.candidates.length > 0 && (
-                  <p className="empty">
-                    Pick a change from the list, or click a marker on the image, to see what is
-                    known about it.
-                  </p>
-                )
-              )}
-              {tab === 'analyze' && (
-                <AnalyzePanel
+            ) : (
+              <>
+                <CandidateList
                   manifest={manifest}
-                  observations={observations}
-                  differences={differences}
-                  epoch={epoch}
-                  refName={
-                    refId === 'template'
-                      ? 'median of all dates'
-                      : isoDate((refObs ?? first).epoch.mjd_mid)
-                  }
-                  pair={comparing ? pair : { status: 'compatible' }}
-                  onSelectEpoch={setEpochId}
+                  selectedId={candId}
+                  onSelect={selectCandidate}
+                  plain={plain}
                 />
-              )}
-            </>
-          )}
-          {tab !== 'analyze' && (
-            <ViewGuide
-              mode={mode}
-              comparable={comparable}
-              simulated={manifest.data_kind === 'simulated'}
-              pixelScale={first.image.pixel_scale_arcsec}
-              dates={observations.length}
-              markers={manifest.candidates.length > 0}
-            />
-          )}
-          <footer className="credits small dim">
-            <p>{manifest.dataset.citation}</p>
-            <p>{manifest.dataset.acknowledgement}</p>
-            <p>
-              A NASA Space Apps Challenge 2026 project. Not affiliated with or endorsed by NASA.
-            </p>
-          </footer>
+                {cand && (
+                  <div className="rail-actions">
+                    <BookmarkButton
+                      id={`cand:${cand.candidate_id}`}
+                      make={() => changeEntry(manifest, cand)}
+                      label="this change"
+                    />
+                    <a className="button-link" href="#/journal">
+                      Open journal
+                    </a>
+                  </div>
+                )}
+                {cand ? (
+                  plain ? (
+                    <ChangeSummary
+                      candidate={cand}
+                      manifest={manifest}
+                      activeEpochId={epoch.observation_id}
+                      onSelectEpoch={setEpochId}
+                      onAnalyze={() => onTab('analyze')}
+                    />
+                  ) : (
+                    <EvidenceReport
+                      candidate={cand}
+                      manifest={manifest}
+                      activeEpochId={epoch.observation_id}
+                      onSelectEpoch={setEpochId}
+                    />
+                  )
+                ) : (
+                  manifest.candidates.length > 0 && (
+                    <p className="empty">
+                      Pick a change from the list, or click a marker on the image, to see what is
+                      known about it.
+                    </p>
+                  )
+                )}
+                {tab === 'analyze' && (
+                  <AnalyzePanel
+                    manifest={manifest}
+                    observations={observations}
+                    differences={differences}
+                    epoch={epoch}
+                    refName={
+                      refId === 'template'
+                        ? 'median of all dates'
+                        : isoDate((refObs ?? first).epoch.mjd_mid)
+                    }
+                    pair={comparing ? pair : { status: 'compatible' }}
+                    onSelectEpoch={setEpochId}
+                  />
+                )}
+              </>
+            )}
+            {tab !== 'analyze' && (
+              <ViewGuide
+                mode={mode}
+                comparable={comparable}
+                simulated={manifest.data_kind === 'simulated'}
+                pixelScale={first.image.pixel_scale_arcsec}
+                dates={observations.length}
+                markers={manifest.candidates.length > 0}
+              />
+            )}
+            <footer className="credits small dim">
+              <p>{manifest.dataset.citation}</p>
+              <p>{manifest.dataset.acknowledgement}</p>
+              <p>
+                A NASA Space Apps Challenge 2026 project. Not affiliated with or endorsed by NASA.
+              </p>
+            </footer>
+          </div>
         </aside>
       </main>
     </div>
