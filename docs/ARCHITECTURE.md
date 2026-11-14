@@ -38,17 +38,17 @@ results; it never decides scientific compatibility.
 | Field build | `field.py`, `align.py`, `difference.py` | epoch selection, resampling to one grid, template differencing, triage | claim identifications |
 | CLI | `cli.py` | `validate`, `schema`, `make-fixture`, `build-field`, `index` | |
 | Web shell | `web/src/app/` | load manifest, layout, state | compute science |
-| Features | `web/src/features/{sky-explorer,timeline,candidates}` | search, epoch axis, residual list + evidence report + light curve | import each other's internals |
-| Shared UI | `web/src/components/` | `SkyCanvas` (pan/zoom, blink/overlay/difference, markers), `ObservationDetails` | |
+| Features | `web/src/features/{sky-explorer,timeline,candidates,discover,analysis}` | search, date axis, "What changed?" list + summary + evidence report + light curve, the Discover story (built from the manifest), Analyze checks + calibration table | import each other's internals |
+| Shared UI | `web/src/components/` | `SkyCanvas` (pan/zoom, blink/overlay/split/difference, stretch, loupe, scale bar, markers), `Term` (glossary popovers via native `popover`), `ObservationDetails` | |
 | Live lookup | `api/sia.mjs` | optional Vercel function: exposure counts from IRSA SIA2 | proxy images, keep state |
-| Web libs | `web/src/lib/` | manifest/index parsing, TAN pixel↔sky for display, σ decoding, image cache | |
+| Web libs | `web/src/lib/` | `checkPair` (reads the pipeline verdict for an A/B pair; never recomputes it), readable dates, manifest/index parsing, TAN pixel↔sky for display, σ decoding, image cache | |
 
 Python modules are flat files rather than subpackages; split a module only when it outgrows one
 file.
 
 ## Key dependencies
 
-Runtime web: `react`, `react-dom`; `@fontsource/schibsted-grotesk` and `@fontsource/ibm-plex-mono`
+Runtime web: `react`, `react-dom`; `@fontsource/schibsted-grotesk`, `@fontsource/ibm-plex-mono` and `@fontsource/instrument-serif` (display serif for story headings)
 (self-hosted typefaces, CSS and woff2 only, no runtime JS). Science: `numpy`, `astropy`, `pydantic`,
 `scipy` (`ndimage` labelling and bilinear resampling, which would otherwise be hand-written).
 IRSA access uses stdlib `urllib` instead of `pyvo` (two bounded GET requests).

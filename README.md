@@ -16,11 +16,24 @@ is an unconfirmed lead that needs an independent detection.
   wavelength (±0.25%) on the same detector:
   - North Ecliptic Pole, 1.445 µm, detector 2
   - South Ecliptic Pole, 2.559 µm, detector 4
-- **Workspace.** The canvas pans and zooms, with a live RA/Dec readout. **Blink**, **Overlay**
-  (opacity slider) and **Difference** modes compare against the median sky or any epoch. A true
-  time-axis timeline marks the epochs where the selected residual was detected. Keyboard
-  controls are listed under *Keys*.
-- **Residuals and evidence.** Residuals are triaged by heuristic into variable-like,
+- **Three modes, one shared state.**
+  - **Discover** (the default): a five-step guided investigation of the real North Ecliptic Pole
+    field: a patch of sky → the same sky on different dates → switch between dates → highlight
+    what changed → weigh the evidence. Every sentence is filled from the manifest, so nothing
+    about the sky is pre-written.
+  - **Explore**: pick dates A and B and compare them by **Switch dates** (blink), **Fade**
+    (opacity), **Split** (draggable divider) or **Highlight changes** (difference). The canvas
+    pans and zooms, with an angular scale bar, an optional loupe, a display stretch
+    (visualization only) and a live sky-coordinate readout.
+  - **Analyze**: the pipeline's compatibility verdict for the A/B pair, a per-date calibration
+    table, the full evidence report and metadata/provenance.
+- **Plain language first.** Readable dates ("14 Jun 2025") with intervals; MJD, wavelength and
+  calibration numbers stay in Analyze. Dotted terms (infrared, SPHEREx, pixel, subtraction,
+  uncertainty, calibration, noise, detection confidence) open short definitions.
+- **Comparison gate.** Pairs the pipeline marked incompatible are refused on screen with its
+  reasons (try the simulated field, dates 1 and 3). A true time-axis timeline marks the dates
+  where the selected change was detected. Keyboard controls are listed under *Keys*.
+- **What changed, and the evidence.** Residuals are triaged by heuristic into variable-like,
   new-source-like, dipole-like and artifact-like. Each opens an evidence report containing:
   - position, band and detection dates
   - a light curve with ±1σ error bars
@@ -34,7 +47,7 @@ is an unconfirmed lead that needs an independent detection.
 - **Search.** Enter an RA/Dec. If a prepared field covers it, PARALLAX pins it. Otherwise, on
   Vercel, a serverless lookup (`api/sia.mjs`) asks IRSA how many SPHEREx exposures exist there,
   then gives the exact pipeline command that would build that field.
-- **Guided tour** (six steps). The app also covers reduced motion, offline, loading, error and
+- **States.** The app also covers reduced motion, offline, loading, error and
   empty states, and widths down to 360 px.
 
 ## Quick start (Windows PowerShell)

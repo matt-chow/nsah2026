@@ -1,23 +1,36 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ObservationDetails } from '../components/ObservationDetails.tsx';
-import { SkyCanvas, type Layer } from '../components/SkyCanvas.tsx';
-import { CandidateList, EvidenceReport } from '../features/candidates/CandidatesPanel.tsx';
+import { SkyCanvas, STRETCH, type Layer, type Stretch } from '../components/SkyCanvas.tsx';
+import { Term } from '../components/Term.tsx';
+import { AnalyzePanel } from '../features/analysis/AnalyzePanel.tsx';
+import {
+  CandidateList,
+  ChangeSummary,
+  EvidenceReport,
+} from '../features/candidates/CandidatesPanel.tsx';
+import { buildStory, DiscoverPanel, storyCandidate } from '../features/discover/DiscoverPanel.tsx';
 import { CoordinateSearch } from '../features/sky-explorer/CoordinateSearch.tsx';
 import { Timeline } from '../features/timeline/Timeline.tsx';
+import { checkPair, type PairCheck } from '../lib/compare.ts';
 import { loadIndex, loadManifest } from '../lib/manifest.ts';
 import { skyToPixel, tanWcs } from '../lib/sky.ts';
-import { isoDate } from '../lib/time.ts';
+import { isoDate, longDate } from '../lib/time.ts';
 import type { FieldSummary, Manifest, Observation } from '../types/manifest.ts';
 import { Intro } from './Intro.tsx';
-import { Tour, type TourStep } from './Tour.tsx';
 
 const BASE = import.meta.env.BASE_URL;
 const DEMO_FIELD = 'nep-d2';
-const DEMO_CANDIDATE = 'nep-d2-c012';
+
+export type Tab = 'discover' | 'explore' | 'analyze';
+const TABS: { id: Tab; label: string; hint: string }[] = [
+  { id: 'discover', label: 'Discover', hint: 'A guided investigation in five steps' },
+  { id: 'explore', label: 'Explore', hint: 'Compare any two dates yourself' },
+  { id: 'analyze', label: 'Analyze', hint: 'Measurements, calibration and provenance' },
+];
 
 type Load<T> =
   { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; value: T };
 const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
+const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function readHash() {
   const [field, cand] = decodeURIComponent(location.hash.slice(1)).split('/');
@@ -39,7 +52,7 @@ export function App() {
   const [intro, setIntro] = useState<'shown' | 'leaving' | 'gone'>(() =>
     seenIntro() || readHash().field ? 'gone' : 'shown',
   );
-  const [tour, setTour] = useState(false);
+  const [tab, setTab] = useState<Tab>(() => (readHash().cand ? 'explore' : 'discover'));
   const [online, setOnline] = useState(() => navigator.onLine);
   const [retry, setRetry] = useState(0);
 
@@ -80,17 +93,15 @@ export function App() {
     };
   }, []);
 
-  const enter = (withTour: boolean) => {
+  const enter = (to: Tab) => {
     try {
       sessionStorage.setItem('parallax.intro', '1');
     } catch {
       /* private mode: the intro simply shows again next visit */
     }
-    if (withTour) {
-      setFieldId(DEMO_FIELD);
-      setTour(true);
-    }
-    const instant = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTab(to);
+    if (to === 'discover') setFieldId(DEMO_FIELD);
+    const instant = reducedMotion();
     setIntro(instant ? 'gone' : 'leaving');
     if (!instant) window.setTimeout(() => setIntro('gone'), 900);
   };
@@ -131,31 +142,37 @@ export function App() {
           manifest={manifest.value}
           fields={index.value}
           onField={setFieldId}
-          tour={tour}
-          onTour={setTour}
+          tab={tab}
+          onTab={setTab}
           inert={intro !== 'gone'}
         />
       ) : (
         <div className="state" role="status">
-          <span className="spinner" aria-hidden="true" /> Loading field…
+          <span className="spinner" aria-hidden="true" /> Loading the sky field…
         </div>
       )}
     </div>
   );
 }
 
-type Mode = 'blink' | 'overlay' | 'difference';
+type Mode = 'blink' | 'overlay' | 'split' | 'difference';
+const MODES: { id: Mode; label: string; key: string }[] = [
+  { id: 'blink', label: 'Switch dates', key: 'B' },
+  { id: 'overlay', label: 'Fade', key: 'F' },
+  { id: 'split', label: 'Split', key: 'S' },
+  { id: 'difference', label: 'Highlight changes', key: 'D' },
+];
 
 interface WorkspaceProps {
   manifest: Manifest;
   fields: FieldSummary[];
   onField: (id: string) => void;
-  tour: boolean;
-  onTour: (on: boolean) => void;
+  tab: Tab;
+  onTab: (t: Tab) => void;
   inert: boolean;
 }
 
-function Workspace({ manifest, fields, onField, tour, onTour, inert }: WorkspaceProps) {
+function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspaceProps) {
   const observations = useMemo(
     () => [...manifest.observations].sort((a, b) => a.epoch.mjd_mid - b.epoch.mjd_mid),
     [manifest],
@@ -164,6 +181,7 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
     () => new Map(manifest.differences.map((d) => [d.observation_id, d])),
     [manifest],
   );
+  const chapters = useMemo(() => buildStory(manifest, observations), [manifest, observations]);
   const hasDiff = differences.size > 0;
   const first = observations[0] as Observation; // parseManifest guarantees one
   const wcs = useMemo(() => tanWcs(first.image.wcs), [first]);
@@ -175,10 +193,14 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
   const [refId, setRefId] = useState<string>(
     manifest.template ? 'template' : (observations[1] ?? first).observation_id,
   );
-  const [mode, setMode] = useState<Mode>(hasDiff ? 'difference' : 'blink');
+  const [mode, setMode] = useState<Mode>(initial && hasDiff ? 'difference' : 'blink');
+  const [chapter, setChapter] = useState(0);
   const [showRef, setShowRef] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [opacity, setOpacity] = useState(0.5);
+  const [splitAt, setSplitAt] = useState(0.5);
+  const [stretch, setStretch] = useState<Stretch>('archive');
+  const [loupe, setLoupe] = useState(false);
   const [pin, setPin] = useState<{ x: number; y: number } | null>(null);
   const [focus, setFocus] = useState<{ x: number; y: number; nonce: number } | null>(
     initial ? { x: initial.pixel_x, y: initial.pixel_y, nonce: 0 } : null,
@@ -188,23 +210,32 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
   const epoch = observations[epochIdx] ?? first;
   const cand = manifest.candidates.find((c) => c.candidate_id === candId) ?? null;
   const diff = differences.get(epoch.observation_id);
+  const refObs = observations.find((x) => x.observation_id === refId);
   const ref =
     refId === 'template' && manifest.template
-      ? { src: manifest.template.display_png, name: `median of all ${observations.length} epochs` }
-      : (() => {
-          const o = observations.find((x) => x.observation_id === refId) ?? first;
-          return { src: o.assets.display_png, name: `epoch ${isoDate(o.epoch.mjd_mid)}` };
-        })();
+      ? {
+          src: manifest.template.display_png,
+          name: `typical sky (median of ${observations.length} dates)`,
+        }
+      : {
+          src: (refObs ?? first).assets.display_png,
+          name: longDate((refObs ?? first).epoch.mjd_mid),
+        };
+  // The template is built by the pipeline from the field's compatible set, so it is comparable.
+  const pair: PairCheck =
+    refId === 'template' ? { status: 'compatible' } : checkPair(manifest, epochId, refId);
+  const comparable = pair.status === 'compatible' || pair.status === 'same';
+  const comparing = mode !== 'difference';
 
   useEffect(() => {
     location.replace(`#${manifest.manifest_id}${candId ? `/${candId.split('-').at(-1)}` : ''}`);
   }, [manifest.manifest_id, candId]);
 
   useEffect(() => {
-    if (!playing || mode !== 'blink') return;
-    const id = window.setInterval(() => setShowRef((s) => !s), 600);
+    if (!playing || mode !== 'blink' || !comparable) return;
+    const id = window.setInterval(() => setShowRef((s) => !s), 650);
     return () => window.clearInterval(id);
-  }, [playing, mode]);
+  }, [playing, mode, comparable]);
 
   const selectCandidate = useCallback(
     (id: string | null) => {
@@ -216,6 +247,21 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
     },
     [manifest],
   );
+
+  // Discover drives the shared viewer: each chapter sets the view it talks about.
+  const goChapter = (i: number) => {
+    const n = Math.max(0, Math.min(chapters.length - 1, i));
+    const v = chapters[n]?.view;
+    setChapter(n);
+    if (!v) return;
+    setMode(v.mode === 'difference' && !hasDiff ? 'blink' : v.mode);
+    setEpochId(v.epochId);
+    setShowRef(false);
+    setPlaying(v.playing && !reducedMotion());
+    if (manifest.template) setRefId('template');
+    if (v.candId) selectCandidate(v.candId);
+    else setCandId(null);
+  };
 
   const step = useCallback(
     (d: number) => {
@@ -234,7 +280,7 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
         e.ctrlKey ||
         e.metaKey ||
         e.altKey ||
-        t.closest('input, select, textarea, [role=dialog]')
+        t.closest('input, select, textarea, [role=dialog], [popover]')
       )
         return;
       const order = manifest.candidates;
@@ -247,8 +293,10 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
         ArrowLeft: () => step(-1),
         ArrowRight: () => step(1),
         b: () => setMode('blink'),
-        o: () => setMode('overlay'),
+        f: () => setMode('overlay'),
+        s: () => setMode('split'),
         d: () => hasDiff && setMode('difference'),
+        l: () => setLoupe((x) => !x),
         ' ': () => {
           if (mode !== 'blink') setMode('blink');
           setPlaying((p) => !p);
@@ -268,89 +316,64 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
     return () => window.removeEventListener('keydown', onKey);
   }, [inert, manifest, candId, step, hasDiff, mode, selectCandidate]);
 
+  const aSrc = `${BASE}${epoch.assets.display_png}`;
+  const bSrc = `${BASE}${ref.src}`;
+  const aLabel = `A · ${longDate(epoch.epoch.mjd_mid)}`;
   const layer: Layer =
     mode === 'difference' && diff
       ? { kind: 'difference', src: `${BASE}${diff.display_png}`, range: diff.display_range_sigma }
-      : mode === 'overlay'
-        ? {
-            kind: 'overlay',
-            src: `${BASE}${epoch.assets.display_png}`,
-            over: `${BASE}${ref.src}`,
-            opacity,
-          }
-        : {
-            kind: 'image',
-            src: `${BASE}${mode === 'blink' && showRef ? ref.src : epoch.assets.display_png}`,
-          };
+      : !comparable
+        ? { kind: 'image', src: aSrc }
+        : mode === 'overlay'
+          ? { kind: 'overlay', src: aSrc, over: bSrc, opacity }
+          : mode === 'split'
+            ? {
+                kind: 'split',
+                src: aSrc,
+                over: bSrc,
+                at: splitAt,
+                labels: [aLabel, `B · ${refId === 'template' ? 'typical sky' : ref.name}`],
+              }
+            : { kind: 'image', src: mode === 'blink' && showRef ? bSrc : aSrc };
 
   const showing =
     mode === 'difference'
-      ? `Difference ${isoDate(epoch.epoch.mjd_mid)} vs. the other epochs`
-      : mode === 'overlay'
-        ? `${isoDate(epoch.epoch.mjd_mid)} under ${ref.name} at ${Math.round(opacity * 100)}%`
-        : showRef
-          ? `Reference: ${ref.name}`
-          : `Epoch ${isoDate(epoch.epoch.mjd_mid)}`;
+      ? `What changed on ${longDate(epoch.epoch.mjd_mid)}, compared with the typical sky of the other dates`
+      : !comparable
+        ? `${longDate(epoch.epoch.mjd_mid)} only (comparison refused)`
+        : mode === 'overlay'
+          ? `${longDate(epoch.epoch.mjd_mid)} with ${ref.name} faded in at ${Math.round(opacity * 100)}%`
+          : mode === 'split'
+            ? `${longDate(epoch.epoch.mjd_mid)} on the left, ${ref.name} on the right`
+            : showRef
+              ? `B: ${ref.name}`
+              : `A: ${longDate(epoch.epoch.mjd_mid)}`;
 
-  const tourSteps: TourStep[] = useMemo(() => {
-    const c =
-      manifest.candidates.find((x) => x.candidate_id === DEMO_CANDIDATE) ?? manifest.candidates[0];
-    return [
-      {
-        target: 'canvas',
-        title: 'A real patch of infrared sky',
-        body: 'This is a SPHEREx image of the North Ecliptic Pole at 1.45 µm, about 15 arcminutes across. Each square is one 6-arcsecond pixel. Drag to pan and scroll to zoom.',
-        run: () => {
-          setMode('blink');
-          setPlaying(false);
-          setShowRef(false);
-          setCandId(null);
-          if (c?.observation_ids[0]) setEpochId(c.observation_ids[0]);
-        },
-      },
-      {
-        target: 'modes',
-        title: 'Blink to spot changes',
-        body: 'Blink flips between this epoch and the median of all epochs, the way astronomers have compared photographic plates for a century. Anything that changed appears to jump.',
-        run: () => {
-          setMode('blink');
-          setPlaying(!matchMedia('(prefers-reduced-motion: reduce)').matches);
-        },
-      },
-      {
-        target: 'canvas',
-        title: 'Subtract the steady sky',
-        body: 'Difference mode subtracts the median of the other epochs and divides by the measured noise. Amber is brighter than usual, blue is fainter, and grey is masked. Most of the field is noise.',
-        run: () => {
-          setPlaying(false);
-          setMode('difference');
-          if (c) selectCandidate(c.candidate_id);
-        },
-      },
-      {
-        target: 'candidates',
-        title: 'Residuals, not discoveries',
-        body: 'Every spot above 5σ is listed and classified. Most are artifacts. A few, like this one, need follow-up: they are worth a second look, not a headline.',
-      },
-      {
-        target: 'evidence',
-        title: 'Judge the evidence',
-        body: 'The light curve shows the flux at this position in every epoch. One significant epoch is consistent with a transient, but cosmic rays and moving objects look the same. Only an independent detection could confirm it.',
-      },
-      {
-        target: 'timeline',
-        title: 'Step through time',
-        body: 'Each mark is one SPHEREx visit, spaced by real time. Use the ← and → keys to step through epochs, B, O and D to switch views, and J and K to move between residuals.',
-      },
-    ];
-  }, [manifest, selectCandidate]);
+  const plain = tab !== 'analyze';
+  const storyCand = useMemo(() => storyCandidate(manifest), [manifest]);
 
   return (
     <div className="workspace" inert={inert}>
       <header className="topbar">
         <p className="wordmark">PARALLAX</p>
+        <nav className="tabs" aria-label="Mode">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              aria-current={tab === t.id ? 'page' : undefined}
+              title={t.hint}
+              onClick={() => {
+                onTab(t.id);
+                if (t.id === 'discover' && tab !== 'discover') goChapter(chapter);
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </nav>
         <label className="field-select">
-          <span className="visually-hidden">Field</span>
+          <span className="visually-hidden">Sky field</span>
           <select value={manifest.manifest_id} onChange={(e) => onField(e.target.value)}>
             {fields.map((f) => (
               <option key={f.manifest_id} value={f.manifest_id}>
@@ -371,24 +394,20 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
             }
           }}
         />
-        <div className="topbar-end">
-          <button type="button" onClick={() => onTour(true)}>
-            Tour
-          </button>
-          <button type="button" popoverTarget="keys">
-            Keys
-          </button>
-        </div>
+        <button type="button" className="topbar-keys" popoverTarget="keys">
+          Keys
+        </button>
       </header>
       <div id="keys" popover="auto" className="keys">
         <h2>Keyboard</h2>
         <dl className="mono">
           {[
-            ['← →', 'previous / next epoch'],
-            ['B O D', 'blink, overlay, difference'],
-            ['Space', 'start or stop blinking'],
-            ['R', 'flip to the reference once'],
-            ['J K', 'next / previous residual'],
+            ['← →', 'previous / next date'],
+            ['B F S D', 'switch, fade, split, highlight changes'],
+            ['Space', 'start or stop switching'],
+            ['R', 'flip to date B once'],
+            ['L', 'pixel loupe on / off'],
+            ['J K', 'next / previous change'],
             ['Esc', 'clear selection'],
             ['+ − 0', 'zoom in, out, fit (image focused)'],
             ['Arrows', 'pan (image focused)'],
@@ -408,35 +427,32 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
         </p>
       )}
 
-      <main className="stage">
-        <section className="viewer" aria-label="Image viewer">
+      <main className="stage" data-tab={tab}>
+        <section className="viewer" aria-label="Sky viewer">
           <div className="viewer-bar">
             <div className="segmented" role="group" aria-label="View" data-tour="modes">
-              <button
-                type="button"
-                aria-pressed={mode === 'blink'}
-                onClick={() => setMode('blink')}
-              >
-                Blink
-              </button>
-              <button
-                type="button"
-                aria-pressed={mode === 'overlay'}
-                onClick={() => setMode('overlay')}
-              >
-                Overlay
-              </button>
-              <button
-                type="button"
-                aria-pressed={mode === 'difference'}
-                onClick={() => setMode('difference')}
-                disabled={!hasDiff}
-                title={hasDiff ? undefined : 'No difference images for this field'}
-              >
-                Difference
-              </button>
+              {MODES.map((m) => {
+                const off = m.id === 'difference' && !hasDiff;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    aria-pressed={mode === m.id}
+                    aria-keyshortcuts={m.key}
+                    onClick={() => setMode(m.id)}
+                    disabled={off}
+                    title={
+                      off
+                        ? 'Change detection has not been run on this field'
+                        : `${m.label} (${m.key})`
+                    }
+                  >
+                    {m.label}
+                  </button>
+                );
+              })}
             </div>
-            {mode === 'blink' && (
+            {mode === 'blink' && comparable && (
               <>
                 <button type="button" onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>
                   {playing ? 'Stop' : 'Play'}
@@ -446,9 +462,9 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
                 </button>
               </>
             )}
-            {mode === 'overlay' && (
+            {mode === 'overlay' && comparable && (
               <label className="slider">
-                <span>Reference</span>
+                <span>B</span>
                 <input
                   type="range"
                   min={0}
@@ -459,66 +475,163 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
                 />
               </label>
             )}
-            {mode !== 'difference' && (
-              <label className="ref-select">
-                <span>vs.</span>
-                <select value={refId} onChange={(e) => setRefId(e.target.value)}>
-                  {manifest.template && <option value="template">Median of all epochs</option>}
-                  {observations.map((o) => (
-                    <option key={o.observation_id} value={o.observation_id}>
-                      {isoDate(o.epoch.mjd_mid)} ({o.provenance.data_release ?? 'sim'})
-                    </option>
-                  ))}
-                </select>
+            {mode === 'split' && comparable && (
+              <label className="slider">
+                <span>Divider</span>
+                <input
+                  type="range"
+                  min={0.05}
+                  max={0.95}
+                  step={0.01}
+                  value={splitAt}
+                  onChange={(e) => setSplitAt(Number(e.target.value))}
+                />
               </label>
             )}
-            {mode === 'difference' && diff && (
-              <div
-                className="legend"
-                aria-label={`Significance from −${diff.display_range_sigma} to +${diff.display_range_sigma} sigma`}
-              >
-                <span className="mono">−{diff.display_range_sigma}σ</span>
-                <span className="legend-ramp" aria-hidden="true" />
-                <span className="mono">+{diff.display_range_sigma}σ</span>
-                <span className="legend-masked" aria-hidden="true" />
-                <span>masked</span>
+            {tab !== 'discover' && (
+              <div className="viewer-tools">
+                <label className="ref-select">
+                  <span>Display</span>
+                  <select
+                    value={stretch}
+                    onChange={(e) => setStretch(e.target.value as Stretch)}
+                    disabled={mode === 'difference'}
+                    title={
+                      mode === 'difference'
+                        ? 'The change map keeps its fixed σ scale'
+                        : 'Visualization only: measurements never use the display image'
+                    }
+                  >
+                    {Object.entries(STRETCH).map(([k, v]) => (
+                      <option key={k} value={k}>
+                        {v.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  aria-pressed={loupe}
+                  aria-keyshortcuts="L"
+                  onClick={() => setLoupe((x) => !x)}
+                  title="Magnify single pixels under the pointer (L)"
+                >
+                  Loupe
+                </button>
               </div>
             )}
           </div>
 
+          {tab !== 'discover' && (
+            <div className="pair-bar">
+              <label className="ref-select">
+                <span>A</span>
+                <select value={epochId} onChange={(e) => setEpochId(e.target.value)}>
+                  {observations.map((o) => (
+                    <option key={o.observation_id} value={o.observation_id}>
+                      {longDate(o.epoch.mjd_mid)} · {o.provenance.data_release ?? 'SIM'}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {comparing ? (
+                <label className="ref-select">
+                  <span>B</span>
+                  <select value={refId} onChange={(e) => setRefId(e.target.value)}>
+                    {manifest.template && (
+                      <option value="template">Typical sky (median of all dates)</option>
+                    )}
+                    {observations.map((o) => (
+                      <option key={o.observation_id} value={o.observation_id}>
+                        {longDate(o.epoch.mjd_mid)} · {o.provenance.data_release ?? 'SIM'}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <p className="small dim">
+                  B: typical sky of the other {observations.length - 1} dates
+                </p>
+              )}
+            </div>
+          )}
+
           <SkyCanvas
             layer={layer}
-            label={`${showing}. ${manifest.title}. ${manifest.candidates.length} residual markers.`}
+            label={`${showing}. ${manifest.title}. ${manifest.candidates.length} marked changes.`}
             width={first.image.width_px}
             height={first.image.height_px}
             wcs={wcs}
             candidates={manifest.candidates}
             activeEpochId={epoch.observation_id}
             selectedId={candId}
-            onPick={selectCandidate}
+            onPick={(id) => {
+              selectCandidate(id);
+              if (tab === 'discover') onTab('explore');
+            }}
             pin={pin}
             focus={focus}
+            pixelScale={first.image.pixel_scale_arcsec}
+            stretch={stretch}
+            loupe={loupe}
           />
 
           <div className="viewer-caption">
             <p className="showing" aria-live="polite">
-              <span className={`frame-tag ${mode === 'blink' && showRef ? 'ref' : ''}`}>
+              <span
+                className={`frame-tag ${mode === 'blink' && showRef && comparable ? 'ref' : ''}`}
+              >
                 {showing}
               </span>
             </p>
-            <p className="mono dim">
-              {epoch.spectral.wavelength_center_um.toFixed(3)} µm · D
-              {epoch.spectral.detector ?? '?'} · {epoch.provenance.data_release ?? 'SIM'} · MJD{' '}
-              {epoch.epoch.mjd_mid.toFixed(3)} {epoch.epoch.time_scale.toUpperCase()}
-              {epoch.quality.psf_fwhm_arcsec
-                ? ` · PSF ${epoch.quality.psf_fwhm_arcsec.toFixed(1)}″`
-                : ''}
-              {diff ? ` · k ${diff.noise_scale.toFixed(2)}` : ''}
-            </p>
+            {comparing && !comparable && 'reasons' in pair && (
+              <p className="warn" role="alert">
+                These two dates cannot be compared fairly: {pair.reasons.join('; ')}. Showing date A
+                alone; pick another B.
+              </p>
+            )}
+            {mode === 'difference' && !diff && (
+              <p className="warn" role="note">
+                No change map exists for this date, so nothing has been evaluated here.
+              </p>
+            )}
+            {mode === 'difference' && diff && (
+              <div
+                className="legend"
+                aria-label={`Change strength from −${diff.display_range_sigma} to +${diff.display_range_sigma} sigma`}
+              >
+                <span>fainter</span>
+                <span className="mono">−{diff.display_range_sigma}σ</span>
+                <span className="legend-ramp" aria-hidden="true" />
+                <span className="mono">+{diff.display_range_sigma}σ</span>
+                <span>brighter</span>
+                <span className="legend-masked" aria-hidden="true" />
+                <span>not judged</span>
+              </div>
+            )}
             {mode === 'difference' && diff?.status === 'visualization_only' && (
               <p className="warn" role="note">
-                Visualization only: this comparison failed validation ({diff.reasons.join('; ')}),
-                so no significance values are quoted for it.
+                Picture only: this date failed its noise check ({diff.reasons.join('; ')}), so no
+                strengths or brightness numbers are quoted for it.
+              </p>
+            )}
+            {tab === 'analyze' ? (
+              <p className="mono dim small">
+                {epoch.spectral.wavelength_center_um.toFixed(3)} µm · D
+                {epoch.spectral.detector ?? '?'} · {epoch.provenance.data_release ?? 'SIM'} · MJD{' '}
+                {epoch.epoch.mjd_mid.toFixed(3)} {epoch.epoch.time_scale.toUpperCase()}
+                {epoch.quality.psf_fwhm_arcsec
+                  ? ` · PSF ${epoch.quality.psf_fwhm_arcsec.toFixed(1)}″`
+                  : ''}
+                {diff ? ` · k ${diff.noise_scale.toFixed(2)}` : ''}
+              </p>
+            ) : (
+              <p className="small dim">
+                <Term k="infrared">Infrared</Term> at{' '}
+                {epoch.spectral.wavelength_center_um.toFixed(2)} µm ·{' '}
+                {manifest.data_kind === 'simulated' ? 'simulated' : 'SPHEREx'} image from{' '}
+                {longDate(epoch.epoch.mjd_mid)}
+                {epoch.provenance.data_release ? ` (${epoch.provenance.data_release})` : ''}
               </p>
             )}
           </div>
@@ -532,27 +645,66 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
           />
         </section>
 
-        <aside className="rail" aria-label="Residuals and evidence">
-          <CandidateList manifest={manifest} selectedId={candId} onSelect={selectCandidate} />
-          {cand ? (
-            <EvidenceReport
-              candidate={cand}
-              manifest={manifest}
-              activeEpochId={epoch.observation_id}
-              onSelectEpoch={setEpochId}
+        <aside className="rail" aria-label={TABS.find((t) => t.id === tab)?.hint}>
+          {tab === 'discover' ? (
+            <DiscoverPanel
+              chapters={chapters}
+              index={chapter}
+              onIndex={goChapter}
+              onExplore={() => onTab('explore')}
+              onAnalyze={() => onTab('analyze')}
+              hasCandidate={storyCand != null}
             />
           ) : (
-            manifest.candidates.length > 0 && (
-              <p className="empty">
-                Select a residual from the list or on the image to see its evidence.
-              </p>
-            )
+            <>
+              <CandidateList
+                manifest={manifest}
+                selectedId={candId}
+                onSelect={selectCandidate}
+                plain={plain}
+              />
+              {cand ? (
+                plain ? (
+                  <ChangeSummary
+                    candidate={cand}
+                    manifest={manifest}
+                    activeEpochId={epoch.observation_id}
+                    onSelectEpoch={setEpochId}
+                    onAnalyze={() => onTab('analyze')}
+                  />
+                ) : (
+                  <EvidenceReport
+                    candidate={cand}
+                    manifest={manifest}
+                    activeEpochId={epoch.observation_id}
+                    onSelectEpoch={setEpochId}
+                  />
+                )
+              ) : (
+                manifest.candidates.length > 0 && (
+                  <p className="empty">
+                    Pick a change from the list, or click a marker on the image, to see what is
+                    known about it.
+                  </p>
+                )
+              )}
+              {tab === 'analyze' && (
+                <AnalyzePanel
+                  manifest={manifest}
+                  observations={observations}
+                  differences={differences}
+                  epoch={epoch}
+                  refName={
+                    refId === 'template'
+                      ? 'median of all dates'
+                      : isoDate((refObs ?? first).epoch.mjd_mid)
+                  }
+                  pair={comparing ? pair : { status: 'compatible' }}
+                  onSelectEpoch={setEpochId}
+                />
+              )}
+            </>
           )}
-          <details className="meta">
-            <summary>Epoch metadata and provenance</summary>
-            <ObservationDetails obs={epoch} />
-            {manifest.alignment && <p className="small dim">{manifest.alignment}</p>}
-          </details>
           <footer className="credits small dim">
             <p>{manifest.dataset.citation}</p>
             <p>{manifest.dataset.acknowledgement}</p>
@@ -562,7 +714,6 @@ function Workspace({ manifest, fields, onField, tour, onTour, inert }: Workspace
           </footer>
         </aside>
       </main>
-      {tour && <Tour steps={tourSteps} onClose={() => onTour(false)} />}
     </div>
   );
 }

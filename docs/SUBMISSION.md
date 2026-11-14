@@ -55,7 +55,7 @@ asks IRSA whether SPHEREx has observed any coordinate you type.
 - **Creativity and presentation.**
   - A cinematic intro hands off to a precise workspace.
   - Evidence is set as an astronomical telegram with a stamped status.
-  - A guided tour drives the real interface.
+  - A five-step guided investigation (Discover) drives the real viewer with real data.
   - Full keyboard control, reduced-motion support, and phone-width layout.
 
 ## Demo script (≈ 2 min 30 s)
@@ -63,20 +63,20 @@ asks IRSA whether SPHEREx has observed any coordinate you type.
 | # | Time | Screen | Narration |
 |---|---|---|---|
 | 1 | 0:00 | Intro, starfield drifting | "SPHEREx photographs the whole infrared sky every six months. What changes between those photographs?" |
-| 2 | 0:12 | Click *Open the workspace*. North Ecliptic Pole, Blink. | "These are ten real SPHEREx images from NASA's IRSA archive, all at 1.445 microns on the same detector, taken over 17 months." |
-| 3 | 0:25 | Press Space (blink), then ←/→ along the timeline | "Blinking is how astronomers have hunted for changes for a century, Pluto included." |
-| 4 | 0:40 | Press D (Difference) | "Now subtract the steady sky. Amber is brighter than usual, blue is fainter. Most of what's left is noise, and the noise is measured from the data itself." |
-| 5 | 0:55 | Click c012 in *Needs follow-up* | "One residual: brighter in a single epoch, with nothing there in the others." |
-| 6 | 1:05 | Scroll the evidence report: light curve, measurements | "About 780 microjanskys, plus or minus 100, seen in one epoch out of ten. The light curve shows the other nine are flat." |
+| 2 | 0:12 | Click *Start the guided investigation*. Steps 1–2, North Ecliptic Pole. | "These are ten real SPHEREx images from NASA's IRSA archive, all at 1.445 microns on the same detector, taken over 17 months." |
+| 3 | 0:25 | Next → step 3, *Switch between dates* (blinks automatically) | "Blinking is how astronomers have hunted for changes for a century, Pluto included." |
+| 4 | 0:40 | Next → step 4, *Highlight what changed* | "Now subtract the steady sky. Amber is brighter than usual, blue is fainter. Most of what's left is noise, and the noise is measured from the data itself." |
+| 5 | 0:55 | Next → step 5, *Weigh the evidence* | "One residual: brighter in a single epoch, with nothing there in the others." |
+| 6 | 1:05 | *See every measurement* (Analyze): light curve, calibration table, measurements | "About 780 microjanskys, plus or minus 100, seen in one epoch out of ten. The light curve shows the other nine are flat." |
 | 7 | 1:20 | Open *Caveats and method*, point at the stamp | "And it says what it isn't: a cosmic ray, a detector event or a moving object all look like this. It is unconfirmed until it is seen again." |
 | 8 | 1:35 | Click *All 40* and pick an artifact-like residual | "37 of the 40 residuals here are flagged as likely artifacts, mostly stars whose blurry image shifts between pixels. We show them, because hiding them would hide how the method behaves." |
 | 9 | 1:50 | Type RA 10, Dec 20 → Find | "Type any coordinate. If we haven't prepared that field, PARALLAX asks IRSA live how many SPHEREx exposures exist there, and prints the command that would build it." |
-| 10 | 2:05 | Switch to the SIMULATED field | "Our test field is simulated, and it says so on every screen." |
-| 11 | 2:15 | Back to NEP, press Tour | "Everything is open source, reproducible from one command, and free to host. PARALLAX." |
+| 10 | 2:05 | Switch to the SIMULATED field, Explore, set B to date 3 → refusal | "Our test field is simulated, and it says so on every screen. Its dates use different detectors, so PARALLAX refuses to compare them and says why." |
+| 11 | 2:15 | Back to NEP, Explore, Split with the loupe (L) | "Everything is open source, reproducible from one command, and free to host. PARALLAX." |
 
 **Storyboard.** These frames match the screenshots taken during QA (1440 × 900):
 1. intro
-2. workspace (blink)
+2. Discover, step 1
 3. difference with c012 selected
 4. evidence report scrolled
 5. artifact-like residual

@@ -13,7 +13,16 @@ import type { Candidate, CandidateKind } from '../types/manifest.ts';
 export type Layer =
   | { kind: 'image'; src: string }
   | { kind: 'overlay'; src: string; over: string; opacity: number }
+  | { kind: 'split'; src: string; over: string; at: number; labels: [string, string] }
   | { kind: 'difference'; src: string; range: number };
+
+/** Display-only brightness/contrast on the archive PNG; never applied to difference maps. */
+export const STRETCH = {
+  archive: { label: 'As archived', filter: 'none' },
+  faint: { label: 'Bring out faint detail', filter: 'brightness(1.7) contrast(1.15)' },
+  bright: { label: 'Tame bright stars', filter: 'brightness(0.8) contrast(1.5)' },
+} as const;
+export type Stretch = keyof typeof STRETCH;
 
 interface Props {
   layer: Layer;
@@ -27,6 +36,16 @@ interface Props {
   onPick: (id: string) => void;
   pin: { x: number; y: number } | null;
   focus: { x: number; y: number; nonce: number } | null;
+  pixelScale: number; // arcsec per image pixel
+  stretch: Stretch;
+  loupe: boolean;
+}
+
+const NICE_ARCSEC = [10, 20, 30, 60, 120, 300, 600, 900];
+/** Longest round angle whose bar fits in about 120 screen px. */
+function scaleBar(arcsecPerScreenPx: number) {
+  const a = [...NICE_ARCSEC].reverse().find((n) => n / arcsecPerScreenPx <= 120) ?? 10;
+  return { px: a / arcsecPerScreenPx, text: a >= 60 ? `${a / 60}′` : `${a}″` };
 }
 
 type View = { scale: number; cx: number; cy: number }; // cx/cy: image px at the canvas centre
@@ -111,6 +130,8 @@ function drawGlyph(
 
 export const SkyCanvas = memo(function SkyCanvas(props: Props) {
   const { layer, label, width, height, wcs, candidates, activeEpochId, selectedId, onPick } = props;
+  const { pixelScale, stretch, loupe } = props;
+  const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [view, setView] = useState<View | null>(null);
@@ -122,14 +143,18 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
   const drag = useRef<{ x: number; y: number; moved: boolean } | null>(null);
 
   const key =
-    layer.kind === 'overlay' ? `${layer.src}|${layer.over}` : `${layer.kind}:${layer.src}`;
+    layer.kind === 'overlay' || layer.kind === 'split'
+      ? `${layer.src}|${layer.over}`
+      : `${layer.kind}:${layer.src}`;
 
   useEffect(() => {
     let live = true;
     const a: Promise<Source> =
       layer.kind === 'difference' ? diffCanvas(layer.src) : loadImage(layer.src);
     const b: Promise<Source | null> =
-      layer.kind === 'overlay' ? loadImage(layer.over) : Promise.resolve(null);
+      layer.kind === 'overlay' || layer.kind === 'split'
+        ? loadImage(layer.over)
+        : Promise.resolve(null);
     Promise.all([a, b]).then(
       ([ia, ib]) => live && (setSources({ key, a: ia, b: ib }), setFailed(null)),
       () => live && setFailed(key),
@@ -211,12 +236,26 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
     ctx.clearRect(0, 0, size.w, size.h);
     const x0 = size.w / 2 - view.cx * view.scale;
     const y0 = size.h / 2 - view.cy * view.scale;
-    ctx.drawImage(current.a, x0, y0, width * view.scale, height * view.scale);
+    const w = width * view.scale;
+    const h = height * view.scale;
+    const filter = layer.kind === 'difference' ? 'none' : STRETCH[stretch].filter;
+    ctx.filter = filter;
+    ctx.drawImage(current.a, x0, y0, w, h);
     if (current.b && layer.kind === 'overlay') {
       ctx.globalAlpha = layer.opacity;
-      ctx.drawImage(current.b, x0, y0, width * view.scale, height * view.scale);
+      ctx.drawImage(current.b, x0, y0, w, h);
       ctx.globalAlpha = 1;
     }
+    const splitX = Math.round(size.w * (layer.kind === 'split' ? layer.at : 0));
+    if (current.b && layer.kind === 'split') {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(splitX, 0, size.w - splitX, size.h);
+      ctx.clip();
+      ctx.drawImage(current.b, x0, y0, w, h);
+      ctx.restore();
+    }
+    ctx.filter = 'none';
     ctx.strokeStyle = 'rgba(233, 228, 216, 0.25)';
     ctx.lineWidth = 1;
     ctx.strokeRect(x0 - 0.5, y0 - 0.5, width * view.scale + 1, height * view.scale + 1);
@@ -254,6 +293,55 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
       }
       ctx.stroke();
     }
+    if (layer.kind === 'split') {
+      ctx.fillStyle = 'rgba(242, 163, 58, 0.9)';
+      ctx.fillRect(splitX - 1, 0, 2, size.h);
+      ctx.font = '500 11px "IBM Plex Mono", monospace';
+      ctx.textBaseline = 'top';
+      for (const [text, x, align] of [
+        [layer.labels[0], splitX - 10, 'right'],
+        [layer.labels[1], splitX + 10, 'left'],
+      ] as const) {
+        const tw = ctx.measureText(text).width;
+        ctx.fillStyle = 'rgba(5, 8, 15, 0.82)';
+        ctx.fillRect(align === 'right' ? x - tw - 6 : x - 6, 8, tw + 12, 20);
+        ctx.textAlign = align;
+        ctx.fillStyle = '#e9e4d8';
+        ctx.fillText(text, x, 13);
+      }
+      ctx.textAlign = 'start';
+    }
+    if (loupe && cursor) {
+      // 8x+ magnifier under the cursor, unsmoothed so single pixels can be inspected
+      const f = toFits(view, cursor.x, cursor.y);
+      if (f.ix >= 0 && f.iy >= 0 && f.ix < width && f.iy < height) {
+        const R = 64;
+        const z = Math.max(8, view.scale * 3);
+        const cx = Math.min(size.w - R - 8, cursor.x + R + 24);
+        const cy = Math.max(R + 8, cursor.y - R - 24);
+        const src =
+          layer.kind === 'split' && cursor.x >= splitX && current.b ? current.b : current.a;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, R, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.fillStyle = '#05080f';
+        ctx.fillRect(cx - R, cy - R, 2 * R, 2 * R);
+        ctx.filter = filter;
+        ctx.drawImage(src, cx - f.ix * z, cy - f.iy * z, width * z, height * z);
+        ctx.filter = 'none';
+        ctx.strokeStyle = 'rgba(242, 163, 58, 0.9)';
+        ctx.lineWidth = 1;
+        const px = cx - (f.ix % 1) * z;
+        const py = cy - (f.iy % 1) * z;
+        ctx.strokeRect(Math.round(px) + 0.5, Math.round(py) + 0.5, z, z);
+        ctx.restore();
+        ctx.strokeStyle = 'rgba(233, 228, 216, 0.85)';
+        ctx.beginPath();
+        ctx.arc(cx, cy, R, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
     if (props.pin) {
       const p = toScreen(view, props.pin.x, props.pin.y);
       ctx.strokeStyle = '#e9e4d8';
@@ -280,7 +368,11 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
     selectedId,
     activeEpochId,
     toScreen,
+    toFits,
     props.pin,
+    stretch,
+    loupe,
+    cursor,
   ]);
 
   const zoomAt = useCallback(
@@ -381,6 +473,7 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
         onPointerMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           updateReadout(e.clientX - rect.left, e.clientY - rect.top);
+          if (loupe) setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top });
           const d = drag.current;
           if (!d) return;
           const dx = e.clientX - d.x;
@@ -399,8 +492,18 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
             pick(e.clientX - rect.left, e.clientY - rect.top);
           }
         }}
-        onPointerLeave={() => setReadout('')}
+        onPointerLeave={() => {
+          setReadout('');
+          setCursor(null);
+        }}
       />
+      {view && (
+        <div className="sky-scale mono" aria-hidden="true">
+          <span className="sky-compass">N ↑ E ←</span>
+          <span className="sky-bar" style={{ width: scaleBar(pixelScale / view.scale).px }} />
+          {scaleBar(pixelScale / view.scale).text}
+        </div>
+      )}
       <div className="sky-zoom" role="group" aria-label="Zoom">
         <button type="button" onClick={() => zoomAt(1.25)} aria-label="Zoom in">
           <svg viewBox="0 0 16 16" aria-hidden="true">

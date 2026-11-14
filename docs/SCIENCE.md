@@ -163,6 +163,22 @@ Validate this on real pairs.
 - Significance image: `D / sqrt(V1 + V2)`. Because resampling correlates noise, the empirical σ of
   the significance image must be measured, and thresholds rescaled, before use.
 
+### What the viewer does and does not do
+
+- **Comparison gate.** Switch dates, Fade and Split show both images only when the pipeline's
+  `assess_compatibility` verdict for that pair is `compatible` (or B is the template built from
+  the same compatible set). Otherwise the viewer shows A alone and lists the recorded reasons. A
+  pair with no recorded verdict is treated as unverified, never as compatible. A test asserts that
+  every pair in both real fields has a verdict.
+- **Display stretch** (As archived / Faint detail / Bright detail) is a CSS brightness/contrast
+  filter on the display PNG: visualization only. It never touches measurements and is disabled
+  in Highlight changes, where colour encodes σ.
+- **Loupe and scale bar** are display aids. The scale bar uses the manifest pixel scale and is
+  approximate across the cutout (TAN projection, ≤ 15′ field).
+- **The Discover story** is assembled from manifest values (candidate, σ, flux ± uncertainty,
+  dates, artifact count). It leads with the strongest *needs follow-up* change and still calls it
+  unconfirmed. Flux numbers appear only for dates whose difference is `validated`.
+
 ## Motion vs variability
 
 - **Moving:** source at position p₁ in epoch 1 and p₂ ≠ p₁ in epoch 2, with nothing at p₁ in

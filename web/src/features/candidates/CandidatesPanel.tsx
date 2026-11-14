@@ -1,6 +1,7 @@
 import { memo, useState } from 'react';
 import { formatDec, formatRa } from '../../lib/sky.ts';
-import { isoDate } from '../../lib/time.ts';
+import { Term } from '../../components/Term.tsx';
+import { isoDate, longDate } from '../../lib/time.ts';
 import type { Candidate, CandidateKind, Manifest } from '../../types/manifest.ts';
 import { LightCurve } from './LightCurve.tsx';
 
@@ -47,14 +48,30 @@ export function Glyph({ kind }: { kind: CandidateKind }) {
 
 const peak = (c: Candidate) => c.measurements.find((m) => m.name === 'peak significance')?.value;
 
+/** What a newcomer would call it; the triage class stays in Analyze. */
+export function plainKind(c: Candidate) {
+  if (c.kind === 'new_source_like') return 'Appeared';
+  if (c.kind === 'variable_like') return (peak(c) ?? 0) >= 0 ? 'Brightened' : 'Faded';
+  if (c.kind === 'dipole_like') return 'Shifted or misaligned';
+  return 'Likely glitch';
+}
+
+const PLAIN_STATUS: Record<Candidate['status'], string> = {
+  ...STATUS_LABEL,
+  needs_followup: 'Worth a second look',
+  likely_artifact: 'Probably an artifact',
+};
+
 interface ListProps {
   manifest: Manifest;
+  plain?: boolean;
   selectedId: string | null;
   onSelect: (id: string) => void;
 }
 
 export const CandidateList = memo(function CandidateList(props: ListProps) {
-  const { manifest, selectedId, onSelect } = props;
+  const { manifest, selectedId, onSelect, plain = false } = props;
+  const title = plain ? 'What changed?' : 'Residuals';
   const all = manifest.candidates;
   const followup = all.filter((c) => c.status === 'needs_followup');
   const [filter, setFilter] = useState<'followup' | 'all'>(followup.length ? 'followup' : 'all');
@@ -64,7 +81,7 @@ export const CandidateList = memo(function CandidateList(props: ListProps) {
   if (all.length === 0)
     return (
       <section className="candidates" aria-labelledby="cand-h">
-        <h2 id="cand-h">Residuals</h2>
+        <h2 id="cand-h">{title}</h2>
         <p className="empty">
           {manifest.differences.length === 0
             ? 'Change detection has not been run on this field, so nothing here has been evaluated.'
@@ -76,14 +93,15 @@ export const CandidateList = memo(function CandidateList(props: ListProps) {
   return (
     <section className="candidates" aria-labelledby="cand-h" data-tour="candidates">
       <div className="candidates-head">
-        <h2 id="cand-h">Residuals</h2>
+        <h2 id="cand-h">{title}</h2>
         <div className="segmented" role="group" aria-label="Filter residuals">
           <button
             type="button"
             aria-pressed={filter === 'followup'}
             onClick={() => setFilter('followup')}
           >
-            Needs follow-up <span className="mono">{followup.length}</span>
+            {plain ? 'Worth a second look' : 'Needs follow-up'}{' '}
+            <span className="mono">{followup.length}</span>
           </button>
           <button type="button" aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>
             All <span className="mono">{all.length}</span>
@@ -110,12 +128,12 @@ export const CandidateList = memo(function CandidateList(props: ListProps) {
                 >
                   <Glyph kind={c.kind} />
                   <span className="cand-id mono">{c.candidate_id.split('-').at(-1)}</span>
-                  <span className="cand-kind">{KIND[c.kind].label}</span>
+                  <span className="cand-kind">{plain ? plainKind(c) : KIND[c.kind].label}</span>
                   <span className="cand-sig mono">
                     {p == null ? '' : `${p >= 0 ? '+' : '−'}${Math.abs(p).toFixed(1)}σ`}
                   </span>
                   <span className="cand-date mono">
-                    {isoDate(date.get(c.observation_ids[0] ?? '') ?? 0)}
+                    {(plain ? longDate : isoDate)(date.get(c.observation_ids[0] ?? '') ?? 0)}
                     {c.observation_ids.length > 1 ? ` +${c.observation_ids.length - 1}` : ''}
                   </span>
                 </button>
@@ -125,6 +143,65 @@ export const CandidateList = memo(function CandidateList(props: ListProps) {
         </ol>
       )}
     </section>
+  );
+});
+
+interface SummaryProps {
+  candidate: Candidate;
+  manifest: Manifest;
+  activeEpochId: string;
+  onSelectEpoch: (id: string) => void;
+  onAnalyze: () => void;
+}
+
+/** The selected change in plain words, with one headline number and its uncertainty. */
+export const ChangeSummary = memo(function ChangeSummary(props: SummaryProps) {
+  const { candidate: c, manifest, activeEpochId, onSelectEpoch, onAnalyze } = props;
+  const n = manifest.observations.length;
+  const first = manifest.observations.find((o) => o.observation_id === c.observation_ids[0]);
+  const validated = c.observation_ids.every(
+    (id) => manifest.differences.find((d) => d.observation_id === id)?.status === 'validated',
+  );
+  const flux = c.measurements.find((m) => m.name === 'aperture flux change');
+  const p = peak(c);
+  return (
+    <article className="summary" aria-labelledby="summary-h" data-tour="evidence">
+      <header className="summary-head">
+        <h3 id="summary-h">
+          <Glyph kind={c.kind} /> {plainKind(c)}
+          {first && <span className="dim"> · {longDate(first.epoch.mjd_mid)}</span>}
+        </h3>
+        <p className={`stamp ${c.status}`}>{PLAIN_STATUS[c.status]} · unconfirmed</p>
+      </header>
+      <p>{KIND[c.kind].plain}</p>
+      <p>
+        Seen on {c.observation_ids.length} of {n} dates.{' '}
+        {validated && p != null ? (
+          <>
+            Strength: <Term k="confidence">{Math.abs(p).toFixed(1)}σ</Term> above the noise
+            {flux?.uncertainty != null && (
+              <>
+                ; extra light{' '}
+                <span className="mono">
+                  {flux.value.toFixed(0)} ± {flux.uncertainty.toFixed(0)} µJy
+                </span>
+              </>
+            )}
+            .
+          </>
+        ) : (
+          <>Numbers are withheld: this comparison failed its noise check.</>
+        )}
+      </p>
+      <LightCurve candidate={c} activeEpochId={activeEpochId} onSelectEpoch={onSelectEpoch} />
+      <p className="small dim">
+        A spot that changed in archive images, not a confirmed object. Seeing it again, with another
+        telescope or a later SPHEREx visit, is what would confirm it.{' '}
+        <button type="button" className="link" onClick={onAnalyze}>
+          Full evidence and caveats
+        </button>
+      </p>
+    </article>
   );
 });
 

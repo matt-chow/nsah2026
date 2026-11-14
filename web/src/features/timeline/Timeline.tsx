@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { isoDate } from '../../lib/time.ts';
+import { interval, isoDate, longDate } from '../../lib/time.ts';
 import type { Difference, Observation } from '../../types/manifest.ts';
 
 interface Props {
@@ -16,6 +16,9 @@ export const Timeline = memo(function Timeline(props: Props) {
   const t0 = observations[0]?.epoch.mjd_mid ?? 0;
   const t1 = observations.at(-1)?.epoch.mjd_mid ?? t0;
   const span = Math.max(1, t1 - t0);
+  const at = observations.findIndex((o) => o.observation_id === selectedId);
+  const sel = observations[at];
+  const prev = observations[at - 1];
   const pos = (mjd: number) => `${(((mjd - t0) / span) * 100).toFixed(2)}%`;
   const years = [];
   for (let y = new Date(isoDate(t0)).getUTCFullYear() + 1; ; y++) {
@@ -25,7 +28,7 @@ export const Timeline = memo(function Timeline(props: Props) {
   }
 
   return (
-    <section className="timeline" aria-label="Epochs" data-tour="timeline">
+    <section className="timeline" aria-label="Observation dates" data-tour="timeline">
       <div className="timeline-track">
         {years.map(({ y, mjd }) => (
           <span key={y} className="timeline-year mono" style={{ left: pos(mjd) }}>
@@ -44,12 +47,12 @@ export const Timeline = memo(function Timeline(props: Props) {
               aria-pressed={on}
               data-hit={highlight.has(o.observation_id) || undefined}
               onClick={() => onSelect(o.observation_id)}
-              title={`${o.observation_id}${d ? ` · difference ${d.status.replace('_', ' ')}` : ''}`}
+              title={`${longDate(o.epoch.mjd_mid)} · ${o.observation_id}${d ? ` · difference ${d.status.replace('_', ' ')}` : ''}`}
             >
               <span className="epoch-stem" aria-hidden="true" />
               <span className="epoch-label mono">
-                <span className="visually-hidden">Epoch {i + 1}, </span>
-                {isoDate(o.epoch.mjd_mid).slice(5)}
+                <span className="visually-hidden">Date {i + 1}, </span>
+                {longDate(o.epoch.mjd_mid).replace(/ \d{4}$/, '')}
                 <span className="epoch-meta">{o.provenance.data_release ?? 'SIM'}</span>
               </span>
               {highlight.has(o.observation_id) && (
@@ -59,6 +62,18 @@ export const Timeline = memo(function Timeline(props: Props) {
           );
         })}
       </div>
+      {sel && (
+        <p className="timeline-caption small" aria-live="polite">
+          <span className="mono">A</span> {longDate(sel.epoch.mjd_mid)}
+          <span className="dim">
+            {' '}
+            · date {at + 1} of {observations.length}
+            {prev
+              ? ` · ${interval(sel.epoch.mjd_mid - prev.epoch.mjd_mid)} after the previous`
+              : ' · the first'}
+          </span>
+        </p>
+      )}
     </section>
   );
 });

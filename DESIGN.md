@@ -108,11 +108,9 @@ components:
     textColor: "{colors.paper}"
     rounded: "{rounded.none}"
     padding: "14px 16px 16px"
-  tour-card:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.none}"
-    padding: "16px 18px"
+  story-heading:
+    textColor: "{colors.paper}"
+    typography: "Instrument Serif 400, 2rem/1.1"
     width: "340px"
   banner-simulated:
     backgroundColor: "{colors.caution-bg}"
@@ -152,7 +150,7 @@ A dark observatory palette: cool blue-black surfaces, warm paper type, a single 
 - **Sky Well** (sky-well): the canvas behind sky imagery, a step darker than ink.
 - **Graphite Rail / Rail Raised** (rail, rail-2): top bar and right rail; buttons and hover rows.
 - **Hairline / Hairline Strong** (hair, hair-2): dividers and control borders.
-- **Bulletin Paper** (paper): primary text; the inverse ground of the tour card and pressed segments.
+- **Bulletin Paper** (paper): primary text; the inverse ground of pressed segments.
 - **Paper Dim / Paper Faint** (paper-dim, paper-faint): secondary text; tertiary metadata (timeline years, epoch release tags, placeholders, axis ticks).
 - **Alert Coral** (alert): errors only.
 - **Caution Umber** (caution-bg, caution-text): the simulated-data banner and incompatibility warnings.
@@ -172,7 +170,8 @@ A dark observatory palette: cool blue-black surfaces, warm paper type, a single 
 ### Hierarchy
 - **Display** (800, clamp 3–6rem, 0.95): the intro title only.
 - **Headline** (400, clamp 1.125–1.375rem, 1.45): the intro lede.
-- **Title** (600, 0.9375rem): rail and report section heads; tour heads step up to 800 at 1.0625rem.
+- **Title** (600, 0.9375rem): rail and report section heads.
+- **Atlas serif** (Instrument Serif 400): the intro title, Discover step headings (2rem) and the change summary head (1.5rem). Words only; never numbers.
 - **Body** (400, 15px/1.5): prose, controls.
 - **Body small** (0.8125rem): captions, rows, credits; error copy capped at 60ch.
 - **Data** (mono, tabular): all measurements, IDs, dates, the viewer caption, the sky readout.
@@ -193,8 +192,7 @@ Spacing runs on 4/6/8/12/16/20/24px; panels pad 12–16px, rail sections gap 20p
 Flat. Depth comes from tonal steps (sky-well < ink < rail < rail-2) and hairlines. Soft shadows appear only on floating overlays that sit above the workspace.
 
 ### Shadow Vocabulary
-- **Overlay lift** (`box-shadow: 0 12px 32px rgba(0,0,0,0.5)`; tour card `0 16px 40px rgba(0,0,0,0.55)`): the keys dialog and tour card.
-- **Tour scrim** (`box-shadow: 0 0 0 9999px rgba(5,6,9,0.45)`): dims everything outside the tour's amber ring.
+- **Overlay lift** (`box-shadow: 0 12px 32px rgba(0,0,0,0.5)`; popovers `0 16px 40px rgba(0,0,0,0.55)`): the keys dialog and glossary popovers.
 
 ### Named Rules
 **The Flat Instrument Rule.** Panels at rest have no shadow. Only something floating over the workspace earns one.
@@ -213,7 +211,7 @@ Square corners throughout (0 radius); the loading spinner is the only circle. Bo
 - **Focus:** 2px amber outline, 2px offset, on everything.
 
 ### Segmented control
-Joined square buttons; the pressed one inverts to paper fill with ink text. Used for view mode (Blink / Overlay / Difference) and candidate filter.
+Joined square buttons; the pressed one inverts to paper fill with ink text. Used for view mode (Switch dates / Fade / Split / Highlight changes) and candidate filter. The Discover / Explore / Analyze tabs use the same frame with an amber underline on the current mode.
 
 ### Inputs / Fields
 Ink fill, hair-2 border, square, amber caret, paper-faint placeholder. Errors render below in alert coral, inside an `aria-live` line.
@@ -230,8 +228,11 @@ Stroked shape glyphs per candidate kind (square variable-like, circle new-source
 ### Timeline
 Epochs placed on true time along a hair-2 rule: 2px paper-dim stems, the active one 4px paper; epochs with a detection get an amber stem and an 8px amber square above.
 
-### Tour card
-An inverted paper card (ink text, ink primary button) tethered to an amber ring; docks to the bottom on small screens.
+### Discover story
+A numbered step list (the current number filled amber), a mono "STEP n OF 5" kicker, a serif heading and short paragraphs; Back / Next below. Entering a step fades the body up 6px over 420ms (none under reduced motion).
+
+### Glossary term
+Dotted amber underline on the word; a native popover card (rail-2, amber left rule) anchored below it.
 
 ## Do's and Don'ts
 

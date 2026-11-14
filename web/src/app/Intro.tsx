@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 import type { FieldSummary } from '../types/manifest.ts';
+import type { Tab } from './App.tsx';
 
 interface Props {
   fields: FieldSummary[] | null;
   leaving: boolean;
-  onEnter: (tour: boolean) => void;
+  onEnter: (to: Tab) => void;
 }
 
 /** Deterministic starfield (mulberry32), so every visit shows the same sky. */
@@ -77,26 +78,30 @@ export function Intro({ fields, leaving, onEnter }: Props) {
     <div className={`intro${leaving ? ' leaving' : ''}`}>
       <Starfield still={leaving} />
       <div className="intro-copy">
-        <h1 className="intro-title">PARALLAX</h1>
+        <p className="intro-eyebrow mono">PARALLAX · an open infrared observatory</p>
+        <h1 className="intro-title">Has the sky changed?</h1>
         <p className="intro-lede">
-          NASA's SPHEREx telescope maps the whole sky in infrared every six months. Line up its
-          images of the same patch of sky, taken months apart, and anything that changed stands out.
-        </p>
-        <p className="intro-body">
-          Blink between real archive epochs, look at what is left after subtracting the steady sky,
-          and judge each change for yourself, with its numbers and caveats.
+          NASA&apos;s SPHEREx telescope photographs the whole sky in infrared light, returning to
+          each patch every six months. Compare its real images from different dates and see for
+          yourself what changed, and how sure we can be.
         </p>
         <div className="intro-actions">
-          <button type="button" className="primary" onClick={() => onEnter(false)} autoFocus>
-            Open the workspace
+          <button type="button" className="primary" onClick={() => onEnter('discover')} autoFocus>
+            Start the guided investigation
           </button>
-          <button type="button" onClick={() => onEnter(true)}>
-            Take the one-minute tour
+          <button type="button" onClick={() => onEnter('explore')}>
+            Explore on my own
           </button>
         </div>
+        <ol className="intro-path">
+          <li>Pick a patch of sky</li>
+          <li>Compare dates</li>
+          <li>Weigh the evidence</li>
+        </ol>
         {real.length > 0 && (
           <p className="intro-facts mono">
-            {real.length} fields · {epochs} epochs · SPHEREx DR1 + QR3 via IRSA
+            {real.length} real fields · {epochs} observation dates · SPHEREx DR1 + QR3 via NASA/IPAC
+            IRSA
           </p>
         )}
       </div>
