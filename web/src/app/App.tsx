@@ -5,11 +5,11 @@ import {
   useEffect,
   useMemo,
   useState,
-  useSyncExternalStore,
   type ComponentType,
   type LazyExoticComponent,
 } from 'react';
 import { SkyCanvas, STRETCH, type Layer, type Stretch } from '../components/SkyCanvas.tsx';
+import { Icon } from '../components/Icon.tsx';
 import { Term } from '../components/Term.tsx';
 import { AnalyzePanel } from '../features/analysis/AnalyzePanel.tsx';
 import {
@@ -62,15 +62,11 @@ const TABS: { id: Tab; label: string; hint: string }[] = [
 ];
 
 type Load<T> =
-  { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; value: T };
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'ready'; value: T };
 const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-const NARROW = matchMedia('(max-width: 900px)');
-const onNarrow = (f: () => void) => {
-  NARROW.addEventListener('change', f);
-  return () => NARROW.removeEventListener('change', f);
-};
-
 /** `#/sky` names a page; `#nep-d2/c012` opens a field (and change) in the observatory. */
 function readHash() {
   const h = decodeURIComponent(location.hash.slice(1));
@@ -263,15 +259,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
   const initialCand = readHash().cand;
   const initial = manifest.candidates.find((c) => c.candidate_id.endsWith(initialCand ?? '\0'));
   const [candId, setCandId] = useState<string | null>(initial?.candidate_id ?? null);
-  // phones: the rail becomes a bottom sheet over the image, collapsed so the image comes
-  // first; collapsed content is inert
-  const narrow = useSyncExternalStore(onNarrow, () => NARROW.matches);
-  const [sheet, setSheet] = useState(false);
-  const [sheetTab, setSheetTab] = useState(tab);
-  if (sheetTab !== tab) {
-    setSheetTab(tab);
-    setSheet(false);
-  }
+  const [sheet, setSheet] = useState(true);
   const [epochId, setEpochId] = useState(initial?.observation_ids[0] ?? first.observation_id);
   const [refId, setRefId] = useState<string>(
     manifest.template ? 'template' : (observations[1] ?? first).observation_id,
@@ -483,6 +471,13 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
   return (
     <div className="workspace" data-tab={tab} inert={inert}>
       <header className="topbar">
+        <div className="workspace-title">
+          <h1>{displayTitle(manifest.target.label).split(',')[0]}</h1>
+          <p>
+            {manifest.data_kind === 'real' ? 'SPHEREx observations' : 'SIMULATED observations'} ·{' '}
+            {observations.length} dates · {first.spectral.wavelength_center_um.toFixed(2)} µm
+          </p>
+        </div>
         <nav className="tabs" aria-label="Mode">
           {TABS.map((t) => (
             <button
@@ -499,31 +494,46 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             </button>
           ))}
         </nav>
-        <label className="field-select">
-          <span className="visually-hidden">Sky field</span>
-          <select value={manifest.manifest_id} onChange={(e) => onField(e.target.value)}>
-            {fields.map((f) => (
-              <option key={f.manifest_id} value={f.manifest_id}>
-                {f.data_kind === 'simulated' ? 'SIMULATED · ' : ''}
-                {displayTitle(f.title)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <CoordinateSearch
-          fields={fields}
-          onFound={(f, ra, dec) => {
-            if (f.manifest_id !== manifest.manifest_id) return onField(f.manifest_id);
-            const p = wcs && skyToPixel(wcs, ra, dec);
-            if (p) {
-              setPin(p);
-              setFocus({ ...p, nonce: Date.now() });
-            }
-          }}
-        />
-        <button type="button" className="topbar-keys" popoverTarget="keys">
-          Keys
-        </button>
+        <div className="workspace-actions">
+          <details className="field-picker">
+            <summary>Change field</summary>
+            <div className="field-picker-body">
+              <label className="field-select">
+                <span className="visually-hidden">Sky field</span>
+                <select value={manifest.manifest_id} onChange={(e) => onField(e.target.value)}>
+                  {fields.map((f) => (
+                    <option key={f.manifest_id} value={f.manifest_id}>
+                      {f.data_kind === 'simulated' ? 'SIMULATED · ' : ''}
+                      {displayTitle(f.title)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <CoordinateSearch
+                fields={fields}
+                onFound={(f, ra, dec) => {
+                  if (f.manifest_id !== manifest.manifest_id) return onField(f.manifest_id);
+                  const p = wcs && skyToPixel(wcs, ra, dec);
+                  if (p) {
+                    setPin(p);
+                    setFocus({ ...p, nonce: Date.now() });
+                  }
+                }}
+              />
+            </div>
+          </details>
+          <button
+            type="button"
+            aria-expanded={sheet}
+            aria-controls="observatory-inspector"
+            onClick={() => setSheet((open) => !open)}
+          >
+            <Icon name="inspector" /> {sheet ? 'Hide inspector' : 'Show inspector'}
+          </button>
+          <button type="button" className="topbar-keys" popoverTarget="keys">
+            Keys
+          </button>
+        </div>
       </header>
       <div id="keys" popover="auto" className="keys">
         <h2>Keyboard</h2>
@@ -555,14 +565,8 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
         </p>
       )}
 
-      <main className="stage" data-tab={tab}>
+      <main className="stage" data-tab={tab} data-inspector={sheet}>
         <section className="viewer" aria-label="Sky viewer">
-          <h1 className="field-title">
-            {displayTitle(manifest.title)}
-            <span className="field-sub">
-              {observations.length} dates · {manifest.dataset.data_release ?? 'simulated data'}
-            </span>
-          </h1>
           {tab === 'discover' && (
             <section className="investigation-task" aria-label="Current investigation task">
               <div aria-live="polite">
@@ -591,7 +595,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
               </div>
             </section>
           )}
-          <div className="viewer-bar">
+          <div className="viewer-bar" role="group" aria-label="Comparison tools">
             <div className="segmented" role="group" aria-label="View" data-tour="modes">
               {MODES.map((m) => {
                 const off = m.id === 'difference' && !hasDiff;
@@ -624,10 +628,10 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                   }}
                   aria-pressed={playing}
                 >
-                  {playing ? 'Pause comparison' : 'Play A ↔ B'}
+                  <Icon name={playing ? 'pause' : 'play'} /> {playing ? 'Pause A/B' : 'Play A/B'}
                 </button>
                 <button type="button" onClick={() => setShowRef((s) => !s)} disabled={playing}>
-                  Flip A ↔ B
+                  <Icon name="switch" /> Flip A/B
                 </button>
               </>
             )}
@@ -643,6 +647,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                   : `Step through ${lapseFrames.length} dates in order (P)${skipped ? `; ${skipped} left out as not comparable` : ''}`
               }
             >
+              <Icon name={lapse ? 'pause' : 'play'} />{' '}
               {lapse ? 'Pause timeline' : 'Play dates in order'}
             </button>
             {mode === 'overlay' && comparable && (
@@ -673,8 +678,11 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 />
               </label>
             )}
-            {tab !== 'discover' && (
-              <div className="viewer-tools">
+            <details className="display-settings">
+              <summary>
+                <Icon name="settings" /> Display
+              </summary>
+              <div className="display-settings-body">
                 <label className="ref-select">
                   <span>Display</span>
                   <select
@@ -703,8 +711,11 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 >
                   Loupe
                 </button>
+                <p className="small dim">
+                  Visualization only. Display settings do not change measurements.
+                </p>
               </div>
-            )}
+            </details>
           </div>
 
           {tab !== 'discover' && (
@@ -751,58 +762,13 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             )}
           </div>
           {cand && tab !== 'analyze' && (
-            <p
-              className="selection-context"
-              aria-live={lapse || playing ? 'off' : 'polite'}
-            >
+            <p className="selection-context" aria-live={lapse || playing ? 'off' : 'polite'}>
               <Glyph kind={cand.kind} /> Selected {cand.candidate_id.split('-').at(-1)} ·{' '}
               {plainKind(cand)} · unconfirmed. Showing {longDate(epoch.epoch.mjd_mid)}
               {cand.observation_ids.includes(epoch.observation_id)
                 ? ', a flagged date for this spot.'
                 : '; this spot was flagged on another date.'}
             </p>
-          )}
-          <SkyCanvas
-            layer={layer}
-            label={`${showing}. ${manifest.title}. ${manifest.candidates.length} marked changes.`}
-            width={first.image.width_px}
-            height={first.image.height_px}
-            wcs={wcs}
-            candidates={manifest.candidates}
-            activeEpochId={epoch.observation_id}
-            selectedId={candId}
-            onPick={(id) => {
-              selectCandidate(id);
-              if (tab === 'discover') onTab('explore');
-            }}
-            pin={pin}
-            focus={focus}
-            pixelScale={first.image.pixel_scale_arcsec}
-            stretch={stretch}
-            loupe={loupe}
-          />
-
-          {manifest.candidates.length > 0 && (
-            <div className="marker-key small dim" aria-label="Image marker key">
-              <ul className="marker-shapes">
-                <li>
-                  <Glyph kind="variable_like" /> Brightness change
-                </li>
-                <li>
-                  <Glyph kind="new_source_like" /> Possible appearance
-                </li>
-                <li>
-                  <Glyph kind="dipole_like" /> Shift or misalignment
-                </li>
-                <li>
-                  <Glyph kind="artifact_like" /> Likely artifact
-                </li>
-              </ul>
-              <p>
-                Unconfirmed leads · solid: flagged on this date · dashed: another date · orange
-                reticle: selected. The image shows all markers; the list can filter them.
-              </p>
-            </div>
           )}
           <div className="viewer-caption">
             <div className="caption-row">
@@ -880,26 +846,74 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 strengths or brightness numbers are quoted for it.
               </p>
             )}
-            {tab === 'analyze' ? (
-              <p className="mono dim small">
-                {epoch.spectral.wavelength_center_um.toFixed(3)} µm · D
-                {epoch.spectral.detector ?? '?'} · {epoch.provenance.data_release ?? 'SIM'} · MJD{' '}
-                {epoch.epoch.mjd_mid.toFixed(3)} {epoch.epoch.time_scale.toUpperCase()}
-                {epoch.quality.psf_fwhm_arcsec
-                  ? ` · PSF ${epoch.quality.psf_fwhm_arcsec.toFixed(1)}″`
-                  : ''}
-                {diff ? ` · k ${diff.noise_scale.toFixed(2)}` : ''}
-              </p>
-            ) : (
-              <p className="small dim">
-                <Term k="infrared">Infrared</Term> at{' '}
-                {epoch.spectral.wavelength_center_um.toFixed(2)} µm ·{' '}
-                {manifest.data_kind === 'simulated' ? 'simulated' : 'SPHEREx'} image from{' '}
-                {longDate(epoch.epoch.mjd_mid)}
-                {epoch.provenance.data_release ? ` (${epoch.provenance.data_release})` : ''}
-              </p>
-            )}
+            <details className="observation-caption">
+              <summary>
+                Visualization · {epoch.provenance.data_release ?? 'SIMULATED'} · observation details
+              </summary>
+              {tab === 'analyze' ? (
+                <p className="mono dim small">
+                  {epoch.spectral.wavelength_center_um.toFixed(3)} µm · D
+                  {epoch.spectral.detector ?? '?'} · {epoch.provenance.data_release ?? 'SIM'} · MJD{' '}
+                  {epoch.epoch.mjd_mid.toFixed(3)} {epoch.epoch.time_scale.toUpperCase()}
+                  {epoch.quality.psf_fwhm_arcsec
+                    ? ` · PSF ${epoch.quality.psf_fwhm_arcsec.toFixed(1)}″`
+                    : ''}
+                  {diff ? ` · k ${diff.noise_scale.toFixed(2)}` : ''}
+                </p>
+              ) : (
+                <p className="small dim">
+                  <Term k="infrared">Infrared</Term> at{' '}
+                  {epoch.spectral.wavelength_center_um.toFixed(2)} µm ·{' '}
+                  {manifest.data_kind === 'simulated' ? 'simulated' : 'SPHEREx'} image from{' '}
+                  {longDate(epoch.epoch.mjd_mid)}
+                  {epoch.provenance.data_release ? ` (${epoch.provenance.data_release})` : ''}
+                </p>
+              )}
+            </details>
           </div>
+          <SkyCanvas
+            layer={layer}
+            label={`${showing}. ${manifest.title}. ${manifest.candidates.length} marked changes.`}
+            width={first.image.width_px}
+            height={first.image.height_px}
+            wcs={wcs}
+            candidates={manifest.candidates}
+            activeEpochId={epoch.observation_id}
+            selectedId={candId}
+            onPick={(id) => {
+              selectCandidate(id);
+              if (tab === 'discover') onTab('explore');
+            }}
+            pin={pin}
+            focus={focus}
+            pixelScale={first.image.pixel_scale_arcsec}
+            stretch={stretch}
+            loupe={loupe}
+          />
+
+          {manifest.candidates.length > 0 && (
+            <details className="marker-key small dim">
+              <summary>Image marker key · unconfirmed leads</summary>
+              <ul className="marker-shapes">
+                <li>
+                  <Glyph kind="variable_like" /> Brightness change
+                </li>
+                <li>
+                  <Glyph kind="new_source_like" /> Possible appearance
+                </li>
+                <li>
+                  <Glyph kind="dipole_like" /> Shift or misalignment
+                </li>
+                <li>
+                  <Glyph kind="artifact_like" /> Likely artifact
+                </li>
+              </ul>
+              <p>
+                Unconfirmed leads · solid: flagged on this date · dashed: another date · orange
+                reticle: selected. The image shows all markers; the list can filter them.
+              </p>
+            </details>
+          )}
 
           <Timeline
             observations={observations}
@@ -908,37 +922,54 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             onSelect={setEpochId}
             highlight={new Set(cand?.observation_ids ?? [])}
             quiet={lapse != null || playing}
+            referenceId={comparing && refId !== 'template' ? refId : null}
+            comparingDates={comparing}
+            onReferenceSelect={(id) => {
+              setPlaying(false);
+              setLapse(null);
+              setRefId(id);
+            }}
+            getCompatibility={(id, role) =>
+              role === 'B'
+                ? checkPair(manifest, epochId, id)
+                : refId === 'template'
+                  ? { status: 'compatible' }
+                  : checkPair(manifest, id, refId)
+            }
           />
         </section>
 
         <aside
+          id="observatory-inspector"
           className="rail"
-          data-open={sheet || undefined}
-          aria-label={TABS.find((t) => t.id === tab)?.hint}
+          hidden={!sheet}
+          aria-label="Context and evidence"
         >
-          <button
-            type="button"
-            className="sheet-handle"
-            aria-expanded={sheet}
-            aria-controls="investigation-panel"
-            onClick={(e) => {
-              if (sheet) e.currentTarget.focus();
-              setSheet((s) => !s);
-            }}
-          >
-            <span className="sheet-grip" aria-hidden="true" />
-            {tab === 'discover'
-              ? `Guided story · ${chapter + 1} of ${chapters.length}`
-              : cand
-                ? 'The selected change'
-                : `${manifest.candidates.length} marked changes`}
-            <span className="dim">{sheet ? 'Hide' : 'Show'}</span>
-          </button>
-          <div
-            id="investigation-panel"
-            className="rail-body"
-            inert={tab !== 'discover' && narrow && !sheet}
-          >
+          <div className="inspector-heading">
+            <div>
+              <p className="small dim">
+                {tab === 'discover'
+                  ? 'Guided investigation'
+                  : tab === 'explore'
+                    ? 'Context & evidence'
+                    : 'Scientific inspector'}
+              </p>
+              <h2>{tab === 'discover' ? 'Read the sky' : 'Investigate this field'}</h2>
+            </div>
+            <button
+              type="button"
+              aria-label="Close inspector"
+              onClick={() => {
+                setSheet(false);
+                document
+                  .querySelector<HTMLButtonElement>('[aria-controls="observatory-inspector"]')
+                  ?.focus();
+              }}
+            >
+              <Icon name="close" />
+            </button>
+          </div>
+          <div className="rail-body">
             {tab === 'discover' ? (
               <DiscoverPanel
                 chapters={chapters}
@@ -950,12 +981,18 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
               />
             ) : (
               <>
-                <CandidateList
-                  manifest={manifest}
-                  selectedId={candId}
-                  onSelect={selectCandidate}
-                  plain={plain}
-                />
+                <details className="inspector-section candidate-browser" open={!cand}>
+                  <summary>
+                    What changed?{' '}
+                    <span className="dim">{manifest.candidates.length} unconfirmed leads</span>
+                  </summary>
+                  <CandidateList
+                    manifest={manifest}
+                    selectedId={candId}
+                    onSelect={selectCandidate}
+                    plain={plain}
+                  />
+                </details>
                 {cand && (
                   <div className="rail-actions">
                     <BookmarkButton
@@ -969,7 +1006,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                   </div>
                 )}
                 {cand ? (
-                  plain ? (
+                  <>
                     <ChangeSummary
                       candidate={cand}
                       manifest={manifest}
@@ -977,21 +1014,23 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                       onSelectEpoch={setEpochId}
                       onAnalyze={() => onTab('analyze')}
                     />
-                  ) : (
-                    <EvidenceReport
-                      candidate={cand}
-                      manifest={manifest}
-                      activeEpochId={epoch.observation_id}
-                      onSelectEpoch={setEpochId}
-                    />
-                  )
+                    {tab === 'analyze' && (
+                      <details className="inspector-section">
+                        <summary>Full evidence, measurements & caveats</summary>
+                        <EvidenceReport
+                          candidate={cand}
+                          manifest={manifest}
+                          activeEpochId={epoch.observation_id}
+                          onSelectEpoch={setEpochId}
+                        />
+                      </details>
+                    )}
+                  </>
                 ) : (
-                  manifest.candidates.length > 0 && (
-                    <p className="empty">
-                      Pick a change from the list, or click a marker on the image, to see what is
-                      known about it.
-                    </p>
-                  )
+                  <p className="empty">
+                    Select a marked spot on the image or a lead in the list. Compare its dates, then
+                    weigh the evidence. All leads remain unconfirmed.
+                  </p>
                 )}
                 {tab === 'analyze' && (
                   <AnalyzePanel
@@ -1020,13 +1059,14 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 markers={manifest.candidates.length > 0}
               />
             )}
-            <footer className="credits small dim">
+            <details className="credits small dim">
+              <summary>Archive sources & acknowledgements</summary>
               <p>{manifest.dataset.citation}</p>
               <p>{manifest.dataset.acknowledgement}</p>
               <p>
                 A NASA Space Apps Challenge 2026 project. Not affiliated with or endorsed by NASA.
               </p>
-            </footer>
+            </details>
           </div>
         </aside>
       </main>

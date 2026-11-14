@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { Icon } from './Icon.tsx';
 import { loadImage } from '../lib/imageCache.ts';
 import {
   decodeSigma,
@@ -136,6 +137,22 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [fullscreenError, setFullscreenError] = useState('');
+  useEffect(() => {
+    const changed = () => setFullscreen(document.fullscreenElement === wrapRef.current);
+    document.addEventListener('fullscreenchange', changed);
+    return () => document.removeEventListener('fullscreenchange', changed);
+  }, []);
+  const toggleFullscreen = async () => {
+    setFullscreenError('');
+    try {
+      if (document.fullscreenElement === wrapRef.current) await document.exitFullscreen();
+      else await wrapRef.current?.requestFullscreen();
+    } catch {
+      setFullscreenError('Fullscreen is unavailable in this browser. You can still zoom and pan.');
+    }
+  };
   const [view, setView] = useState<View | null>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [sources, setSources] = useState<{ key: string; a: Source; b: Source | null } | null>(null);
@@ -529,8 +546,8 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
         }}
       />
       <p id="sky-keyboard-help" className="visually-hidden">
-        Arrow keys pan the image; plus and minus zoom; zero fits the full image.
-        Use the marked changes list to select a spot without pointing at the image.
+        Arrow keys pan the image; plus and minus zoom; zero fits the full image. Use the marked
+        changes list to select a spot without pointing at the image.
       </p>
       {view && (
         <div className="sky-scale mono" aria-hidden="true">
@@ -539,7 +556,15 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
           {scaleBar(pixelScale / view.scale).text}
         </div>
       )}
-      <div className="sky-zoom" role="group" aria-label="Zoom">
+      <div className="sky-zoom" role="group" aria-label="Image navigation">
+        <button
+          type="button"
+          onClick={() => void toggleFullscreen()}
+          aria-label={fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+          title="Fullscreen image · Escape to exit"
+        >
+          <Icon name="fullscreen" />
+        </button>
         <button type="button" onClick={() => zoomAt(1.25)} aria-label="Zoom in">
           <svg viewBox="0 0 16 16" aria-hidden="true">
             <path d="M8 3v10M3 8h10" />
@@ -559,6 +584,11 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
       <output className="sky-readout mono" aria-live="off">
         {readout || (view ? `${(view.scale * 100).toFixed(0)}% · drag to pan, scroll to zoom` : '')}
       </output>
+      {fullscreenError && (
+        <p className="sky-status" role="status">
+          {fullscreenError}
+        </p>
+      )}
       {loading && <p className="sky-status">Loading image…</p>}
       {failed === key && (
         <p className="sky-status error" role="alert">
