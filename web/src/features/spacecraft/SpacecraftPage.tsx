@@ -109,7 +109,8 @@ export function SpacecraftPage() {
     canvas.width = Math.round(size.w * dpr);
     canvas.height = Math.round(size.h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, (size.w / 2) * dpr, (size.h / 2) * dpr);
-    const c = { ...cam, scale: base * cam.scale };
+    // pull the camera back as the parts separate so the exploded view stays in frame
+    const c = { ...cam, scale: base * cam.scale * (1 - 0.22 * explode) };
     const signal = css('--signal-hi');
     ctx.lineJoin = 'round';
     // painter's algorithm: far faces first, each lit by one lamp from the upper left
@@ -182,7 +183,7 @@ export function SpacecraftPage() {
   }, [zoom]);
 
   const spot = SPOTS.find((s) => s.part === active) ?? (SPOTS[0] as (typeof SPOTS)[number]);
-  const c = { ...cam, scale: base * cam.scale };
+  const c = { ...cam, scale: base * cam.scale * (1 - 0.22 * explode) };
 
   return (
     <main className="page craft-page">
