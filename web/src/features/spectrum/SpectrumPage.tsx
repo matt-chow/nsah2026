@@ -70,7 +70,7 @@ export function SpectrumPage({ fields }: PageProps) {
         <svg
           viewBox={`0 0 ${W} ${H}`}
           className="spectrum-svg"
-          role="img"
+          role="group"
           aria-label={`Wavelength scale from 0.35 to 5.3 µm. The visible band is followed by SPHEREx's 102 infrared channels; channel ${index + 1} at ${ch.center.toFixed(3)} µm is selected.`}
         >
           <defs>

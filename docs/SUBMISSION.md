@@ -30,8 +30,8 @@ The noise model is calibrated on the data, not assumed. The pipeline:
 
 Injection tests show that real changes are recovered and that blank sky produces no detections.
 
-Around the observatory, a sky globe shows where the fields are, a spacecraft schematic and scan
-demo explain how SPHEREx builds a spectrum, a spectrum explorer places each field among the 102
+Around the observatory, a sky globe shows where the fields are, a solid-shaded spacecraft schematic
+(with an exploded view) and scan demo explain how SPHEREx builds a spectrum, a spectrum explorer places each field among the 102
 channels, a journal keeps your bookmarks and hypotheses apart from the pipeline record, and an
 optional Discovery Arcade turns real flagged changes into short investigations. Illustrations
 and the simulated field are labelled wherever they appear.
