@@ -7,7 +7,7 @@
 - **Scope:** read-only. No application code was changed, and nothing was committed, pushed or deployed.
 
 **Outputs**
-- `screenshots/`: 58 full-page or viewport PNGs, `desktop-*` and `mobile-*`. Not kept in the repo: they show the pre-v3.1 build, and every one is reproduced in `audit/parallax-contact-sheet.png`. The filenames below identify the tiles in that sheet.
+- `screenshots/`: 58 full-page or viewport PNGs, `desktop-*` and `mobile-*`. Not kept in the repo because they show the pre-v3.1 build. `audit/parallax-contact-sheet.png` keeps 10 of them (7 desktop, 3 mobile, each tile captioned with its filename). The other filenames cited below are no longer in the repo.
 - `audit/routes.json`: per-route facts (URL, title, headings, overflow, accessibility counts, timings, bytes) plus the dataset metadata.
 - `audit/console-errors.txt`: console, page-error and network-failure log.
 - `audit/raw-steps.json`: every scripted step with its result.
