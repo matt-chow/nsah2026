@@ -56,4 +56,8 @@ phase. Times are per-team estimates of focused hours.
 | 2026-11-13 | Initial JS + CSS after Discover/Explore/Analyze redesign (adds Instrument Serif, CSS only) | 88.4 kB gzip JS, 4.8 kB gzip CSS |
 | 2026-11-14 | Initial JS after Living Observatory (globe, spacecraft, spectrum, journal, arcade as lazy chunks) | 93.8 kB gzip JS, 5.3 kB gzip CSS; pages 2.0–6.4 kB gzip each |
 | 2026-11-14 | Initial JS after v3.1 retro-futurist refinement (timeline ruler, bottom sheet, outlier-aware light curve, story art) | 96.9 kB gzip JS, 6.4 kB gzip CSS; pages 2.2–6.8 kB gzip each |
+| 2026-11-14 | Sky atlas (lazy chunk) and initial JS | AtlasPage 17.6 kB gzip; initial 97.0 kB gzip JS |
+| 2026-11-14 | Atlas projection, 960 × 600 view (Node 24, laptop) | 75–95 ms per full geometry (≈ 210 ms before inlining) |
+| 2026-11-14 | Atlas renders against live IRSA (Chromium, local preview) | picture 1.4–2.6 s for 10 tiles; measured values 1.2 s, RGB 1.3–1.6 s (3 tiles × 3 layers) |
+| 2026-11-14 | Cutout without the EPSF table (0.05°, 29 × 29 px) | 4,049,280 → 95,040 bytes, 9 ms to strip |
 | 2026-11-13 | `data/` total (2 real fields × 10 epochs + fixture) | 6.88 MB |

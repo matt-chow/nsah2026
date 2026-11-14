@@ -36,8 +36,9 @@ channels, a journal keeps your bookmarks and hypotheses apart from the pipeline 
 optional Discovery Arcade turns real flagged changes into short investigations. Illustrations
 and the simulated field are labelled wherever they appear.
 
-The app is static, with free hosting, no database and no GPU. One optional serverless function
-asks IRSA whether SPHEREx has observed any coordinate you type.
+The app is static, with free hosting, no database and no GPU. Optional serverless functions
+list the SPHEREx exposures IRSA holds at any coordinate and fetch small cutouts of them. The sky
+atlas reads IRSA's all-sky spectral cube directly in the browser.
 
 ## Judging narrative (impact · creativity · validity · relevance · presentation)
 
@@ -125,7 +126,8 @@ illustrative.
 
 ## Limitations (also in README and video description)
 
-- There are two prepared fields of about 15′ × 15′. Other positions get exposure counts only.
+- There are two prepared time-series fields of about 15′ × 15′. Elsewhere the sky atlas shows
+  the combined DR1 map and individual exposures, but does not compare dates.
 - There is no PSF matching, and the classifier is heuristic. Labels describe resemblance.
 - Residuals are not cross-matched against Gaia, AllWISE, or JPL Horizons/MPC in this build.
 - Each comparison uses a single detector and a single wavelength. No spectra are used.

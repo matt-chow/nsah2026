@@ -24,7 +24,7 @@ export function parsePosition(params) {
 }
 
 /** Split one CSV line, honouring double-quoted fields. */
-function splitCsv(line) {
+export function splitCsv(line) {
   const out = [];
   let cur = "";
   let quoted = false;

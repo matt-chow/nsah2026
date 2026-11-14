@@ -217,6 +217,45 @@ versus injected significance, and produce zero candidates on a pair with no inje
 the expected false-alarm rate. Real-data injection (adding synthetic PSFs to real cutouts) is
 the Phase 3 acceptance test.
 
+## Sky atlas (live archive views)
+
+The atlas (`#/atlas`) shows three different kinds of SPHEREx product and keeps them apart:
+
+- **A · The all-sky map** is IRSA's SPHEREx DR1 spectral cube, released as HiPS
+  (`spherex_allsky_cube`): 102 wavelength layers, each combining every exposure in the release.
+  It is **not a time series**: a pixel averages many dates, so the atlas never compares layers in
+  time. *Picture* mode recolours IRSA's own 8-bit display tiles (asinh, 0–40 MJy/sr); it is a
+  visualization and the readout says "picture only". *Measured values* and *Infrared colour* read
+  the float32 order-5 cube tiles directly; the readout is the archived surface brightness in
+  MJy/sr at the nearest HEALPix pixel, with no interpolation.
+- **B · Archived exposures** are the individual dated Level 2 images that IRSA's SIA2 service
+  lists at the atlas centre. The list shows each detector's full range; the cutout reports the
+  wavelength at the actual pixel from IRSA's per-pixel `WCS-WAVE` lookup table (the 'W' -TAB
+  WCS), evaluated in the browser and checked against Astropy on a real cutout (2.19548 µm at
+  pixel (14, 14) in both). Values, variance, zodiacal model and flags are read unchanged from the
+  cutout HDUs.
+- **C · Prepared time series** are the pipeline's registered epochs for two deep fields; only
+  there does PARALLAX compare dates.
+
+Limits of the atlas views:
+
+1. **Normalization.** Measured values and each RGB channel are clipped to the 1st–99.5th
+   percentile of the current view (or a manual clip), then linear or asinh stretched. RGB
+   channels are stretched independently, so colour compares brightness *within* a channel, not
+   between wavelengths. The preset is R 3.293 µm (PAH), G 2.240 µm, B 1.254 µm.
+2. **Background.** The cube includes zodiacal light; nothing is subtracted. Some layers show
+   survey-stripe offsets in DR1 (strongly at 1.102 µm, the band-1 edge, and equally in IRSA's own
+   display tiles), so a stripe is an archive artefact, not structure. The RGB preset avoids it.
+3. **PSF.** PSF width differs between bands (the cutout reports `PSF_FWHM`), so an RGB composite
+   mixes resolutions. No PSF matching is done.
+4. **Missing data.** NaN pixels (and the blank dichroic layers 50 and 51) are drawn as a hatch
+   and reported as "no data", never as zero; a pixel missing in any RGB channel is hatched.
+5. **Orientation.** The cutout is shown in detector orientation. Its north/east arrows come from
+   the PC matrix without SIP, a display helper that agrees with Astropy to ≈ 1.3° on a real
+   cutout.
+6. **Cutout centre.** The searched position is the cutout centre unless the cutout is smaller
+   than requested, which means it was clipped at a detector edge; the panel says so.
+
 ## Assumptions needing validation
 
 1. ~~Release labels and collections for DR1/QR3.~~ Verified 2026-11 (see above).
@@ -238,6 +277,8 @@ the Phase 3 acceptance test.
     outside it are drawn as edge triangles with their value ± error printed; "Fit all" shows them
     in place. No measurement is removed or altered.
 11. Globe bezel: north up and east left, because the sphere is seen from inside (sky view).
+12. Atlas cube values are taken as published by IRSA (MJy/sr, order-5 tiles). The cube carries no
+    uncertainty plane, so measured-value readouts have no error bar; cutouts do (√VARIANCE).
 
 ## References
 
