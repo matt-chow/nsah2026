@@ -30,6 +30,9 @@ is an unconfirmed lead that needs an independent detection.
 - **Plain language first.** Readable dates ("14 Jun 2025") with intervals; MJD, wavelength and
   calibration numbers stay in Analyze. Dotted terms (infrared, SPHEREx, pixel, subtraction,
   uncertainty, calibration, noise, detection confidence) open short definitions.
+  A "What am I looking at?" key beside the image explains, for the current view, what the
+  greys or colours mean, what each marker shape means, and how to read the timeline, scale bar
+  and light-curve chart.
 - **Comparison gate.** Pairs the pipeline marked incompatible are refused on screen with its
   reasons (try the simulated field, dates 1 and 3). A true time-axis timeline marks the dates
   where the selected change was detected. Keyboard controls are listed under *Keys*.

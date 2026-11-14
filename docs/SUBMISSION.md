@@ -47,7 +47,7 @@ asks IRSA whether SPHEREx has observed any coordinate you type.
   - Flag and edge handling, and injection-recovery and null tests.
   - A validation gate that disables quantitative use when calibration fails.
   - A status vocabulary with no "confirmed".
-  - At the North Ecliptic Pole, 37 of 40 residuals are marked as likely artifacts. We show them
+  - At the North Ecliptic Pole, 38 of 40 residuals are marked as likely artifacts. We show them
     rather than hide them, because they show how the method behaves.
 - **Impact.** Anyone, from a student to a citizen scientist or an astronomer scouting follow-up
   targets, can see what changed in an infrared field and why the software thinks so, with

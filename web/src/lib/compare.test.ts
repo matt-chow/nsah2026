@@ -36,6 +36,17 @@ test('every pair in the real fields is checked and compatible', () => {
   }
 });
 
+test('every follow-up change was measured on the date it was flagged', () => {
+  for (const id of ['nep-d2', 'sep-d4']) {
+    for (const c of load(id).candidates.filter((x) => x.status === 'needs_followup')) {
+      for (const o of c.observation_ids) {
+        const p = c.light_curve.find((x) => x.observation_id === o);
+        assert.ok(p && p.delta_flux_ujy !== null, `${c.candidate_id} has no flux on ${o}`);
+      }
+    }
+  }
+});
+
 test('reader-facing dates and intervals', () => {
   assert.equal(longDate(60840), '14 Jun 2025');
   assert.equal(interval(0.5), '12 hours');

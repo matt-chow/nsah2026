@@ -16,6 +16,7 @@ import { skyToPixel, tanWcs } from '../lib/sky.ts';
 import { isoDate, longDate } from '../lib/time.ts';
 import type { FieldSummary, Manifest, Observation } from '../types/manifest.ts';
 import { Intro } from './Intro.tsx';
+import { ViewGuide } from './ViewGuide.tsx';
 
 const BASE = import.meta.env.BASE_URL;
 const DEMO_FIELD = 'nep-d2';
@@ -704,6 +705,16 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 />
               )}
             </>
+          )}
+          {tab !== 'analyze' && (
+            <ViewGuide
+              mode={mode}
+              comparable={comparable}
+              simulated={manifest.data_kind === 'simulated'}
+              pixelScale={first.image.pixel_scale_arcsec}
+              dates={observations.length}
+              markers={manifest.candidates.length > 0}
+            />
           )}
           <footer className="credits small dim">
             <p>{manifest.dataset.citation}</p>

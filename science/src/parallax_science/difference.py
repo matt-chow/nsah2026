@@ -62,6 +62,7 @@ class Detection:
     template_err_ujy: float
     caution: list[str]
     near_edge: bool
+    masked_px: int  # aperture pixels with no usable data in this epoch or its template
     kind: str = ""
     status: str = ""
     evidence: list[str] = field(default_factory=list)
@@ -222,6 +223,7 @@ def _detect(frame, s, resid, var, tmpl, tvar, p: Params) -> list[Detection]:
                     template_err_ujy=float(np.sqrt(tvar[tfin].sum()) * MJYSR_TO_UJY),
                     caution=[n for n, b in CAUTION_FLAGS.items() if bits & (1 << b)],
                     near_edge=min(x, y, w - 1 - x, h - 1 - y) < p.edge_px,
+                    masked_px=int((ap & ~np.isfinite(resid)).sum()),
                 )
             )
     return out
@@ -244,8 +246,14 @@ def classify(d: Detection, same_epoch: list[Detection], p: Params) -> None:
         f"reference flux at this position {d.template_ujy:.0f} +/- {d.template_err_ujy:.0f} uJy "
         f"(S/N {t_snr:.1f})"
     )
-    if d.caution or d.near_edge:
+    if d.caution or d.near_edge or d.masked_px:
         d.kind, d.status = "artifact_like", "likely_artifact"
+        if d.masked_px:
+            # the light curve refuses partial apertures too; a partial sum is not a flux change
+            d.evidence.append(
+                f"{d.masked_px} aperture px masked in this epoch (often a saturated or flagged "
+                "star core): the flux change comes from a partial aperture"
+            )
         if d.caution:
             d.evidence.append("touches pixels flagged " + ", ".join(d.caution))
         if d.near_edge:

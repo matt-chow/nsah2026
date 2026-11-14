@@ -62,8 +62,14 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
           </p>
           <p>
             You are seeing it in <Term k="infrared">infrared light</Term> through{' '}
-            {sim ? <strong>a simulation</strong> : <Term k="spherex">SPHEREx</Term>}. Every dot is a
-            star or galaxy; drag the image to look around, scroll to zoom.
+            {sim ? <strong>a simulation</strong> : <Term k="spherex">SPHEREx</Term>}. Our eyes
+            cannot see infrared, so the picture turns it into shades of grey: whiter means more
+            light.
+          </p>
+          <p>
+            Every white dot is a star or a distant galaxy; the black is empty sky. Zoom in and the
+            picture breaks into small squares, the <Term k="pixel">pixels</Term>. Drag the image to
+            look around, scroll to zoom.
           </p>
         </>
       ),

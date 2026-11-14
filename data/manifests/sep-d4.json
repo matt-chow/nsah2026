@@ -2255,6 +2255,7 @@
       "evidence": [
         "peak +67.9 sigma over 4 px; aperture change +4300 +/- 48 uJy",
         "reference flux at this position 142 +/- 12 uJy (S/N 11.7)",
+        "2 aperture px masked in this epoch (often a saturated or flagged star core): the flux change comes from a partial aperture",
         "touches pixels flagged TRANSIENT, HALO",
         "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
       ],
@@ -2606,6 +2607,7 @@
       "evidence": [
         "peak +60.5 sigma over 4 px; aperture change +3146 +/- 40 uJy",
         "reference flux at this position -11 +/- 15 uJy (S/N -0.7)",
+        "1 aperture px masked in this epoch (often a saturated or flagged star core): the flux change comes from a partial aperture",
         "touches pixels flagged OUTLIER",
         "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
       ],
@@ -2957,6 +2959,7 @@
       "evidence": [
         "peak +56.0 sigma over 3 px; aperture change +1678 +/- 40 uJy",
         "reference flux at this position 130 +/- 14 uJy (S/N 9.0)",
+        "2 aperture px masked in this epoch (often a saturated or flagged star core): the flux change comes from a partial aperture",
         "touches pixels flagged TRANSIENT, HALO",
         "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
       ],
@@ -3425,6 +3428,7 @@
       "evidence": [
         "peak +37.5 sigma over 3 px; aperture change +1540 +/- 33 uJy",
         "reference flux at this position 23 +/- 11 uJy (S/N 2.1)",
+        "1 aperture px masked in this epoch (often a saturated or flagged star core): the flux change comes from a partial aperture",
         "touches pixels flagged TRANSIENT, OUTLIER, HALO",
         "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
       ],
@@ -3787,8 +3791,8 @@
     },
     {
       "candidate_id": "sep-d4-c024",
-      "status": "needs_followup",
-      "kind": "variable_like",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
       "observation_ids": [
         "sep-d4.2026W40_2A_0128_2"
       ],
@@ -3893,7 +3897,7 @@
       "evidence": [
         "peak +28.8 sigma over 2 px; aperture change +951 +/- 29 uJy",
         "reference flux at this position 317 +/- 14 uJy (S/N 23.4)",
-        "brighter than the reference at a persistent source",
+        "2 aperture px masked in this epoch (often a saturated or flagged star core): the flux change comes from a partial aperture",
         "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
       ],
       "caveats": [
@@ -4489,8 +4493,8 @@
     },
     {
       "candidate_id": "sep-d4-c030",
-      "status": "needs_followup",
-      "kind": "variable_like",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
       "observation_ids": [
         "sep-d4.2026W40_1A_0347_1"
       ],
@@ -4595,7 +4599,7 @@
       "evidence": [
         "peak +24.3 sigma over 2 px; aperture change +510 +/- 36 uJy",
         "reference flux at this position 180 +/- 13 uJy (S/N 13.6)",
-        "brighter than the reference at a persistent source",
+        "1 aperture px masked in this epoch (often a saturated or flagged star core): the flux change comes from a partial aperture",
         "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
       ],
       "caveats": [

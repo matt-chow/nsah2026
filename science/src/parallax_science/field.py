@@ -81,6 +81,13 @@ TEMPLATE_METHOD = (
 )
 
 
+def _write(hdul: fits.HDUList, path: Path) -> None:
+    # astropy dates CHECKSUM comments by wall clock; a fixed one keeps rebuilds byte-identical
+    for hdu in hdul:
+        hdu.add_checksum(when="PARALLAX")
+    hdul.writeto(path, overwrite=True)
+
+
 def _usable(e: SpherexExposure, ra: float, dec: float, margin_px: float) -> tuple[float, float]:
     x, y = predicted_detector_xy(e, ra, dec)
     if not (margin_px < x < 2039 - margin_px and margin_px < y < 2039 - margin_px):
@@ -199,14 +206,17 @@ def build_field(
         hdr["WAVELEN"] = (round(c.wavelength_um, 5), "[um] LVF wavelength at target")
         hdr["SRCURL"] = cutout_url(e.source_url, ra, dec, size_arcsec)
         hdr["COMMENT"] = "Resampled by PARALLAX; see manifest provenance.processing."
-        fits.HDUList(
-            [
-                fits.PrimaryHDU(),
-                fits.ImageHDU(img, header=hdr, name="IMAGE"),
-                fits.ImageHDU(var, header=wgrid.to_header(), name="VARIANCE"),
-                fits.ImageHDU(flg, header=wgrid.to_header(), name="FLAGS"),
-            ]
-        ).writeto(out / f"{suffix}.fits", overwrite=True, checksum=True)
+        _write(
+            fits.HDUList(
+                [
+                    fits.PrimaryHDU(),
+                    fits.ImageHDU(img, header=hdr, name="IMAGE"),
+                    fits.ImageHDU(var, header=wgrid.to_header(), name="VARIANCE"),
+                    fits.ImageHDU(flg, header=wgrid.to_header(), name="FLAGS"),
+                ]
+            ),
+            out / f"{suffix}.fits",
+        )
         png(out / f"{suffix}.png", img - bg)
         version = pipeline_version(e.source_url)
         observations.append(
@@ -262,13 +272,16 @@ def build_field(
             )
         )
 
-    fits.HDUList(
-        [
-            fits.PrimaryHDU(),
-            fits.ImageHDU(tmpl.astype(np.float32), header=wgrid.to_header(), name="IMAGE"),
-            fits.ImageHDU(tvar.astype(np.float32), header=wgrid.to_header(), name="VARIANCE"),
-        ]
-    ).writeto(out / "template.fits", overwrite=True, checksum=True)
+    _write(
+        fits.HDUList(
+            [
+                fits.PrimaryHDU(),
+                fits.ImageHDU(tmpl.astype(np.float32), header=wgrid.to_header(), name="IMAGE"),
+                fits.ImageHDU(tvar.astype(np.float32), header=wgrid.to_header(), name="VARIANCE"),
+            ]
+        ),
+        out / "template.fits",
+    )
     png(out / "template.png", tmpl)
 
     differences, candidates = [], []

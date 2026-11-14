@@ -1394,3 +1394,78 @@ button[aria-pressed='true'] .mono {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Plain-language view guide */
+
+.guide {
+  border-top: 1px solid var(--hair);
+  padding-top: 12px;
+}
+
+.guide summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--paper);
+}
+
+.guide summary:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.guide-body {
+  display: grid;
+  gap: 10px;
+  padding-top: 10px;
+  font-size: 0.875rem;
+  color: var(--paper-dim);
+}
+
+.guide-body strong {
+  color: var(--paper);
+}
+
+.guide-body ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.guide-body ul:has(.swatch),
+.guide-glyphs {
+  list-style: none;
+  padding-left: 0;
+}
+
+.guide-glyphs .glyph {
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  border: 1px solid var(--hair-2);
+}
+
+.swatch[data-c='none'] {
+  background: #0c0e14;
+}
+
+.swatch[data-c='gold'] {
+  background: #f2a33a;
+}
+
+.swatch[data-c='blue'] {
+  background: #609cec;
+}
+
+.swatch[data-c='grey'] {
+  background: #34302c;
+}

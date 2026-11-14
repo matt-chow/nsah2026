@@ -121,6 +121,17 @@ def test_caution_flags_mark_artifacts():
     assert d.kind == "artifact_like" and "SNOWBALL" in d.caution
 
 
+def test_partly_masked_aperture_marks_artifact():
+    # a brightening measured only on the wings of a masked star core must not pass as a change
+    frames, stars = _frames()
+    x, y, f = stars[0]
+    frames[3].image += _psf(x, y, f * 3).astype(np.float32)
+    frames[3].image[round(y), round(x)] = np.nan
+    _, _, _, diffs, _ = run(frames)
+    dets = [d for d in _all(diffs) if d.observation_id == "e3"]
+    assert dets and all(d.status == "likely_artifact" and d.masked_px for d in dets)
+
+
 def test_underestimated_variance_disables_quantitative_use():
     frames, _ = _frames(inject=lambda i: _psf(40, 40, 0.5) if i == 2 else 0)
     for f in frames:

@@ -70,8 +70,10 @@ a field of `difference.Params` or is written into the manifest.
    - Fluxes are summed in a 1.5 px aperture and converted from MJy/sr to µJy with the 6.15″
      pixel solid angle.
 7. **Triage** (`difference.classify`, applied in order)
-   1. A detection that touches caution flags, or lies within 3 px of the edge, is
-      *artifact-like*.
+   1. A detection that touches caution flags, lies within 3 px of the edge, or has any masked
+      pixel in its aperture is *artifact-like*. A partial aperture (often a saturated star core
+      masked on that date) gives a partial sum, not a flux change, and the light curve already
+      refuses such epochs. `test_partly_masked_aperture_marks_artifact` covers this.
    2. A detection whose aperture change is below 3σ, although its peak pixel is significant, is
       *artifact-like*. This is the signature of an undersampled PSF shifting between pixels.
    3. A detection with an opposite-sign partner within 3 px is *dipole-like*. It is an artifact
@@ -90,8 +92,8 @@ not cross-matched.
 
 | Field | Residuals | Needs follow-up | Likely artifact |
 |---|---|---|---|
-| NEP 1.445 µm | 40 | 3 (2 variable-like, 1 new-source-like) | 37 |
-| SEP 2.559 µm | 40 | 22 (15 variable-like, 7 new-source-like) | 18 |
+| NEP 1.445 µm | 40 | 2 (1 variable-like, 1 new-source-like) | 38 |
+| SEP 2.559 µm | 40 | 20 (13 variable-like, 7 new-source-like) | 20 |
 
 The SEP field has many more follow-up leads. A plausible reason is its baseline: eight of its
 ten epochs fall within about 10 weeks (2025 weeks 40 to 49), so there is less averaging. We have

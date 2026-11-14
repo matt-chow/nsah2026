@@ -16,19 +16,20 @@ export const STATUS_LABEL: Record<Candidate['status'], string> = {
 const KIND: Record<CandidateKind, { label: string; plain: string }> = {
   new_source_like: {
     label: 'New-source-like',
-    plain: 'Brighter than the other epochs at a position with no steady source.',
+    plain: 'Light appeared on one date where the other dates show nothing steady.',
   },
   variable_like: {
     label: 'Variable-like',
-    plain: 'A steady source that was brighter or fainter in this epoch.',
+    plain: 'A star or galaxy that is always there, but was brighter or fainter on this date.',
   },
   dipole_like: {
     label: 'Dipole-like',
-    plain: 'Paired positive and negative residuals, as left by motion or misalignment.',
+    plain:
+      'A bright patch beside a dark one: the mark of something moving, or of images slightly out of line.',
   },
   artifact_like: {
     label: 'Artifact-like',
-    plain: 'A sharp single-pixel spike, flagged pixels, or a flux change below 3σ.',
+    plain: 'A one-pixel spike, damaged pixels, or a change too small to trust (under 3σ).',
   },
 };
 
@@ -194,6 +195,14 @@ export const ChangeSummary = memo(function ChangeSummary(props: SummaryProps) {
         )}
       </p>
       <LightCurve candidate={c} activeEpochId={activeEpochId} onSelectEpoch={onSelectEpoch} />
+      <p className="small">
+        <strong>Reading the chart:</strong> each mark is one date, left to right in time. Height is
+        how much brighter (up) or fainter (down) this spot was than usual; the dashed line is “no
+        change”. The vertical bar through each mark is its <Term k="uncertainty">uncertainty</Term>:
+        if it reaches the dashed line, that date may show no change at all. Squares mark the dates
+        where the change was strong enough to flag; × marks a date with no usable pixels here. Click
+        a mark to view that date.
+      </p>
       <p className="small dim">
         A spot that changed in archive images, not a confirmed object. Seeing it again, with another
         telescope or a later SPHEREx visit, is what would confirm it.{' '}
