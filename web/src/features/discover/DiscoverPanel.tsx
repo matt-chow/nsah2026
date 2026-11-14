@@ -16,6 +16,7 @@ export interface Chapter {
   title: string;
   body: ReactNode;
   view: StoryView;
+  task: string;
 }
 
 const measure = (c: Candidate, name: string) => c.measurements.find((m) => m.name === name);
@@ -56,6 +57,7 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
   return [
     {
       title: 'A patch of sky',
+      task: 'Inspect the image: find a bright spot, then zoom in and fit the image again.',
       body: (
         <>
           <p>
@@ -69,9 +71,9 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
             light.
           </p>
           <p>
-            Every white dot is a star or a distant galaxy; the black is empty sky. Zoom in and the
-            picture breaks into small squares, the <Term k="pixel">pixels</Term>. Drag the image to
-            look around, scroll to zoom.
+            Many bright spots are stars or distant galaxies; dark areas show less infrared light,
+            not necessarily empty space. Zoom in and the picture breaks into small squares, the{' '}
+            <Term k="pixel">pixels</Term>. Drag the image to look around, scroll to zoom.
           </p>
         </>
       ),
@@ -79,6 +81,7 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
     },
     {
       title: 'The same sky, on different dates',
+      task: 'Choose a date on the timeline. Look at the same patch of sky each time.',
       body: (
         <>
           <p>
@@ -105,16 +108,20 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
     },
     {
       title: 'Switch between dates',
+      task: 'Flip the images: does a spot brighten, disappear, or shift position?',
       body: (
         <>
           <p>
-            The image now flips between one date and the typical sky (the middle value of all dates
-            at each <Term k="pixel">pixel</Term>). Astronomers have hunted for changes this way for
-            a century; Pluto was found by flipping between two photographs.
+            Use Flip A ↔ B to switch between one date and the typical sky (the middle value of all
+            dates at each <Term k="pixel">pixel</Term>), or Play A ↔ B to animate. Astronomers have
+            hunted for changes this way for a century; Pluto was found by flipping between two
+            photographs.
           </p>
           <p>
-            Most of what flickers is <Term k="noise">noise</Term>. A real change would sit still and
-            blink on or off.
+            Much of the flicker is <Term k="noise">noise</Term> or an imaging artifact. A brightness
+            change may blink in the same place; a moving object may appear at different positions.
+            A shift can also mean the images are slightly misaligned. Appearance alone cannot tell
+            us the cause.
           </p>
         </>
       ),
@@ -122,6 +129,9 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
     },
     {
       title: 'Highlight what changed',
+      task: c
+        ? 'Find the selected ring and compare it with the surrounding speckle.'
+        : 'Read whether change detection is available. No flagged lead does not prove that nothing changed.',
       body:
         c && seen && peak ? (
           <>
@@ -153,6 +163,7 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
     },
     {
       title: 'Weigh the evidence',
+      task: 'Describe what you see, then check the evidence before suggesting a cause.',
       body:
         c && flux && diff ? (
           <>
@@ -219,7 +230,7 @@ export const DiscoverPanel = memo(function DiscoverPanel(props: Props) {
   const moved = useRef(false);
   useEffect(() => {
     // move focus with the story only after the reader acts, never on first render
-    if (moved.current) heading.current?.focus();
+    if (moved.current && document.activeElement?.closest('.story')) heading.current?.focus();
     moved.current = true;
   }, [index]);
   if (!ch) return null;
@@ -255,6 +266,7 @@ export const DiscoverPanel = memo(function DiscoverPanel(props: Props) {
           ))}
         </div>
         <StoryArt index={index} />
+        <p className="small dim">Illustration · not observation data</p>
         <h2 id="story-h" ref={heading} tabIndex={-1}>
           {ch.title}
         </h2>

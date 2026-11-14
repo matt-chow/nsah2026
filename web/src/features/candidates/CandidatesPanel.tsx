@@ -93,6 +93,12 @@ export const CandidateList = memo(function CandidateList(props: ListProps) {
 
   return (
     <section className="candidates" aria-labelledby="cand-h" data-tour="candidates">
+      {plain && (
+        <p className="small dim">
+          Unconfirmed leads, not discoveries. The image shows all {all.length} markers; this list
+          shows {shown.length}. Selecting a lead opens a flagged date and centres the image.
+        </p>
+      )}
       <div className="candidates-head">
         <h2 id="cand-h">{title}</h2>
         <div className="segmented" role="group" aria-label="Filter residuals">
@@ -169,6 +175,7 @@ export const ChangeSummary = memo(function ChangeSummary(props: SummaryProps) {
     <article className="summary" aria-labelledby="summary-h" data-tour="evidence">
       <header className="summary-head">
         <h3 id="summary-h">
+          <span className="mono">{c.candidate_id.split('-').at(-1)}</span>{' · '}
           <Glyph kind={c.kind} /> {plainKind(c)}
           {first && <span className="dim"> · {longDate(first.epoch.mjd_mid)}</span>}
         </h3>

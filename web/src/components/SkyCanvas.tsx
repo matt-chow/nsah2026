@@ -488,6 +488,7 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
         ref={canvasRef}
         role="img"
         aria-label={label}
+        aria-describedby="sky-keyboard-help"
         tabIndex={0}
         onKeyDown={onKeyDown}
         onPointerDown={(e) => {
@@ -527,6 +528,10 @@ export const SkyCanvas = memo(function SkyCanvas(props: Props) {
           setCursor(null);
         }}
       />
+      <p id="sky-keyboard-help" className="visually-hidden">
+        Arrow keys pan the image; plus and minus zoom; zero fits the full image.
+        Use the marked changes list to select a spot without pointing at the image.
+      </p>
       {view && (
         <div className="sky-scale mono" aria-hidden="true">
           <span className="sky-compass">N ↑ E ←</span>

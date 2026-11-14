@@ -16,6 +16,8 @@ import {
   CandidateList,
   ChangeSummary,
   EvidenceReport,
+  Glyph,
+  plainKind,
 } from '../features/candidates/CandidatesPanel.tsx';
 import { buildStory, DiscoverPanel, storyCandidate } from '../features/discover/DiscoverPanel.tsx';
 import { BookmarkButton } from '../features/journal/BookmarkButton.tsx';
@@ -362,6 +364,9 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
       if (id) setSheet(true);
       const c = manifest.candidates.find((x) => x.candidate_id === id);
       if (!c) return;
+      setPlaying(false);
+      setLapse(null);
+      setShowRef(false);
       setEpochId((e) => (c.observation_ids.includes(e) ? e : (c.observation_ids[0] ?? e)));
       setFocus({ x: c.pixel_x, y: c.pixel_y, nonce: Date.now() });
     },
@@ -374,6 +379,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
     const v = chapters[n]?.view;
     setChapter(n);
     if (!v) return;
+    setLapse(null);
     setMode(v.mode === 'difference' && !hasDiff ? 'blink' : v.mode);
     setEpochId(v.epochId);
     setShowRef(false);
@@ -475,7 +481,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
   const storyCand = useMemo(() => storyCandidate(manifest), [manifest]);
 
   return (
-    <div className="workspace" inert={inert}>
+    <div className="workspace" data-tab={tab} inert={inert}>
       <header className="topbar">
         <nav className="tabs" aria-label="Mode">
           {TABS.map((t) => (
@@ -557,6 +563,34 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
               {observations.length} dates · {manifest.dataset.data_release ?? 'simulated data'}
             </span>
           </h1>
+          {tab === 'discover' && (
+            <section className="investigation-task" aria-label="Current investigation task">
+              <div aria-live="polite">
+                <p className="small dim">
+                  Step {chapter + 1} of {chapters.length} · {chapters[chapter]?.title}
+                </p>
+                <p>{chapters[chapter]?.task}</p>
+              </div>
+              <div className="task-actions">
+                <button
+                  type="button"
+                  disabled={chapter === 0}
+                  onClick={() => goChapter(chapter - 1)}
+                >
+                  Previous step
+                </button>
+                {chapter < chapters.length - 1 ? (
+                  <button type="button" onClick={() => goChapter(chapter + 1)}>
+                    Next step
+                  </button>
+                ) : (
+                  <button type="button" onClick={() => onTab('explore')}>
+                    Explore this field
+                  </button>
+                )}
+              </div>
+            </section>
+          )}
           <div className="viewer-bar">
             <div className="segmented" role="group" aria-label="View" data-tour="modes">
               {MODES.map((m) => {
@@ -590,10 +624,10 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                   }}
                   aria-pressed={playing}
                 >
-                  {playing ? 'Stop' : 'Play'}
+                  {playing ? 'Pause comparison' : 'Play A ↔ B'}
                 </button>
                 <button type="button" onClick={() => setShowRef((s) => !s)} disabled={playing}>
-                  Flip
+                  Flip A ↔ B
                 </button>
               </>
             )}
@@ -609,12 +643,13 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                   : `Step through ${lapseFrames.length} dates in order (P)${skipped ? `; ${skipped} left out as not comparable` : ''}`
               }
             >
-              {lapse ? 'Stop time-lapse' : 'Play all dates'}
+              {lapse ? 'Pause timeline' : 'Play dates in order'}
             </button>
             {mode === 'overlay' && comparable && (
               <label className="slider">
-                <span>B</span>
+                <span>Image B opacity</span>
                 <input
+                  aria-valuetext={`${Math.round(opacity * 100)}% image B, ${Math.round((1 - opacity) * 100)}% image A`}
                   type="range"
                   min={0}
                   max={1}
@@ -633,6 +668,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                   max={0.95}
                   step={0.01}
                   value={splitAt}
+                  aria-valuetext={`${Math.round(splitAt * 100)}% image A on the left`}
                   onChange={(e) => setSplitAt(Number(e.target.value))}
                 />
               </label>
@@ -674,7 +710,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
           {tab !== 'discover' && (
             <div className="pair-bar">
               <label className="ref-select">
-                <span>A</span>
+                <span>Observation A</span>
                 <select value={epochId} onChange={(e) => setEpochId(e.target.value)}>
                   {observations.map((o) => (
                     <option key={o.observation_id} value={o.observation_id}>
@@ -685,10 +721,10 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
               </label>
               {comparing ? (
                 <label className="ref-select">
-                  <span>B</span>
+                  <span>Compare with B</span>
                   <select value={refId} onChange={(e) => setRefId(e.target.value)}>
                     {manifest.template && (
-                      <option value="template">Typical sky (median of all dates)</option>
+                      <option value="template">Combined typical sky (median of all dates)</option>
                     )}
                     {observations.map((o) => (
                       <option key={o.observation_id} value={o.observation_id}>
@@ -699,12 +735,33 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 </label>
               ) : (
                 <p className="small dim">
-                  B: typical sky of the other {observations.length - 1} dates
+                  Reference: combined typical sky of the other {observations.length - 1} dates
                 </p>
               )}
             </div>
           )}
 
+          <div className="comparison-context" aria-label="Comparison context">
+            <p aria-live={lapse || playing ? 'off' : 'polite'}>{showing}</p>
+            {comparing && (
+              <p className="small dim">
+                A: {longDate(epoch.epoch.mjd_mid)} · B: {ref.name}.{' '}
+                {comparable ? 'Fair comparison' : 'Comparison unavailable — showing A only'}.
+              </p>
+            )}
+          </div>
+          {cand && tab !== 'analyze' && (
+            <p
+              className="selection-context"
+              aria-live={lapse || playing ? 'off' : 'polite'}
+            >
+              <Glyph kind={cand.kind} /> Selected {cand.candidate_id.split('-').at(-1)} ·{' '}
+              {plainKind(cand)} · unconfirmed. Showing {longDate(epoch.epoch.mjd_mid)}
+              {cand.observation_ids.includes(epoch.observation_id)
+                ? ', a flagged date for this spot.'
+                : '; this spot was flagged on another date.'}
+            </p>
+          )}
           <SkyCanvas
             layer={layer}
             label={`${showing}. ${manifest.title}. ${manifest.candidates.length} marked changes.`}
@@ -725,15 +782,30 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             loupe={loupe}
           />
 
+          {manifest.candidates.length > 0 && (
+            <div className="marker-key small dim" aria-label="Image marker key">
+              <ul className="marker-shapes">
+                <li>
+                  <Glyph kind="variable_like" /> Brightness change
+                </li>
+                <li>
+                  <Glyph kind="new_source_like" /> Possible appearance
+                </li>
+                <li>
+                  <Glyph kind="dipole_like" /> Shift or misalignment
+                </li>
+                <li>
+                  <Glyph kind="artifact_like" /> Likely artifact
+                </li>
+              </ul>
+              <p>
+                Unconfirmed leads · solid: flagged on this date · dashed: another date · orange
+                reticle: selected. The image shows all markers; the list can filter them.
+              </p>
+            </div>
+          )}
           <div className="viewer-caption">
             <div className="caption-row">
-              <p className="showing" aria-live={lapse || playing ? 'off' : 'polite'}>
-                <span
-                  className={`frame-tag ${mode === 'blink' && showRef && comparable ? 'ref' : ''}`}
-                >
-                  {showing}
-                </span>
-              </p>
               <ul className="validity" aria-label="What this view can be trusted for">
                 {mode === 'difference' ? (
                   <li data-ok={diff ? diff.status === 'validated' : undefined}>
@@ -848,7 +920,11 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             type="button"
             className="sheet-handle"
             aria-expanded={sheet}
-            onClick={() => setSheet((s) => !s)}
+            aria-controls="investigation-panel"
+            onClick={(e) => {
+              if (sheet) e.currentTarget.focus();
+              setSheet((s) => !s);
+            }}
           >
             <span className="sheet-grip" aria-hidden="true" />
             {tab === 'discover'
@@ -858,7 +934,11 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
                 : `${manifest.candidates.length} marked changes`}
             <span className="dim">{sheet ? 'Hide' : 'Show'}</span>
           </button>
-          <div className="rail-body" inert={narrow && !sheet}>
+          <div
+            id="investigation-panel"
+            className="rail-body"
+            inert={tab !== 'discover' && narrow && !sheet}
+          >
             {tab === 'discover' ? (
               <DiscoverPanel
                 chapters={chapters}

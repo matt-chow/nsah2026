@@ -2028,3 +2028,104 @@ button[aria-pressed='true'] .mono {
     display: none;
   }
 }
+
+/* Keep the task and comparison readable beside the observation. */
+.investigation-task,
+.comparison-context,
+.selection-context {
+  padding: 10px 12px;
+  border-left: 3px solid var(--signal);
+  background: var(--rail);
+}
+
+.task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.selection-context .glyph {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.viewer {
+  overflow-y: auto;
+}
+
+.marker-key {
+  line-height: 1.6;
+}
+
+.marker-shapes,
+.marker-shapes li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+
+.marker-shapes {
+  padding: 0;
+  margin: 0 0 4px;
+  list-style: none;
+}
+
+.marker-shapes .glyph {
+  width: 16px;
+  height: 16px;
+}
+
+.lc-data button {
+  width: 100%;
+  text-align: left;
+  min-height: 44px;
+  white-space: normal;
+}
+
+@media (max-width: 900px) {
+  .workspace[data-tab='discover'],
+  .workspace[data-tab='discover']:has(.rail[data-open]) {
+    padding-bottom: 0;
+  }
+
+  .workspace[data-tab='discover'] .rail {
+    position: static;
+    max-height: none;
+    transform: none;
+    overflow: visible;
+    box-shadow: none;
+  }
+
+  .workspace[data-tab='discover'] .sheet-handle {
+    display: none;
+  }
+
+  .workspace[data-tab='discover'] .rail-body {
+    overflow: visible;
+  }
+
+  .pair-bar,
+  .pair-bar .ref-select {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .pair-bar select {
+    max-width: 100%;
+  }
+
+  .task-actions button,
+  .viewer-bar button,
+  .story-nav button {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 900px) {
+  .viewer {
+    overflow: visible;
+  }
+}
