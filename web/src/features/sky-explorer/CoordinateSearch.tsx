@@ -1,68 +1,118 @@
 import { memo, useId, useState, type FormEvent } from 'react';
 import { parseDegrees, separationDeg } from '../../lib/coords.ts';
-import type { Target } from '../../types/manifest.ts';
+import type { FieldSummary } from '../../types/manifest.ts';
 
 interface Props {
-  target: Target;
+  fields: FieldSummary[];
+  onFound: (field: FieldSummary, ra: number, dec: number) => void;
 }
 
-export const CoordinateSearch = memo(function CoordinateSearch({ target }: Props) {
-  const id = useId();
-  const [ra, setRa] = useState(String(target.ra_deg));
-  const [dec, setDec] = useState(String(target.dec_deg));
-  const [errors, setErrors] = useState<{ ra?: string; dec?: string }>({});
-  const [result, setResult] = useState('');
+type Result = { kind: 'idle' } | { kind: 'busy' } | { kind: 'msg'; text: string; tone?: 'error' };
 
-  function onSubmit(e: FormEvent) {
+interface ArchiveCount {
+  collection: string;
+  exposures: number;
+  truncated: boolean;
+}
+
+/** Bounded metadata-only lookup through the optional serverless proxy (IRSA has no CORS). */
+async function archiveLookup(ra: number, dec: number): Promise<ArchiveCount[] | null> {
+  try {
+    const res = await fetch(`api/sia?ra=${ra}&dec=${dec}`, { signal: AbortSignal.timeout(25000) });
+    if (!res.ok || !res.headers.get('content-type')?.includes('json')) return null;
+    const body = (await res.json()) as { collections?: ArchiveCount[] };
+    return Array.isArray(body.collections) ? body.collections : null;
+  } catch {
+    return null;
+  }
+}
+
+export const CoordinateSearch = memo(function CoordinateSearch({ fields, onFound }: Props) {
+  const id = useId();
+  const [ra, setRa] = useState('');
+  const [dec, setDec] = useState('');
+  const [result, setResult] = useState<Result>({ kind: 'idle' });
+
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const r = parseDegrees(ra, 0, 360, false);
     const d = parseDegrees(dec, -90, 90, true);
-    setErrors({ ...(r.ok ? {} : { ra: r.error }), ...(d.ok ? {} : { dec: d.error }) });
-    if (!r.ok || !d.ok) return setResult('');
-    const sepArcsec = separationDeg(r.value, d.value, target.ra_deg, target.dec_deg) * 3600;
-    setResult(
-      sepArcsec <= target.radius_arcsec
-        ? `Inside the loaded field "${target.label}" (${sepArcsec.toFixed(1)}″ from center).`
-        : 'No loaded observations cover this position. Live SPHEREx archive search is not available in this build.',
+    if (!r.ok || !d.ok)
+      return setResult({
+        kind: 'msg',
+        tone: 'error',
+        text: !r.ok ? `RA: ${r.error} (0 to 360)` : `Dec: ${(d as { error: string }).error}`,
+      });
+    const hit = fields.find(
+      (f) => separationDeg(r.value, d.value, f.ra_deg, f.dec_deg) * 3600 <= f.radius_arcsec * 0.98,
     );
+    if (hit) {
+      setResult({ kind: 'msg', text: `Inside ${hit.title}. Marked with a crosshair.` });
+      return onFound(hit, r.value, d.value);
+    }
+    if (!navigator.onLine)
+      return setResult({
+        kind: 'msg',
+        text: 'No prepared field covers this position, and you are offline.',
+      });
+    setResult({ kind: 'busy' });
+    const counts = await archiveLookup(r.value, d.value);
+    if (!counts)
+      return setResult({
+        kind: 'msg',
+        text: 'No prepared field covers this position. The live archive lookup is not available on this deployment.',
+      });
+    const n = counts.reduce((s, c) => s + c.exposures, 0);
+    const more = counts.some((c) => c.truncated) ? '+' : '';
+    setResult({
+      kind: 'msg',
+      text:
+        n === 0
+          ? 'IRSA lists no SPHEREx exposures at this position in DR1 or QR3.'
+          : `IRSA lists ${n}${more} SPHEREx exposures here (${counts
+              .filter((c) => c.exposures)
+              .map((c) => `${c.collection} ${c.exposures}${c.truncated ? '+' : ''}`)
+              .join(
+                ', ',
+              )}). No prepared field covers it yet, so there is nothing to compare: the offline pipeline builds one with "parallax build-field <name> --ra ${r.value} --dec ${d.value} --detector <1-6> --title <title>".`,
+    });
   }
 
-  const field = (
-    key: 'ra' | 'dec',
-    label: string,
-    value: string,
-    set: (v: string) => void,
-    hint: string,
-  ) => (
-    <div className="field">
-      <label htmlFor={`${id}-${key}`}>{label}</label>
+  return (
+    <form className="search" onSubmit={onSubmit} noValidate aria-label="Find a sky position">
+      <label htmlFor={`${id}-ra`} className="visually-hidden">
+        Right ascension, degrees
+      </label>
       <input
-        id={`${id}-${key}`}
+        id={`${id}-ra`}
         inputMode="decimal"
+        placeholder="RA °"
         autoComplete="off"
         spellCheck={false}
-        value={value}
-        onChange={(e) => set(e.target.value)}
-        aria-invalid={errors[key] ? true : undefined}
-        aria-describedby={`${id}-${key}-hint`}
+        value={ra}
+        onChange={(e) => setRa(e.target.value)}
       />
-      <span id={`${id}-${key}-hint`} className={errors[key] ? 'hint error' : 'hint'}>
-        {errors[key] ?? hint}
-      </span>
-    </div>
-  );
-
-  return (
-    <section className="panel" aria-labelledby={`${id}-h`}>
-      <h2 id={`${id}-h`}>Sky position</h2>
-      <form onSubmit={onSubmit} noValidate>
-        {field('ra', 'Right ascension (°)', ra, setRa, 'ICRS, 0 to 360')}
-        {field('dec', 'Declination (°)', dec, setDec, 'ICRS, −90 to +90')}
-        <button type="submit">Search</button>
-      </form>
-      <p className="result" aria-live="polite">
-        {result}
+      <label htmlFor={`${id}-dec`} className="visually-hidden">
+        Declination, degrees
+      </label>
+      <input
+        id={`${id}-dec`}
+        inputMode="decimal"
+        placeholder="Dec °"
+        autoComplete="off"
+        spellCheck={false}
+        value={dec}
+        onChange={(e) => setDec(e.target.value)}
+      />
+      <button type="submit" disabled={result.kind === 'busy'}>
+        {result.kind === 'busy' ? 'Searching…' : 'Find'}
+      </button>
+      <p
+        className={`search-result${result.kind === 'msg' && result.tone ? ' error' : ''}`}
+        aria-live="polite"
+      >
+        {result.kind === 'msg' ? result.text : result.kind === 'busy' ? 'Asking IRSA…' : ''}
       </p>
-    </section>
+    </form>
   );
 });

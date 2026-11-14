@@ -63,3 +63,36 @@ def test_injected_mover_is_where_the_fixture_says(fixture_manifest):
         assert hdul["IMAGE"].header["BUNIT"] == "MJy/sr" and hdul[0].header["SIMULATE"]
     # e1 mover injected at (x=20, y=30): local peak well above background + 5 sigma.
     assert img[30, 20] > 1.0 + 5 * 0.05
+
+
+def test_irsa_polygon_cutout_url_and_detector_homography():
+    from parallax_science.align import grid_wcs
+    from parallax_science.irsa import (
+        DETECTOR_PX,
+        SpherexExposure,
+        cutout_url,
+        parse_polygon,
+        predicted_detector_xy,
+    )
+
+    assert parse_polygon("POLYGON ICRS 1 2 3 4 5 6 1 2") == ((1, 2), (3, 4), (5, 6))
+    assert cutout_url("https://x/a.fits", 270, 66.5, 900) == (
+        "https://x/a.fits?center=270.000000,66.500000&size=900arcsec"
+    )
+    w = grid_wcs(270.3, 66.4, DETECTOR_PX, 6.15)
+    n = DETECTOR_PX - 1
+    corners = tuple(
+        tuple(float(v) for v in w.pixel_to_world_values(x, y))
+        for x, y in [(0, 0), (n, 0), (n, n), (0, n)]
+    )
+    exp = SpherexExposure("id", "u", "spherex_qr3", 61000.0, 2, "o", 0, 0, 112, corners)
+    x, y = predicted_detector_xy(exp, 270.0, 66.5)
+    tx, ty = (float(v) for v in w.world_to_pixel_values(270.0, 66.5))
+    assert abs(x - tx) < 1 and abs(y - ty) < 1
+
+
+def test_encode_significance_maps_range_and_mask():
+    from parallax_science.field import encode_significance
+
+    s = np.array([[np.nan, -20.0, 0.0, 10.0]])
+    assert encode_significance(s).tolist() == [[0, 1, 128, 255]]

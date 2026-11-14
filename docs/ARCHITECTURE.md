@@ -34,25 +34,34 @@ results; it never decides scientific compatibility.
 | Cache | `cache.py` | deterministic keys, file hashing | hold validated products |
 | Display | `display.py` | asinh stretch, stdlib PNG writer | be used for measurement |
 | Fixture | `fixture.py` | deterministic **simulated** dataset | be shown as real |
-| CLI | `cli.py` | `validate`, `schema`, `make-fixture` | |
+| IRSA | `irsa.py`, `spherex.py` | SIA2 search, bounded cutouts, L2 HDU reading, flag masks | download full frames |
+| Field build | `field.py`, `align.py`, `difference.py` | epoch selection, resampling to one grid, template differencing, triage | claim identifications |
+| CLI | `cli.py` | `validate`, `schema`, `make-fixture`, `build-field`, `index` | |
 | Web shell | `web/src/app/` | load manifest, layout, state | compute science |
-| Features | `web/src/features/{sky-explorer,timeline,comparison,candidates}` | one workstream each | import each other's internals |
-| Shared UI | `web/src/components/` | `ImageCanvas`, `ObservationDetails` | |
-| Web libs | `web/src/lib/` | manifest parsing, display coordinate helpers, image cache | |
+| Features | `web/src/features/{sky-explorer,timeline,candidates}` | search, epoch axis, residual list + evidence report + light curve | import each other's internals |
+| Shared UI | `web/src/components/` | `SkyCanvas` (pan/zoom, blink/overlay/difference, markers), `ObservationDetails` | |
+| Live lookup | `api/sia.mjs` | optional Vercel function: exposure counts from IRSA SIA2 | proxy images, keep state |
+| Web libs | `web/src/lib/` | manifest/index parsing, TAN pixel↔sky for display, σ decoding, image cache | |
 
 Python modules are flat files rather than subpackages; split a module only when it outgrows one
-file. `detection` arrives in Phase 3 as `detection.py`.
+file.
 
 ## Key dependencies
 
-Runtime web: `react`, `react-dom`. Science: `numpy`, `astropy`, `pydantic`; `pyvo` (optional
-`archive` extra). Dev: Vite, TypeScript, ESLint + typescript-eslint + react-hooks, Prettier,
+Runtime web: `react`, `react-dom`; `@fontsource/schibsted-grotesk` and `@fontsource/ibm-plex-mono`
+(self-hosted typefaces, CSS and woff2 only, no runtime JS). Science: `numpy`, `astropy`, `pydantic`,
+`scipy` (`ndimage` labelling and bilinear resampling, which would otherwise be hand-written).
+IRSA access uses stdlib `urllib` instead of `pyvo` (two bounded GET requests).
+Dev: Vite, TypeScript, ESLint + typescript-eslint + react-hooks, Prettier,
 Ruff, pytest. PNG writing uses the stdlib (`zlib`), so there is no Pillow dependency.
 
 ## Static-first deployment
 
 `npm run build` emits `web/dist/` containing the app and a copy of `data/`. Any static host
-works, and `base: './'` supports sub-path hosting. Disposable caches live in `.cache/` outside
+works, and `base: './'` supports sub-path hosting. Production is Vercel (`vercel.json`): the same
+static build plus one optional function, `api/sia.mjs`. IRSA sends no CORS headers, so the browser
+cannot query it directly. The function returns exposure counts only and stores nothing. Its
+failure, or a host without functions, degrades to "live lookup not available". Disposable caches live in `.cache/` outside
 `data/`, so they cannot be published by accident.
 
 ## Performance reasoning
@@ -76,6 +85,7 @@ works, and `base: './'` supports sub-path hosting. Disposable caches live in `.c
 | Decision | Alternative rejected | Why |
 |---|---|---|
 | Precomputed static products | Live backend proxying IRSA | $0 hosting, no uptime risk, reproducible demo |
+| Metadata-only serverless lookup | Live cutouts + differencing per request | Differencing needs Astropy and minutes of downloads; counts are cheap and honest |
 | Python validation is authoritative | Re-validating science in JS | One implementation of the science, tested with Astropy |
 | Pydantic models → JSON Schema | Hand-written JSON Schema | One source of truth plus drift tests |
 | Canvas 2D | WebGL / heavy viewers (Aladin, JS9) | Tiny cutouts don't need GPU; fewer dependencies |

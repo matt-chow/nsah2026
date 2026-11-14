@@ -17,14 +17,18 @@ def asinh_stretch(
     lo_pct: float = 0.5,
     hi_pct: float = 99.5,
     a: float = 0.1,
+    limits: tuple[float, float] | None = None,
 ) -> np.ndarray:
-    """Map a float image to uint8 with an asinh stretch. Masked/NaN pixels become 0."""
+    """Map a float image to uint8 with an asinh stretch. Masked/NaN pixels become 0.
+
+    Pass fixed `limits` to render several epochs identically (blinking needs one stretch).
+    """
     valid = np.isfinite(data)
     if mask is not None:
         valid &= ~mask
     if not valid.any():
         return np.zeros(data.shape, dtype=np.uint8)
-    lo, hi = np.percentile(data[valid], [lo_pct, hi_pct])
+    lo, hi = limits if limits else np.percentile(data[valid], [lo_pct, hi_pct])
     scaled = np.clip((data - lo) / max(hi - lo, np.finfo(np.float32).tiny), 0.0, 1.0)
     out = np.arcsinh(scaled / a) / np.arcsinh(1.0 / a)
     out = np.where(valid, out, 0.0)

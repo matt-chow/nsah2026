@@ -1,0 +1,5783 @@
+{
+  "schema_version": "1.1.0",
+  "manifest_id": "sep-d4",
+  "data_kind": "real",
+  "title": "South Ecliptic Pole, 2.56 um (SPHEREx detector 4)",
+  "notice": null,
+  "target": {
+    "label": "South Ecliptic Pole, 2.56 um (SPHEREx detector 4)",
+    "ra_deg": 90.0,
+    "dec_deg": -66.5607,
+    "frame": "icrs",
+    "radius_arcsec": 452.02500000000003
+  },
+  "dataset": {
+    "mission": "SPHEREx",
+    "archive": "NASA/IPAC Infrared Science Archive (IRSA)",
+    "collection": "spherex_dr1_deep, spherex_qr3_deep",
+    "data_release": "DR1 + QR3",
+    "citation": "SPHEREx Level 2 Spectral Images, NASA/IPAC Infrared Science Archive.",
+    "acknowledgement": "This publication makes use of data products from the Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer (SPHEREx), which is a joint project of the Jet Propulsion Laboratory and the California Institute of Technology, and is funded by the National Aeronautics and Space Administration. This research has made use of the NASA/IPAC Infrared Science Archive, which is funded by the National Aeronautics and Space Administration and operated by the California Institute of Technology."
+  },
+  "observations": [
+    {
+      "observation_id": "sep-d4.2025W40_1A_0475_2",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 60949.145938805,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.5587,
+        "wavelength_min_um": 2.52187,
+        "wavelength_max_um": 2.59552,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0293,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2025W40_1A_0475_2.fits",
+        "display_png": "processed/sep-d4/2025W40_1A_0475_2.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1028 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W40_1A/l2b-v27-2026-239/4/level2_2025W40_1A_0475_2D4_spx_l2b-v27-2026-239.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W40_1A_0475_2/D4",
+        "retrieved_utc": "2026-11-14T02:56:19+00:00",
+        "source_sha256": "c21fe274c323a703f8aa0e9cf330ee32a65e773d2d385e9ca92a9feacd24ba28",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-239.",
+        "cache_key": "d228c840165b956a249d21bf0cd1db3c8f5b0e15476d85aee9b1312e0f28f899"
+      }
+    },
+    {
+      "observation_id": "sep-d4.2025W45_2A_0348_2",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 60987.10881531,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.56275,
+        "wavelength_min_um": 2.52569,
+        "wavelength_max_um": 2.59981,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0276,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2025W45_2A_0348_2.fits",
+        "display_png": "processed/sep-d4/2025W45_2A_0348_2.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.09996 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W45_2A/l2b-v27-2026-247/4/level2_2025W45_2A_0348_2D4_spx_l2b-v27-2026-247.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W45_2A_0348_2/D4",
+        "retrieved_utc": "2026-11-14T02:56:27+00:00",
+        "source_sha256": "665271a3544f81917a6cd862deb36d81719577ca72f53c3955121627e5d29b39",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-247.",
+        "cache_key": "2cc5a8d6d8ee9acd6c1f21d4b5a6b8454b10642fa8297d46fae83347312694b1"
+      }
+    },
+    {
+      "observation_id": "sep-d4.2025W48_2A_0268_3",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61007.684895946,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.56517,
+        "wavelength_min_um": 2.52813,
+        "wavelength_max_um": 2.60222,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0487,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2025W48_2A_0268_3.fits",
+        "display_png": "processed/sep-d4/2025W48_2A_0268_3.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.09581 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W48_2A/l2b-v27-2026-209/4/level2_2025W48_2A_0268_3D4_spx_l2b-v27-2026-209.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W48_2A_0268_3/D4",
+        "retrieved_utc": "2026-11-14T02:57:51+00:00",
+        "source_sha256": "4e46ac45de7b31d537eb908b100bbbc631f3c59f60f9906fc14b536ac02f502d",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-209.",
+        "cache_key": "5852273dc590b2400975e1d43231e3e7bd597cd0d29c21c03a28172142a2383a"
+      }
+    },
+    {
+      "observation_id": "sep-d4.2025W48_2A_0717_3",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61009.586081918,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.5647,
+        "wavelength_min_um": 2.52763,
+        "wavelength_max_um": 2.60178,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0444,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2025W48_2A_0717_3.fits",
+        "display_png": "processed/sep-d4/2025W48_2A_0717_3.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.09584 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W48_2A/l2b-v27-2026-209/4/level2_2025W48_2A_0717_3D4_spx_l2b-v27-2026-209.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W48_2A_0717_3/D4",
+        "retrieved_utc": "2026-11-14T02:57:37+00:00",
+        "source_sha256": "fcd32db70ecef4bd485e6f63fece914bc507b994dee95f690a93813b8ffe9821",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-209.",
+        "cache_key": "6107d472f3121fb3deeb317d87fa33021982897ba6ec0f9dc7a2dac37f2ee32c"
+      }
+    },
+    {
+      "observation_id": "sep-d4.2025W49_1A_0388_3",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61011.758875865,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.56526,
+        "wavelength_min_um": 2.52821,
+        "wavelength_max_um": 2.60231,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0258,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2025W49_1A_0388_3.fits",
+        "display_png": "processed/sep-d4/2025W49_1A_0388_3.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.09581 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W49_1A/l2b-v27-2026-209/4/level2_2025W49_1A_0388_3D4_spx_l2b-v27-2026-209.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W49_1A_0388_3/D4",
+        "retrieved_utc": "2026-11-14T02:57:04+00:00",
+        "source_sha256": "7c37b7dff92859150b2e84d10a94aa955fa0e9e5c728cb064b97ed0e20d3dc26",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-209.",
+        "cache_key": "d894cb58e380c70b30c829f970cc527c77dcd4c7dddd6ca8f29b569c15842382"
+      }
+    },
+    {
+      "observation_id": "sep-d4.2025W49_2A_0330_2",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61015.084845148,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.56343,
+        "wavelength_min_um": 2.52637,
+        "wavelength_max_um": 2.60049,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.028,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2025W49_2A_0330_2.fits",
+        "display_png": "processed/sep-d4/2025W49_2A_0330_2.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.09592 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W49_2A/l2b-v27-2026-209/4/level2_2025W49_2A_0330_2D4_spx_l2b-v27-2026-209.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W49_2A_0330_2/D4",
+        "retrieved_utc": "2026-11-14T02:56:58+00:00",
+        "source_sha256": "9f71cb3848958befc117e79c242907cdcf650a723fa418d6fe9890df29b3fdc9",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-209.",
+        "cache_key": "edc53719b55049abc05938576239f2bd424b2bbea6102323b64a2b30fae25cbd"
+      }
+    },
+    {
+      "observation_id": "sep-d4.2025W49_2A_0598_2",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61016.239690425,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.56523,
+        "wavelength_min_um": 2.52837,
+        "wavelength_max_um": 2.60209,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0305,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2025W49_2A_0598_2.fits",
+        "display_png": "processed/sep-d4/2025W49_2A_0598_2.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.09481 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W49_2A/l2b-v27-2026-209/4/level2_2025W49_2A_0598_2D4_spx_l2b-v27-2026-209.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W49_2A_0598_2/D4",
+        "retrieved_utc": "2026-11-14T02:56:41+00:00",
+        "source_sha256": "9610f97e55fba187fbd51319451c1eef4283f8469fb2f5e4e5bc1878128df146",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-209.",
+        "cache_key": "c3017cc6218e6a880d80eadb66926ce3473bbe94b197ec7a81ae13cf2af45a1d"
+      }
+    },
+    {
+      "observation_id": "sep-d4.2025W49_2A_0732_4",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61016.852811629,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.56412,
+        "wavelength_min_um": 2.52705,
+        "wavelength_max_um": 2.60118,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0265,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2025W49_2A_0732_4.fits",
+        "display_png": "processed/sep-d4/2025W49_2A_0732_4.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.0944 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W49_2A/l2b-v27-2026-209/4/level2_2025W49_2A_0732_4D4_spx_l2b-v27-2026-209.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W49_2A_0732_4/D4",
+        "retrieved_utc": "2026-11-14T02:56:34+00:00",
+        "source_sha256": "caa74d487262acbf4dabcc3e6691264adb6780352d81eaee9f9328c8b3ba2ce2",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-209.",
+        "cache_key": "05428ab8c5200fc5a8baceedfa38eff8b0869b942f45a518f9f2894e39e9bd41"
+      }
+    },
+    {
+      "observation_id": "sep-d4.2026W40_1A_0347_1",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61312.566286525,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.5578,
+        "wavelength_min_um": 2.52097,
+        "wavelength_max_um": 2.59463,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.1125,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2026W40_1A_0347_1.fits",
+        "display_png": "processed/sep-d4/2026W40_1A_0347_1.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1029 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W40_1A/l2b-v27-2026-276/4/level2_2026W40_1A_0347_1D4_spx_l2b-v27-2026-276.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_qr3_deep?2026W40_1A_0347_1/D4",
+        "retrieved_utc": "2026-11-14T02:57:22+00:00",
+        "source_sha256": "368db5e55cde3272834fe37c1dbeb1815a1e3bd984d2f188f8e1223001814165",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_qr3_deep",
+        "data_release": "QR3",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-276.",
+        "cache_key": "12c3179cdf8a9a809c99f9a1f2610bb59828b9ee01c2256cca0a2f557c430dcb"
+      }
+    },
+    {
+      "observation_id": "sep-d4.2026W40_2A_0128_2",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61315.078764164,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 4,
+        "wavelength_center_um": 2.55771,
+        "wavelength_min_um": 2.5209,
+        "wavelength_max_um": 2.59453,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 90.0,
+          "CRVAL2": -66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": -66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0282,
+        "psf_fwhm_arcsec": 8.672612363488842,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/sep-d4/2026W40_2A_0128_2.fits",
+        "display_png": "processed/sep-d4/2026W40_2A_0128_2.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.102 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W40_2A/l2b-v27-2026-285/4/level2_2026W40_2A_0128_2D4_spx_l2b-v27-2026-285.fits?center=90.000000,-66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_qr3_deep?2026W40_2A_0128_2/D4",
+        "retrieved_utc": "2026-11-14T02:57:30+00:00",
+        "source_sha256": "e72adc21c67c30b1b824ce0d768ed523253511ed82985f5380a96de51d277b5c",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_qr3_deep",
+        "data_release": "QR3",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-285.",
+        "cache_key": "4803cbdda8b73a710d9a6d0cabb17075335070a89bceaeae3a80b2e3e1fce284"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "reference_id": "sep-d4.2025W40_1A_0475_2",
+      "target_id": "sep-d4.2025W45_2A_0348_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W40_1A_0475_2",
+      "target_id": "sep-d4.2025W48_2A_0268_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W40_1A_0475_2",
+      "target_id": "sep-d4.2025W48_2A_0717_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W40_1A_0475_2",
+      "target_id": "sep-d4.2025W49_1A_0388_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W40_1A_0475_2",
+      "target_id": "sep-d4.2025W49_2A_0330_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W40_1A_0475_2",
+      "target_id": "sep-d4.2025W49_2A_0598_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W40_1A_0475_2",
+      "target_id": "sep-d4.2025W49_2A_0732_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W40_1A_0475_2",
+      "target_id": "sep-d4.2026W40_1A_0347_1",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W40_1A_0475_2",
+      "target_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W45_2A_0348_2",
+      "target_id": "sep-d4.2025W48_2A_0268_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W45_2A_0348_2",
+      "target_id": "sep-d4.2025W48_2A_0717_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W45_2A_0348_2",
+      "target_id": "sep-d4.2025W49_1A_0388_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W45_2A_0348_2",
+      "target_id": "sep-d4.2025W49_2A_0330_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W45_2A_0348_2",
+      "target_id": "sep-d4.2025W49_2A_0598_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W45_2A_0348_2",
+      "target_id": "sep-d4.2025W49_2A_0732_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W45_2A_0348_2",
+      "target_id": "sep-d4.2026W40_1A_0347_1",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W45_2A_0348_2",
+      "target_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0268_3",
+      "target_id": "sep-d4.2025W48_2A_0717_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0268_3",
+      "target_id": "sep-d4.2025W49_1A_0388_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0268_3",
+      "target_id": "sep-d4.2025W49_2A_0330_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0268_3",
+      "target_id": "sep-d4.2025W49_2A_0598_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0268_3",
+      "target_id": "sep-d4.2025W49_2A_0732_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0268_3",
+      "target_id": "sep-d4.2026W40_1A_0347_1",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0268_3",
+      "target_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0717_3",
+      "target_id": "sep-d4.2025W49_1A_0388_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0717_3",
+      "target_id": "sep-d4.2025W49_2A_0330_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0717_3",
+      "target_id": "sep-d4.2025W49_2A_0598_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0717_3",
+      "target_id": "sep-d4.2025W49_2A_0732_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0717_3",
+      "target_id": "sep-d4.2026W40_1A_0347_1",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W48_2A_0717_3",
+      "target_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_1A_0388_3",
+      "target_id": "sep-d4.2025W49_2A_0330_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_1A_0388_3",
+      "target_id": "sep-d4.2025W49_2A_0598_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_1A_0388_3",
+      "target_id": "sep-d4.2025W49_2A_0732_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_1A_0388_3",
+      "target_id": "sep-d4.2026W40_1A_0347_1",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_1A_0388_3",
+      "target_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_2A_0330_2",
+      "target_id": "sep-d4.2025W49_2A_0598_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_2A_0330_2",
+      "target_id": "sep-d4.2025W49_2A_0732_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_2A_0330_2",
+      "target_id": "sep-d4.2026W40_1A_0347_1",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_2A_0330_2",
+      "target_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_2A_0598_2",
+      "target_id": "sep-d4.2025W49_2A_0732_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_2A_0598_2",
+      "target_id": "sep-d4.2026W40_1A_0347_1",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_2A_0598_2",
+      "target_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_2A_0732_4",
+      "target_id": "sep-d4.2026W40_1A_0347_1",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2025W49_2A_0732_4",
+      "target_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "sep-d4.2026W40_1A_0347_1",
+      "target_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "compatible",
+      "reasons": []
+    }
+  ],
+  "alignment": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood.",
+  "template": {
+    "observation_ids": [
+      "sep-d4.2025W40_1A_0475_2",
+      "sep-d4.2025W45_2A_0348_2",
+      "sep-d4.2025W48_2A_0268_3",
+      "sep-d4.2025W48_2A_0717_3",
+      "sep-d4.2025W49_1A_0388_3",
+      "sep-d4.2025W49_2A_0330_2",
+      "sep-d4.2025W49_2A_0598_2",
+      "sep-d4.2025W49_2A_0732_4",
+      "sep-d4.2026W40_1A_0347_1",
+      "sep-d4.2026W40_2A_0128_2"
+    ],
+    "method": "Per-pixel median of background-subtracted epochs (>=3 valid); variance (pi/2)*mean(var)/n. Shown for reference; each epoch is differenced against the median of the other epochs.",
+    "display_png": "processed/sep-d4/template.png",
+    "science_fits": "processed/sep-d4/template.fits"
+  },
+  "differences": [
+    {
+      "difference_id": "sep-d4.2025W40_1A_0475_2.diff",
+      "observation_id": "sep-d4.2025W40_1A_0475_2",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.102753,
+      "noise_scale": 0.6763,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2025W40_1A_0475_2.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "sep-d4.2025W45_2A_0348_2.diff",
+      "observation_id": "sep-d4.2025W45_2A_0348_2",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.099964,
+      "noise_scale": 0.6687,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2025W45_2A_0348_2.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "sep-d4.2025W48_2A_0268_3.diff",
+      "observation_id": "sep-d4.2025W48_2A_0268_3",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.095808,
+      "noise_scale": 0.7036,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2025W48_2A_0268_3.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "sep-d4.2025W48_2A_0717_3.diff",
+      "observation_id": "sep-d4.2025W48_2A_0717_3",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.095838,
+      "noise_scale": 0.7028,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2025W48_2A_0717_3.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "sep-d4.2025W49_1A_0388_3.diff",
+      "observation_id": "sep-d4.2025W49_1A_0388_3",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.095807,
+      "noise_scale": 0.6719,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2025W49_1A_0388_3.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "sep-d4.2025W49_2A_0330_2.diff",
+      "observation_id": "sep-d4.2025W49_2A_0330_2",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.095919,
+      "noise_scale": 0.6832,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2025W49_2A_0330_2.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "sep-d4.2025W49_2A_0598_2.diff",
+      "observation_id": "sep-d4.2025W49_2A_0598_2",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.094806,
+      "noise_scale": 0.6801,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2025W49_2A_0598_2.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "sep-d4.2025W49_2A_0732_4.diff",
+      "observation_id": "sep-d4.2025W49_2A_0732_4",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.094402,
+      "noise_scale": 0.6705,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2025W49_2A_0732_4.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "sep-d4.2026W40_1A_0347_1.diff",
+      "observation_id": "sep-d4.2026W40_1A_0347_1",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.102925,
+      "noise_scale": 0.724,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2026W40_1A_0347_1.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "sep-d4.2026W40_2A_0128_2.diff",
+      "observation_id": "sep-d4.2026W40_2A_0128_2",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.26 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.102021,
+      "noise_scale": 0.6745,
+      "error_floor_fraction": 0.26,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/sep-d4/2026W40_2A_0128_2.diff.png",
+      "display_range_sigma": 10.0
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "sep-d4-c001",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 89.869287,
+      "dec_deg": -66.586159,
+      "pixel_x": 103.4,
+      "pixel_y": 58.07,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 154.48,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 16264.7,
+          "uncertainty": 83.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 126.9,
+          "uncertainty": 13.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 6.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -38.5,
+          "uncertainty_ujy": 30.8
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -6.1,
+          "uncertainty_ujy": 30.9
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -19.0,
+          "uncertainty_ujy": 30.9
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -9.5,
+          "uncertainty_ujy": 29.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": 31.6,
+          "uncertainty_ujy": 29.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -39.5,
+          "uncertainty_ujy": 30.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 44.5,
+          "uncertainty_ujy": 28.7
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -45.1,
+          "uncertainty_ujy": 42.9
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 16264.7,
+          "uncertainty_ujy": 83.5
+        }
+      ],
+      "evidence": [
+        "peak +154.5 sigma over 6 px; aperture change +16265 +/- 83 uJy",
+        "reference flux at this position 127 +/- 13 uJy (S/N 9.7)",
+        "touches pixels flagged PERSIST",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c002",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 89.859607,
+      "dec_deg": -66.583631,
+      "pixel_x": 105.66,
+      "pixel_y": 59.54,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 118.56,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 16430.6,
+          "uncertainty": 89.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 103.8,
+          "uncertainty": 11.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 5.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -31.8,
+          "uncertainty_ujy": 28.2
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 18.0,
+          "uncertainty_ujy": 26.9
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -33.4,
+          "uncertainty_ujy": 28.6
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 72.8,
+          "uncertainty_ujy": 30.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -40.7,
+          "uncertainty_ujy": 27.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -36.9,
+          "uncertainty_ujy": 27.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 46.9,
+          "uncertainty_ujy": 27.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -35.8,
+          "uncertainty_ujy": 27.8
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 16430.6,
+          "uncertainty_ujy": 89.3
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 45.7,
+          "uncertainty_ujy": 27.8
+        }
+      ],
+      "evidence": [
+        "peak +118.6 sigma over 5 px; aperture change +16431 +/- 89 uJy",
+        "reference flux at this position 104 +/- 12 uJy (S/N 8.9)",
+        "touches pixels flagged PERSIST",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c003",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 90.206869,
+      "dec_deg": -66.466415,
+      "pixel_x": 24.65,
+      "pixel_y": 128.11,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 105.0,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 7616.8,
+          "uncertainty": 72.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 346.2,
+          "uncertainty": 13.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 34.5,
+          "uncertainty_ujy": 49.6
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -13.2,
+          "uncertainty_ujy": 48.5
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 106.3,
+          "uncertainty_ujy": 50.6
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -36.3,
+          "uncertainty_ujy": 48.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 6.1,
+          "uncertainty_ujy": 49.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -28.8,
+          "uncertainty_ujy": 49.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -30.7,
+          "uncertainty_ujy": 48.9
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 257.4,
+          "uncertainty_ujy": 51.4
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 7616.8,
+          "uncertainty_ujy": 72.8
+        }
+      ],
+      "evidence": [
+        "peak +105.0 sigma over 3 px; aperture change +7617 +/- 73 uJy",
+        "reference flux at this position 346 +/- 14 uJy (S/N 25.3)",
+        "touches pixels flagged PERSIST",
+        "2 of 10 epochs deviate by more than 5 sigma"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c004",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 90.192827,
+      "dec_deg": -66.447339,
+      "pixel_x": 27.9,
+      "pixel_y": 139.29,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 87.62,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 5829.4,
+          "uncertainty": 58.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 80.0,
+          "uncertainty": 11.2,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 61.9,
+          "uncertainty_ujy": 26.2
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 31.1,
+          "uncertainty_ujy": 25.7
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 12.6,
+          "uncertainty_ujy": 26.7
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -13.7,
+          "uncertainty_ujy": 25.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -7.6,
+          "uncertainty_ujy": 25.3
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -47.0,
+          "uncertainty_ujy": 25.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -16.6,
+          "uncertainty_ujy": 25.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 9.7,
+          "uncertainty_ujy": 25.4
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 5829.4,
+          "uncertainty_ujy": 58.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -16.7,
+          "uncertainty_ujy": 26.3
+        }
+      ],
+      "evidence": [
+        "peak +87.6 sigma over 4 px; aperture change +5829 +/- 59 uJy",
+        "reference flux at this position 80 +/- 11 uJy (S/N 7.1)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c005",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 90.203506,
+      "dec_deg": -66.449867,
+      "pixel_x": 25.4,
+      "pixel_y": 137.8,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 87.53,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 6505.2,
+          "uncertainty": 55.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 49.6,
+          "uncertainty": 11.2,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -51.4,
+          "uncertainty_ujy": 22.8
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -11.3,
+          "uncertainty_ujy": 21.8
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 23.4,
+          "uncertainty_ujy": 22.4
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 98.6,
+          "uncertainty_ujy": 24.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -10.2,
+          "uncertainty_ujy": 21.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -49.9,
+          "uncertainty_ujy": 21.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 58.6,
+          "uncertainty_ujy": 22.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 25.2,
+          "uncertainty_ujy": 21.7
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -44.4,
+          "uncertainty_ujy": 23.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 6505.2,
+          "uncertainty_ujy": 55.3
+        }
+      ],
+      "evidence": [
+        "peak +87.5 sigma over 4 px; aperture change +6505 +/- 55 uJy",
+        "reference flux at this position 50 +/- 11 uJy (S/N 4.4)",
+        "touches pixels flagged OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c006",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2025W49_2A_0598_2"
+      ],
+      "ra_deg": 89.842699,
+      "dec_deg": -66.539101,
+      "pixel_x": 109.66,
+      "pixel_y": 85.6,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -87.05,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -3847.9,
+          "uncertainty": 54.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 315.2,
+          "uncertainty": 14.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56523,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 38.5,
+          "uncertainty_ujy": 48.7
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -17.4,
+          "uncertainty_ujy": 48.9
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 29.8,
+          "uncertainty_ujy": 49.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -28.4,
+          "uncertainty_ujy": 49.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -18.1,
+          "uncertainty_ujy": 48.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 0.3,
+          "uncertainty_ujy": 50.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -3847.9,
+          "uncertainty_ujy": 54.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 51.8,
+          "uncertainty_ujy": 53.7
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 5.6,
+          "uncertainty_ujy": 48.7
+        }
+      ],
+      "evidence": [
+        "peak -87.1 sigma over 4 px; aperture change -3848 +/- 54 uJy",
+        "reference flux at this position 315 +/- 14 uJy (S/N 22.0)",
+        "fainter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c007",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2025W49_2A_0330_2"
+      ],
+      "ra_deg": 90.192625,
+      "dec_deg": -66.577655,
+      "pixel_x": 28.18,
+      "pixel_y": 63.01,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 85.73,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 4633.8,
+          "uncertainty": 47.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -6.1,
+          "uncertainty": 12.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56343,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 5.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 30.5,
+          "uncertainty_ujy": 21.2
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 17.8,
+          "uncertainty_ujy": 21.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -35.7,
+          "uncertainty_ujy": 21.0
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -19.0,
+          "uncertainty_ujy": 21.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -1.9,
+          "uncertainty_ujy": 20.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 4633.8,
+          "uncertainty_ujy": 47.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -27.4,
+          "uncertainty_ujy": 20.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 1605.1,
+          "uncertainty_ujy": 32.1
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -35.8,
+          "uncertainty_ujy": 20.7
+        }
+      ],
+      "evidence": [
+        "peak +85.7 sigma over 5 px; aperture change +4634 +/- 48 uJy",
+        "reference flux at this position -6 +/- 13 uJy (S/N -0.5)",
+        "touches pixels flagged OUTLIER",
+        "2 of 10 epochs deviate by more than 5 sigma"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c008",
+      "status": "needs_followup",
+      "kind": "new_source_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 90.196485,
+      "dec_deg": -66.464049,
+      "pixel_x": 27.07,
+      "pixel_y": 129.5,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 80.57,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 6251.1,
+          "uncertainty": 57.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 10.1,
+          "uncertainty": 10.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 5.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -30.1,
+          "uncertainty_ujy": 20.7
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 1.2,
+          "uncertainty_ujy": 20.4
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -23.1,
+          "uncertainty_ujy": 21.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -43.4,
+          "uncertainty_ujy": 19.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -11.6,
+          "uncertainty_ujy": 20.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -7.8,
+          "uncertainty_ujy": 20.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -26.0,
+          "uncertainty_ujy": 20.2
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 6251.1,
+          "uncertainty_ujy": 57.4
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 29.3,
+          "uncertainty_ujy": 20.8
+        }
+      ],
+      "evidence": [
+        "peak +80.6 sigma over 5 px; aperture change +6251 +/- 57 uJy",
+        "reference flux at this position 10 +/- 11 uJy (S/N 0.9)",
+        "no significant reference source: transient, moving object, or artifact",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c009",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2025W48_2A_0717_3"
+      ],
+      "ra_deg": 90.205359,
+      "dec_deg": -66.577313,
+      "pixel_x": 25.22,
+      "pixel_y": 63.2,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 79.76,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 4421.5,
+          "uncertainty": 48.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -8.4,
+          "uncertainty": 12.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5647,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 5.2,
+          "uncertainty_ujy": 21.4
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -21.1,
+          "uncertainty_ujy": 22.4
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 4421.5,
+          "uncertainty_ujy": 48.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -36.2,
+          "uncertainty_ujy": 21.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 22.3,
+          "uncertainty_ujy": 21.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 8.2,
+          "uncertainty_ujy": 23.4
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +79.8 sigma over 4 px; aperture change +4421 +/- 49 uJy",
+        "reference flux at this position -8 +/- 12 uJy (S/N -0.7)",
+        "touches pixels flagged OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c010",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2025W49_1A_0388_3"
+      ],
+      "ra_deg": 90.15746,
+      "dec_deg": -66.55268,
+      "pixel_x": 36.32,
+      "pixel_y": 77.65,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 67.93,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 4300.4,
+          "uncertainty": 47.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 141.8,
+          "uncertainty": 12.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56526,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 34.2,
+          "uncertainty_ujy": 28.1
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -49.6,
+          "uncertainty_ujy": 27.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -11.4,
+          "uncertainty_ujy": 28.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -12.4,
+          "uncertainty_ujy": 27.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -30.4,
+          "uncertainty_ujy": 27.3
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -36.6,
+          "uncertainty_ujy": 28.7
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -0.8,
+          "uncertainty_ujy": 27.9
+        }
+      ],
+      "evidence": [
+        "peak +67.9 sigma over 4 px; aperture change +4300 +/- 48 uJy",
+        "reference flux at this position 142 +/- 12 uJy (S/N 11.7)",
+        "touches pixels flagged TRANSIENT, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c011",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 89.779587,
+      "dec_deg": -66.580711,
+      "pixel_x": 124.28,
+      "pixel_y": 61.2,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -65.02,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -2692.3,
+          "uncertainty": 40.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 141.4,
+          "uncertainty": 12.2,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -49.7,
+          "uncertainty_ujy": 27.6
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 34.9,
+          "uncertainty_ujy": 29.9
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 17.1,
+          "uncertainty_ujy": 29.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 11.1,
+          "uncertainty_ujy": 29.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": 37.0,
+          "uncertainty_ujy": 27.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -12.5,
+          "uncertainty_ujy": 27.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -11.5,
+          "uncertainty_ujy": 27.3
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 14.4,
+          "uncertainty_ujy": 27.1
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 2.9,
+          "uncertainty_ujy": 28.7
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -2692.3,
+          "uncertainty_ujy": 40.7
+        }
+      ],
+      "evidence": [
+        "peak -65.0 sigma over 3 px; aperture change -2692 +/- 41 uJy",
+        "reference flux at this position 141 +/- 12 uJy (S/N 11.6)",
+        "fainter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c012",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2025W49_2A_0330_2"
+      ],
+      "ra_deg": 89.87092,
+      "dec_deg": -66.674122,
+      "pixel_x": 102.92,
+      "pixel_y": 6.58,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 64.48,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 4917.3,
+          "uncertainty": 98.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 664.2,
+          "uncertainty": 15.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56343,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 18.3,
+          "uncertainty_ujy": 89.3
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -25.8,
+          "uncertainty_ujy": 90.0
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -9.6,
+          "uncertainty_ujy": 95.8
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -80.2,
+          "uncertainty_ujy": 98.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -94.0,
+          "uncertainty_ujy": 96.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 4917.3,
+          "uncertainty_ujy": 98.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 32.5,
+          "uncertainty_ujy": 90.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 1604.9,
+          "uncertainty_ujy": 92.3
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 7.1,
+          "uncertainty_ujy": 96.9
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -139.9,
+          "uncertainty_ujy": 97.3
+        }
+      ],
+      "evidence": [
+        "peak +64.5 sigma over 3 px; aperture change +4917 +/- 99 uJy",
+        "reference flux at this position 664 +/- 16 uJy (S/N 42.2)",
+        "brighter than the reference at a persistent source",
+        "2 of 10 epochs deviate by more than 5 sigma"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c013",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2025W49_2A_0732_4"
+      ],
+      "ra_deg": 90.197372,
+      "dec_deg": -66.576701,
+      "pixel_x": 27.07,
+      "pixel_y": 63.56,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 60.46,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 3145.6,
+          "uncertainty": 39.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -11.2,
+          "uncertainty": 15.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56412,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -23.3,
+          "uncertainty_ujy": 21.4
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 6.2,
+          "uncertainty_ujy": 21.4
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -29.4,
+          "uncertainty_ujy": 22.3
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 884.1,
+          "uncertainty_ujy": 29.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -10.4,
+          "uncertainty_ujy": 21.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -27.6,
+          "uncertainty_ujy": 20.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -40.9,
+          "uncertainty_ujy": 20.7
+        }
+      ],
+      "evidence": [
+        "peak +60.5 sigma over 4 px; aperture change +3146 +/- 40 uJy",
+        "reference flux at this position -11 +/- 15 uJy (S/N -0.7)",
+        "touches pixels flagged OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c014",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 90.073486,
+      "dec_deg": -66.566458,
+      "pixel_x": 55.89,
+      "pixel_y": 69.62,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 58.39,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 2695.1,
+          "uncertainty": 45.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 202.4,
+          "uncertainty": 15.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 22.5,
+          "uncertainty_ujy": 33.5
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -82.3,
+          "uncertainty_ujy": 33.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -5.0,
+          "uncertainty_ujy": 36.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 44.1,
+          "uncertainty_ujy": 52.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 3.5,
+          "uncertainty_ujy": 33.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -66.9,
+          "uncertainty_ujy": 33.4
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -2.4,
+          "uncertainty_ujy": 34.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 2695.1,
+          "uncertainty_ujy": 45.9
+        }
+      ],
+      "evidence": [
+        "peak +58.4 sigma over 3 px; aperture change +2695 +/- 46 uJy",
+        "reference flux at this position 202 +/- 16 uJy (S/N 12.9)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c015",
+      "status": "needs_followup",
+      "kind": "new_source_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 89.738736,
+      "dec_deg": -66.558756,
+      "pixel_x": 133.84,
+      "pixel_y": 74.01,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 57.05,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 1964.8,
+          "uncertainty": 34.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 52.2,
+          "uncertainty": 11.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 5.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 15.4,
+          "uncertainty_ujy": 21.4
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -14.2,
+          "uncertainty_ujy": 21.3
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 9.4,
+          "uncertainty_ujy": 22.8
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": 14.6,
+          "uncertainty_ujy": 20.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 4.6,
+          "uncertainty_ujy": 21.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -35.9,
+          "uncertainty_ujy": 20.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 2.8,
+          "uncertainty_ujy": 22.0
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -61.9,
+          "uncertainty_ujy": 21.9
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 1964.8,
+          "uncertainty_ujy": 34.5
+        }
+      ],
+      "evidence": [
+        "peak +57.1 sigma over 5 px; aperture change +1965 +/- 35 uJy",
+        "reference flux at this position 52 +/- 12 uJy (S/N 4.5)",
+        "no significant reference source: transient, moving object, or artifact",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c016",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 90.064429,
+      "dec_deg": -66.564126,
+      "pixel_x": 58.0,
+      "pixel_y": 70.99,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 56.03,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 1678.4,
+          "uncertainty": 39.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 130.3,
+          "uncertainty": 14.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 19.1,
+          "uncertainty_ujy": 30.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -49.0,
+          "uncertainty_ujy": 33.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -21.0,
+          "uncertainty_ujy": 37.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -11.8,
+          "uncertainty_ujy": 29.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -13.9,
+          "uncertainty_ujy": 32.0
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 38.6,
+          "uncertainty_ujy": 30.7
+        }
+      ],
+      "evidence": [
+        "peak +56.0 sigma over 3 px; aperture change +1678 +/- 40 uJy",
+        "reference flux at this position 130 +/- 14 uJy (S/N 9.0)",
+        "touches pixels flagged TRANSIENT, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c017",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2025W49_2A_0732_4"
+      ],
+      "ra_deg": 89.876164,
+      "dec_deg": -66.673481,
+      "pixel_x": 101.7,
+      "pixel_y": 6.95,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 55.88,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 2040.5,
+          "uncertainty": 40.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 160.5,
+          "uncertainty": 13.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56412,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 7.4,
+          "uncertainty_ujy": 30.8
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -78.3,
+          "uncertainty_ujy": 32.0
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -21.7,
+          "uncertainty_ujy": 33.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 2377.1,
+          "uncertainty_ujy": 43.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 2.9,
+          "uncertainty_ujy": 32.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 2040.5,
+          "uncertainty_ujy": 40.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 36.4,
+          "uncertainty_ujy": 31.8
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -39.8,
+          "uncertainty_ujy": 32.3
+        }
+      ],
+      "evidence": [
+        "peak +55.9 sigma over 4 px; aperture change +2041 +/- 41 uJy",
+        "reference flux at this position 160 +/- 14 uJy (S/N 11.7)",
+        "brighter than the reference at a persistent source",
+        "2 of 10 epochs deviate by more than 5 sigma"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c018",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 89.987667,
+      "dec_deg": -66.658073,
+      "pixel_x": 75.86,
+      "pixel_y": 16.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 50.62,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 1793.1,
+          "uncertainty": 161.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 877.9,
+          "uncertainty": 16.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 113.3,
+          "uncertainty_ujy": 160.6
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -24.7,
+          "uncertainty_ujy": 160.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -249.6,
+          "uncertainty_ujy": 161.8
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 211.4,
+          "uncertainty_ujy": 159.3
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -108.4,
+          "uncertainty_ujy": 160.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -105.4,
+          "uncertainty_ujy": 162.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -53.5,
+          "uncertainty_ujy": 160.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -74.7,
+          "uncertainty_ujy": 160.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 1793.1,
+          "uncertainty_ujy": 161.1
+        }
+      ],
+      "evidence": [
+        "peak +50.6 sigma over 4 px; aperture change +1793 +/- 161 uJy",
+        "reference flux at this position 878 +/- 16 uJy (S/N 53.9)",
+        "touches pixels flagged PERSIST",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c019",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 89.769995,
+      "dec_deg": -66.578208,
+      "pixel_x": 126.52,
+      "pixel_y": 62.65,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -45.75,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -2721.8,
+          "uncertainty": 46.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 122.9,
+          "uncertainty": 11.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -2.1,
+          "uncertainty_ujy": 32.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 6.6,
+          "uncertainty_ujy": 31.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 34.1,
+          "uncertainty_ujy": 31.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": 15.3,
+          "uncertainty_ujy": 30.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -16.9,
+          "uncertainty_ujy": 31.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -15.8,
+          "uncertainty_ujy": 31.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 30.6,
+          "uncertainty_ujy": 31.1
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -2721.8,
+          "uncertainty_ujy": 46.4
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak -45.8 sigma over 4 px; aperture change -2722 +/- 46 uJy",
+        "reference flux at this position 123 +/- 12 uJy (S/N 10.4)",
+        "fainter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c020",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 89.821079,
+      "dec_deg": -66.460466,
+      "pixel_x": 114.83,
+      "pixel_y": 131.61,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 37.52,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 1539.8,
+          "uncertainty": 32.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 23.3,
+          "uncertainty": 11.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 17.6,
+          "uncertainty_ujy": 20.9
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -26.4,
+          "uncertainty_ujy": 19.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -16.0,
+          "uncertainty_ujy": 21.0
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 15.3,
+          "uncertainty_ujy": 20.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -9.0,
+          "uncertainty_ujy": 20.3
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -42.2,
+          "uncertainty_ujy": 20.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 16.2,
+          "uncertainty_ujy": 19.7
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 5.2,
+          "uncertainty_ujy": 20.0
+        }
+      ],
+      "evidence": [
+        "peak +37.5 sigma over 3 px; aperture change +1540 +/- 33 uJy",
+        "reference flux at this position 23 +/- 11 uJy (S/N 2.1)",
+        "touches pixels flagged TRANSIENT, OUTLIER, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c021",
+      "status": "needs_followup",
+      "kind": "new_source_like",
+      "observation_ids": [
+        "sep-d4.2025W49_2A_0598_2"
+      ],
+      "ra_deg": 89.94688,
+      "dec_deg": -66.644229,
+      "pixel_x": 85.33,
+      "pixel_y": 24.1,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 36.37,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 1076.4,
+          "uncertainty": 32.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 47.4,
+          "uncertainty": 12.2,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56523,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 29.2,
+          "uncertainty_ujy": 21.8
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 18.3,
+          "uncertainty_ujy": 25.9
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 28.3,
+          "uncertainty_ujy": 22.0
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -28.3,
+          "uncertainty_ujy": 20.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -37.7,
+          "uncertainty_ujy": 20.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 1076.4,
+          "uncertainty_ujy": 32.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 2.4,
+          "uncertainty_ujy": 20.5
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -48.4,
+          "uncertainty_ujy": 23.8
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -36.7,
+          "uncertainty_ujy": 21.9
+        }
+      ],
+      "evidence": [
+        "peak +36.4 sigma over 3 px; aperture change +1076 +/- 32 uJy",
+        "reference flux at this position 47 +/- 12 uJy (S/N 3.9)",
+        "no significant reference source: transient, moving object, or artifact",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c022",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 89.72895,
+      "dec_deg": -66.556556,
+      "pixel_x": 136.12,
+      "pixel_y": 75.29,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 34.4,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 1615.1,
+          "uncertainty": 75.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 533.5,
+          "uncertainty": 14.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -17.3,
+          "uncertainty_ujy": 70.6
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -40.2,
+          "uncertainty_ujy": 70.5
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 174.2,
+          "uncertainty_ujy": 72.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -25.8,
+          "uncertainty_ujy": 70.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -7.3,
+          "uncertainty_ujy": 71.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -14.8,
+          "uncertainty_ujy": 71.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 16.7,
+          "uncertainty_ujy": 69.8
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 1615.1,
+          "uncertainty_ujy": 75.3
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -29.6,
+          "uncertainty_ujy": 73.3
+        }
+      ],
+      "evidence": [
+        "peak +34.4 sigma over 3 px; aperture change +1615 +/- 75 uJy",
+        "reference flux at this position 533 +/- 15 uJy (S/N 36.5)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c023",
+      "status": "needs_followup",
+      "kind": "new_source_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 90.007524,
+      "dec_deg": -66.608893,
+      "pixel_x": 71.25,
+      "pixel_y": 44.79,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 29.39,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 710.0,
+          "uncertainty": 26.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -4.9,
+          "uncertainty": 12.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 101.7,
+          "uncertainty_ujy": 22.0
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -5.3,
+          "uncertainty_ujy": 20.6
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -49.3,
+          "uncertainty_ujy": 21.4
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -59.5,
+          "uncertainty_ujy": 28.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -11.3,
+          "uncertainty_ujy": 20.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -58.7,
+          "uncertainty_ujy": 20.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -17.3,
+          "uncertainty_ujy": 20.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 84.9,
+          "uncertainty_ujy": 26.7
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 710.0,
+          "uncertainty_ujy": 26.1
+        }
+      ],
+      "evidence": [
+        "peak +29.4 sigma over 3 px; aperture change +710 +/- 26 uJy",
+        "reference flux at this position -5 +/- 13 uJy (S/N -0.4)",
+        "no significant reference source: transient, moving object, or artifact",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c024",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 90.156314,
+      "dec_deg": -66.478622,
+      "pixel_x": 36.48,
+      "pixel_y": 121.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 28.85,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 951.3,
+          "uncertainty": 28.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 316.9,
+          "uncertainty": 13.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 24.2,
+          "uncertainty_ujy": 54.7
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 6.9,
+          "uncertainty_ujy": 56.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 16.5,
+          "uncertainty_ujy": 56.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 25.8,
+          "uncertainty_ujy": 54.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -67.8,
+          "uncertainty_ujy": 56.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 12.5,
+          "uncertainty_ujy": 54.2
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -30.5,
+          "uncertainty_ujy": 57.1
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +28.8 sigma over 2 px; aperture change +951 +/- 29 uJy",
+        "reference flux at this position 317 +/- 14 uJy (S/N 23.4)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c025",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 89.978194,
+      "dec_deg": -66.656647,
+      "pixel_x": 78.06,
+      "pixel_y": 16.84,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 27.0,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 1521.9,
+          "uncertainty": 83.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 623.4,
+          "uncertainty": 15.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 5.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -1.8,
+          "uncertainty_ujy": 81.4
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -46.9,
+          "uncertainty_ujy": 81.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -86.1,
+          "uncertainty_ujy": 82.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -96.0,
+          "uncertainty_ujy": 80.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -73.2,
+          "uncertainty_ujy": 80.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 4.4,
+          "uncertainty_ujy": 79.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 1521.9,
+          "uncertainty_ujy": 83.0
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -8.8,
+          "uncertainty_ujy": 78.6
+        }
+      ],
+      "evidence": [
+        "peak +27.0 sigma over 5 px; aperture change +1522 +/- 83 uJy",
+        "reference flux at this position 623 +/- 15 uJy (S/N 41.2)",
+        "touches pixels flagged TRANSIENT, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c026",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 89.746259,
+      "dec_deg": -66.442619,
+      "pixel_x": 132.36,
+      "pixel_y": 142.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -25.42,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -467.9,
+          "uncertainty": 25.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 57.6,
+          "uncertainty": 11.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 4.8,
+          "uncertainty_ujy": 22.6
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 45.3,
+          "uncertainty_ujy": 21.9
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -15.0,
+          "uncertainty_ujy": 22.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 22.4,
+          "uncertainty_ujy": 22.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -12.9,
+          "uncertainty_ujy": 21.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -28.8,
+          "uncertainty_ujy": 23.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -17.4,
+          "uncertainty_ujy": 21.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 15.5,
+          "uncertainty_ujy": 22.7
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 12.8,
+          "uncertainty_ujy": 24.2
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -467.9,
+          "uncertainty_ujy": 25.4
+        }
+      ],
+      "evidence": [
+        "peak -25.4 sigma over 2 px; aperture change -468 +/- 25 uJy",
+        "reference flux at this position 58 +/- 11 uJy (S/N 5.1)",
+        "fainter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c027",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2025W48_2A_0717_3"
+      ],
+      "ra_deg": 89.710209,
+      "dec_deg": -66.472999,
+      "pixel_x": 140.71,
+      "pixel_y": 124.18,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 25.11,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 610.1,
+          "uncertainty": 36.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 165.4,
+          "uncertainty": 12.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5647,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -42.6,
+          "uncertainty_ujy": 34.8
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -4.5,
+          "uncertainty_ujy": 32.3
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -58.2,
+          "uncertainty_ujy": 35.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 610.1,
+          "uncertainty_ujy": 36.3
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 12.9,
+          "uncertainty_ujy": 32.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 53.2,
+          "uncertainty_ujy": 33.8
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -53.1,
+          "uncertainty_ujy": 35.0
+        }
+      ],
+      "evidence": [
+        "peak +25.1 sigma over 3 px; aperture change +610 +/- 36 uJy",
+        "reference flux at this position 165 +/- 13 uJy (S/N 13.1)",
+        "touches pixels flagged OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c028",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 89.736261,
+      "dec_deg": -66.440177,
+      "pixel_x": 134.71,
+      "pixel_y": 143.42,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -24.69,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -613.4,
+          "uncertainty": 24.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 12.0,
+          "uncertainty": 10.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 27.4,
+          "uncertainty_ujy": 19.9
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 2.1,
+          "uncertainty_ujy": 19.8
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 17.7,
+          "uncertainty_ujy": 20.6
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 18.7,
+          "uncertainty_ujy": 20.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -16.4,
+          "uncertainty_ujy": 19.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -28.6,
+          "uncertainty_ujy": 20.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -5.0,
+          "uncertainty_ujy": 19.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 60.5,
+          "uncertainty_ujy": 20.0
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -613.4,
+          "uncertainty_ujy": 24.4
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 56.1,
+          "uncertainty_ujy": 20.2
+        }
+      ],
+      "evidence": [
+        "peak -24.7 sigma over 4 px; aperture change -613 +/- 24 uJy",
+        "reference flux at this position 12 +/- 11 uJy (S/N 1.1)",
+        "within 3 px of the grid edge",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c029",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2025W40_1A_0475_2"
+      ],
+      "ra_deg": 90.014706,
+      "dec_deg": -66.607205,
+      "pixel_x": 69.58,
+      "pixel_y": 45.78,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 24.56,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 627.6,
+          "uncertainty": 25.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 61.9,
+          "uncertainty": 11.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5587,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 627.6,
+          "uncertainty_ujy": 25.8
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 28.3,
+          "uncertainty_ujy": 21.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -23.2,
+          "uncertainty_ujy": 21.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -20.8,
+          "uncertainty_ujy": 22.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -35.0,
+          "uncertainty_ujy": 20.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -6.3,
+          "uncertainty_ujy": 21.3
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 19.6,
+          "uncertainty_ujy": 21.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 12.8,
+          "uncertainty_ujy": 20.8
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 30.0,
+          "uncertainty_ujy": 21.3
+        }
+      ],
+      "evidence": [
+        "peak +24.6 sigma over 4 px; aperture change +628 +/- 26 uJy",
+        "reference flux at this position 62 +/- 12 uJy (S/N 5.3)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c030",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 90.146474,
+      "dec_deg": -66.476545,
+      "pixel_x": 38.78,
+      "pixel_y": 122.22,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 24.27,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 509.8,
+          "uncertainty": 35.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 179.9,
+          "uncertainty": 13.2,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -60.1,
+          "uncertainty_ujy": 32.3
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -0.2,
+          "uncertainty_ujy": 33.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 98.8,
+          "uncertainty_ujy": 37.0
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -33.5,
+          "uncertainty_ujy": 33.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -7.9,
+          "uncertainty_ujy": 32.3
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -15.7,
+          "uncertainty_ujy": 32.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 45.8,
+          "uncertainty_ujy": 32.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -2.8,
+          "uncertainty_ujy": 32.3
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +24.3 sigma over 2 px; aperture change +510 +/- 36 uJy",
+        "reference flux at this position 180 +/- 13 uJy (S/N 13.6)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c031",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 90.219168,
+      "dec_deg": -66.471433,
+      "pixel_x": 21.78,
+      "pixel_y": 125.16,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 23.09,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 492.1,
+          "uncertainty": 27.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 81.3,
+          "uncertainty": 12.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 5.8,
+          "uncertainty_ujy": 23.6
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 1.0,
+          "uncertainty_ujy": 23.2
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -39.1,
+          "uncertainty_ujy": 22.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -30.7,
+          "uncertainty_ujy": 23.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 12.4,
+          "uncertainty_ujy": 23.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -6.3,
+          "uncertainty_ujy": 23.1
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -37.8,
+          "uncertainty_ujy": 25.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 492.1,
+          "uncertainty_ujy": 27.4
+        }
+      ],
+      "evidence": [
+        "peak +23.1 sigma over 3 px; aperture change +492 +/- 27 uJy",
+        "reference flux at this position 81 +/- 13 uJy (S/N 6.3)",
+        "touches pixels flagged HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c032",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 89.981656,
+      "dec_deg": -66.490898,
+      "pixel_x": 77.28,
+      "pixel_y": 113.86,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 22.2,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 607.9,
+          "uncertainty": 32.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 146.4,
+          "uncertainty": 12.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 6.4,
+          "uncertainty_ujy": 28.9
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 27.8,
+          "uncertainty_ujy": 37.9
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -5.5,
+          "uncertainty_ujy": 30.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -37.0,
+          "uncertainty_ujy": 29.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -28.0,
+          "uncertainty_ujy": 29.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -14.8,
+          "uncertainty_ujy": 28.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -7.2,
+          "uncertainty_ujy": 28.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -26.3,
+          "uncertainty_ujy": 29.0
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 607.9,
+          "uncertainty_ujy": 32.3
+        }
+      ],
+      "evidence": [
+        "peak +22.2 sigma over 3 px; aperture change +608 +/- 32 uJy",
+        "reference flux at this position 146 +/- 13 uJy (S/N 11.4)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c033",
+      "status": "needs_followup",
+      "kind": "new_source_like",
+      "observation_ids": [
+        "sep-d4.2025W45_2A_0348_2"
+      ],
+      "ra_deg": 89.711123,
+      "dec_deg": -66.480828,
+      "pixel_x": 140.48,
+      "pixel_y": 119.6,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 21.76,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 788.5,
+          "uncertainty": 24.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 5.9,
+          "uncertainty": 10.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56275,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 33.9,
+          "uncertainty_ujy": 18.4
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 788.5,
+          "uncertainty_ujy": 24.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -29.4,
+          "uncertainty_ujy": 17.8
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -35.6,
+          "uncertainty_ujy": 17.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -12.6,
+          "uncertainty_ujy": 17.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 3.1,
+          "uncertainty_ujy": 18.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 26.0,
+          "uncertainty_ujy": 17.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 14.6,
+          "uncertainty_ujy": 17.5
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -38.1,
+          "uncertainty_ujy": 18.8
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 23.9,
+          "uncertainty_ujy": 18.5
+        }
+      ],
+      "evidence": [
+        "peak +21.8 sigma over 4 px; aperture change +788 +/- 24 uJy",
+        "reference flux at this position 6 +/- 10 uJy (S/N 0.6)",
+        "no significant reference source: transient, moving object, or artifact",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c034",
+      "status": "needs_followup",
+      "kind": "new_source_like",
+      "observation_ids": [
+        "sep-d4.2025W49_2A_0598_2"
+      ],
+      "ra_deg": 90.030626,
+      "dec_deg": -66.487741,
+      "pixel_x": 65.85,
+      "pixel_y": 115.71,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 20.45,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 534.9,
+          "uncertainty": 27.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 36.9,
+          "uncertainty": 11.2,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56523,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -10.4,
+          "uncertainty_ujy": 21.7
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 53.4,
+          "uncertainty_ujy": 21.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -11.0,
+          "uncertainty_ujy": 21.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -1.7,
+          "uncertainty_ujy": 21.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -19.7,
+          "uncertainty_ujy": 20.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -29.1,
+          "uncertainty_ujy": 20.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 534.9,
+          "uncertainty_ujy": 27.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -14.8,
+          "uncertainty_ujy": 20.2
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -15.8,
+          "uncertainty_ujy": 21.7
+        }
+      ],
+      "evidence": [
+        "peak +20.4 sigma over 3 px; aperture change +535 +/- 27 uJy",
+        "reference flux at this position 37 +/- 11 uJy (S/N 3.3)",
+        "no significant reference source: transient, moving object, or artifact",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c035",
+      "status": "needs_followup",
+      "kind": "new_source_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 89.997725,
+      "dec_deg": -66.606367,
+      "pixel_x": 73.53,
+      "pixel_y": 46.27,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 19.99,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 667.5,
+          "uncertainty": 27.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 27.6,
+          "uncertainty": 12.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 25.9,
+          "uncertainty_ujy": 21.9
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 4.1,
+          "uncertainty_ujy": 21.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -0.3,
+          "uncertainty_ujy": 20.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -62.6,
+          "uncertainty_ujy": 20.2
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 667.5,
+          "uncertainty_ujy": 27.4
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 0.8,
+          "uncertainty_ujy": 21.0
+        }
+      ],
+      "evidence": [
+        "peak +20.0 sigma over 4 px; aperture change +668 +/- 27 uJy",
+        "reference flux at this position 28 +/- 13 uJy (S/N 2.2)",
+        "no significant reference source: transient, moving object, or artifact",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c036",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2025W49_2A_0330_2"
+      ],
+      "ra_deg": 90.082959,
+      "dec_deg": -66.502325,
+      "pixel_x": 53.64,
+      "pixel_y": 107.16,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 19.88,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 829.9,
+          "uncertainty": 49.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 241.2,
+          "uncertainty": 13.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56343,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 23.0,
+          "uncertainty_ujy": 43.2
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 30.8,
+          "uncertainty_ujy": 42.9
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -17.0,
+          "uncertainty_ujy": 43.3
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 14.8,
+          "uncertainty_ujy": 46.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -39.7,
+          "uncertainty_ujy": 42.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 829.9,
+          "uncertainty_ujy": 49.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -72.1,
+          "uncertainty_ujy": 42.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 337.8,
+          "uncertainty_ujy": 45.1
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -31.7,
+          "uncertainty_ujy": 43.8
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +19.9 sigma over 3 px; aperture change +830 +/- 49 uJy",
+        "reference flux at this position 241 +/- 13 uJy (S/N 17.9)",
+        "brighter than the reference at a persistent source",
+        "2 of 10 epochs deviate by more than 5 sigma"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c037",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2025W49_2A_0732_4"
+      ],
+      "ra_deg": 89.819292,
+      "dec_deg": -66.464974,
+      "pixel_x": 115.24,
+      "pixel_y": 128.97,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -19.79,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -1202.9,
+          "uncertainty": 54.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 37.7,
+          "uncertainty": 14.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.56412,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": -2.8,
+          "uncertainty_ujy": 22.8
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 9.0,
+          "uncertainty_ujy": 22.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": -12.4,
+          "uncertainty_ujy": 22.7
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -1.0,
+          "uncertainty_ujy": 35.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -19.4,
+          "uncertainty_ujy": 21.9
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -913.0,
+          "uncertainty_ujy": 45.6
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": -1202.9,
+          "uncertainty_ujy": 54.0
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 37.3,
+          "uncertainty_ujy": 24.1
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": 43.4,
+          "uncertainty_ujy": 22.4
+        }
+      ],
+      "evidence": [
+        "peak -19.8 sigma over 4 px; aperture change -1203 +/- 54 uJy",
+        "reference flux at this position 38 +/- 15 uJy (S/N 2.5)",
+        "negative residual where the reference shows no source",
+        "2 of 10 epochs deviate by more than 5 sigma"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c038",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "sep-d4.2026W40_1A_0347_1"
+      ],
+      "ra_deg": 89.876864,
+      "dec_deg": -66.473527,
+      "pixel_x": 101.77,
+      "pixel_y": 124.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 19.53,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 418.6,
+          "uncertainty": 49.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 334.3,
+          "uncertainty": 12.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5578,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 9.0,
+          "uncertainty_ujy": 44.8
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 42.2,
+          "uncertainty_ujy": 44.4
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 15.0,
+          "uncertainty_ujy": 47.0
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": -1.3,
+          "uncertainty_ujy": 47.3
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -24.4,
+          "uncertainty_ujy": 46.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -14.7,
+          "uncertainty_ujy": 45.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 107.3,
+          "uncertainty_ujy": 45.0
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 62.4,
+          "uncertainty_ujy": 44.8
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": 418.6,
+          "uncertainty_ujy": 49.4
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -12.2,
+          "uncertainty_ujy": 46.4
+        }
+      ],
+      "evidence": [
+        "peak +19.5 sigma over 2 px; aperture change +419 +/- 49 uJy",
+        "reference flux at this position 334 +/- 13 uJy (S/N 25.8)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c039",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2025W48_2A_0717_3"
+      ],
+      "ra_deg": 90.095583,
+      "dec_deg": -66.501959,
+      "pixel_x": 50.69,
+      "pixel_y": 107.37,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 18.98,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 837.2,
+          "uncertainty": 41.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 214.4,
+          "uncertainty": 13.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.5647,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": 17.4,
+          "uncertainty_ujy": 32.4
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 10.3,
+          "uncertainty_ujy": 33.1
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 837.2,
+          "uncertainty_ujy": 41.8
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": -55.2,
+          "uncertainty_ujy": 32.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": -33.2,
+          "uncertainty_ujy": 32.7
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": -30.3,
+          "uncertainty_ujy": 32.5
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 456.4,
+          "uncertainty_ujy": 36.9
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -21.2,
+          "uncertainty_ujy": 34.1
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +19.0 sigma over 4 px; aperture change +837 +/- 42 uJy",
+        "reference flux at this position 214 +/- 13 uJy (S/N 16.1)",
+        "touches pixels flagged TRANSIENT, HALO",
+        "2 of 10 epochs deviate by more than 5 sigma"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "sep-d4-c040",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "sep-d4.2026W40_2A_0128_2"
+      ],
+      "ra_deg": 89.826628,
+      "dec_deg": -66.657979,
+      "pixel_x": 113.21,
+      "pixel_y": 16.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -17.73,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -333.3,
+          "uncertainty": 23.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 2.9,
+          "uncertainty": 11.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 2.55771,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "sep-d4.2025W40_1A_0475_2",
+          "mjd_mid": 60949.145939,
+          "delta_flux_ujy": 31.4,
+          "uncertainty_ujy": 19.9
+        },
+        {
+          "observation_id": "sep-d4.2025W45_2A_0348_2",
+          "mjd_mid": 60987.108815,
+          "delta_flux_ujy": -25.4,
+          "uncertainty_ujy": 18.3
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0268_3",
+          "mjd_mid": 61007.684896,
+          "delta_flux_ujy": 27.6,
+          "uncertainty_ujy": 19.8
+        },
+        {
+          "observation_id": "sep-d4.2025W48_2A_0717_3",
+          "mjd_mid": 61009.586082,
+          "delta_flux_ujy": 12.4,
+          "uncertainty_ujy": 19.2
+        },
+        {
+          "observation_id": "sep-d4.2025W49_1A_0388_3",
+          "mjd_mid": 61011.758876,
+          "delta_flux_ujy": 3.8,
+          "uncertainty_ujy": 18.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0330_2",
+          "mjd_mid": 61015.084845,
+          "delta_flux_ujy": 26.9,
+          "uncertainty_ujy": 19.1
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0598_2",
+          "mjd_mid": 61016.23969,
+          "delta_flux_ujy": 0.8,
+          "uncertainty_ujy": 23.4
+        },
+        {
+          "observation_id": "sep-d4.2025W49_2A_0732_4",
+          "mjd_mid": 61016.852812,
+          "delta_flux_ujy": 17.0,
+          "uncertainty_ujy": 18.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_1A_0347_1",
+          "mjd_mid": 61312.566287,
+          "delta_flux_ujy": -19.6,
+          "uncertainty_ujy": 20.6
+        },
+        {
+          "observation_id": "sep-d4.2026W40_2A_0128_2",
+          "mjd_mid": 61315.078764,
+          "delta_flux_ujy": -333.3,
+          "uncertainty_ujy": 23.0
+        }
+      ],
+      "evidence": [
+        "peak -17.7 sigma over 2 px; aperture change -333 +/- 23 uJy",
+        "reference flux at this position 3 +/- 11 uJy (S/N 0.3)",
+        "negative residual where the reference shows no source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    }
+  ],
+  "generated_by": {
+    "tool": "parallax-science",
+    "version": "0.1.0",
+    "command": "parallax build-field sep-d4 --ra 90.0 --dec -66.5607 --detector 4 --epochs 10 --title \"South Ecliptic Pole, 2.56 um (SPHEREx detector 4)\""
+  }
+}

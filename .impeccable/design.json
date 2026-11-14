@@ -1,0 +1,459 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T03:32:56+00:00",
+  "title": "Design System: PARALLAX",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "#0b0d12",
+        "tonalRamp": [
+          "#1b1d23",
+          "#333947",
+          "#49536d",
+          "#5d6d96",
+          "#818eae",
+          "#a9b0c3",
+          "#ced1da",
+          "#f1f2f4"
+        ]
+      },
+      "sky-well": {
+        "role": "neutral",
+        "displayName": "Sky Well",
+        "canonical": "#07080b",
+        "tonalRamp": [
+          "#1b1d22",
+          "#343846",
+          "#4a536c",
+          "#5f6c93",
+          "#838dac",
+          "#aab0c2",
+          "#ced1da",
+          "#f1f2f4"
+        ]
+      },
+      "rail": {
+        "role": "neutral",
+        "displayName": "Graphite Rail",
+        "canonical": "#10141b",
+        "tonalRamp": [
+          "#1a1d23",
+          "#323a48",
+          "#48566e",
+          "#5b7197",
+          "#8091af",
+          "#a8b2c4",
+          "#cdd2db",
+          "#f1f2f4"
+        ]
+      },
+      "rail-2": {
+        "role": "neutral",
+        "displayName": "Rail Raised",
+        "canonical": "#161b24",
+        "tonalRamp": [
+          "#1b1d23",
+          "#333a47",
+          "#49566d",
+          "#5d7196",
+          "#8191ae",
+          "#a9b2c3",
+          "#ced2da",
+          "#f1f2f4"
+        ]
+      },
+      "hair": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#262d39",
+        "tonalRamp": [
+          "#1b1e22",
+          "#343b45",
+          "#4c576a",
+          "#627391",
+          "#8593aa",
+          "#abb3c1",
+          "#cfd3d9",
+          "#f1f2f3"
+        ]
+      },
+      "hair-2": {
+        "role": "neutral",
+        "displayName": "Hairline Strong",
+        "canonical": "#343c4b",
+        "tonalRamp": [
+          "#1c1e22",
+          "#353b44",
+          "#4d5769",
+          "#64738f",
+          "#8792a8",
+          "#acb3c0",
+          "#cfd3d9",
+          "#f1f2f3"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Bulletin Paper",
+        "canonical": "#e9e4d8",
+        "tonalRamp": [
+          "#23211a",
+          "#484231",
+          "#706446",
+          "#9a8758",
+          "#b1a27e",
+          "#c5bca7",
+          "#dbd7cd",
+          "#f4f3f1"
+        ]
+      },
+      "paper-dim": {
+        "role": "neutral",
+        "displayName": "Paper Dim",
+        "canonical": "#a8a395",
+        "tonalRamp": [
+          "#201f1d",
+          "#413f39",
+          "#635f54",
+          "#857f6e",
+          "#a19c8f",
+          "#bbb8b0",
+          "#d7d5d1",
+          "#f3f3f2"
+        ]
+      },
+      "paper-faint": {
+        "role": "neutral",
+        "displayName": "Paper Faint",
+        "canonical": "#8a8679",
+        "tonalRamp": [
+          "#201f1d",
+          "#403e3a",
+          "#605e56",
+          "#817e71",
+          "#9e9b91",
+          "#b9b8b2",
+          "#d6d5d2",
+          "#f3f2f2"
+        ]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Sodium Amber",
+        "canonical": "#f2a33a",
+        "tonalRamp": [
+          "#2d2110",
+          "#614218",
+          "#9d6419",
+          "#e08812",
+          "#e8a347",
+          "#e6bd86",
+          "#ebd7bd",
+          "#f7f3ed"
+        ]
+      },
+      "signal-hover": {
+        "role": "primary",
+        "displayName": "Sodium Amber Hover",
+        "canonical": "#f7b558",
+        "tonalRamp": [
+          "#2e210f",
+          "#634317",
+          "#a06717",
+          "#e48b0e",
+          "#eba644",
+          "#e7be84",
+          "#ecd8bc",
+          "#f8f3ed"
+        ]
+      },
+      "signal-ink": {
+        "role": "primary",
+        "displayName": "Signal Ink",
+        "canonical": "#1a1206",
+        "tonalRamp": [
+          "#292114",
+          "#574223",
+          "#8a652c",
+          "#c38830",
+          "#d1a35e",
+          "#d8bd94",
+          "#e4d7c4",
+          "#f6f3ef"
+        ]
+      },
+      "cold": {
+        "role": "secondary",
+        "displayName": "Cold Plate Blue",
+        "canonical": "#609cec",
+        "tonalRamp": [
+          "#121d2c",
+          "#1c385e",
+          "#205396",
+          "#1d6cd6",
+          "#4f8de0",
+          "#8bb0e1",
+          "#c0d1e8",
+          "#eef2f7"
+        ]
+      },
+      "alert": {
+        "role": "error",
+        "displayName": "Alert Coral",
+        "canonical": "#ef7a6a",
+        "tonalRamp": [
+          "#2c1411",
+          "#5e231b",
+          "#982d1e",
+          "#d8311a",
+          "#e25f4e",
+          "#e2948a",
+          "#e9c4bf",
+          "#f7efee"
+        ]
+      },
+      "caution-bg": {
+        "role": "neutral",
+        "displayName": "Caution Umber",
+        "canonical": "#3a2506",
+        "tonalRamp": [
+          "#2c2111",
+          "#5f431b",
+          "#98671e",
+          "#d98c1a",
+          "#e2a64d",
+          "#e2be89",
+          "#e9d8bf",
+          "#f7f3ed"
+        ]
+      },
+      "caution-text": {
+        "role": "neutral",
+        "displayName": "Caution Cream",
+        "canonical": "#ffd8a1",
+        "tonalRamp": [
+          "#2f210e",
+          "#674413",
+          "#a76810",
+          "#ef8d04",
+          "#f3a73c",
+          "#ecbf7f",
+          "#eed8ba",
+          "#f8f3ec"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Intro title only."
+      },
+      "headline": {
+        "displayName": "Lede",
+        "purpose": "Intro lede."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Rail and report section heads."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose and controls."
+      },
+      "body-small": {
+        "displayName": "Body Small",
+        "purpose": "Captions, rows, credits."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Every coordinate, date, flux and sigma."
+      },
+      "label": {
+        "displayName": "Row Label",
+        "purpose": "Uppercase report row keys in a fixed column."
+      },
+      "stamp": {
+        "displayName": "Stamp",
+        "purpose": "Candidate status line."
+      }
+    },
+    "shadows": [
+      {
+        "name": "overlay-lift",
+        "value": "0 12px 32px rgba(0,0,0,0.5)",
+        "purpose": "Keys dialog floating over the workspace."
+      },
+      {
+        "name": "overlay-lift-tour",
+        "value": "0 16px 40px rgba(0,0,0,0.55)",
+        "purpose": "Tour card."
+      },
+      {
+        "name": "tour-scrim",
+        "value": "0 0 0 9999px rgba(5,6,9,0.45)",
+        "purpose": "Dims everything outside the tour ring."
+      },
+      {
+        "name": "selected-rule",
+        "value": "inset 0 0 0 1px #f2a33a",
+        "purpose": "Selected candidate row (a rule, not a lift)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All transitions."
+      },
+      {
+        "name": "control",
+        "value": "150ms",
+        "purpose": "Button and select border/background changes."
+      },
+      {
+        "name": "tour",
+        "value": "450ms",
+        "purpose": "Tour ring and card travel."
+      },
+      {
+        "name": "intro-exit",
+        "value": "800ms",
+        "purpose": "Intro fades and scales to 1.06 on enter."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "1ms",
+        "purpose": "prefers-reduced-motion collapses transitions; the starfield holds still."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "900px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Default square control on graphite.",
+      "html": "<button class=\"ds-btn\">Find</button>",
+      "css": ".ds-btn{min-height:34px;padding:0 12px;background:var(--rail-2,#161b24);color:var(--paper,#e9e4d8);border:1px solid var(--hair-2,#343c4b);border-radius:0;font:15px/1.5 'Schibsted Grotesk',system-ui,sans-serif;cursor:pointer;transition:background-color 150ms cubic-bezier(0.16,1,0.3,1),border-color 150ms cubic-bezier(0.16,1,0.3,1)}.ds-btn:hover{border-color:var(--paper-dim,#a8a395)}.ds-btn:focus-visible{outline:2px solid var(--signal,#f2a33a);outline-offset:2px}"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one amber action per view.",
+      "html": "<button class=\"ds-btn-primary\">Open the workspace</button>",
+      "css": ".ds-btn-primary{min-height:34px;padding:0 12px;background:var(--signal,#f2a33a);color:var(--signal-ink,#1a1206);border:1px solid var(--signal,#f2a33a);border-radius:0;font:600 15px/1.5 'Schibsted Grotesk',system-ui,sans-serif;cursor:pointer;transition:background-color 150ms cubic-bezier(0.16,1,0.3,1),border-color 150ms cubic-bezier(0.16,1,0.3,1)}.ds-btn-primary:hover{background:#f7b558;border-color:#f7b558}.ds-btn-primary:focus-visible{outline:2px solid var(--signal,#f2a33a);outline-offset:2px}"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "nav",
+      "refersTo": "segmented-pressed",
+      "description": "Joined view-mode buttons; pressed inverts to paper.",
+      "html": "<div class=\"ds-seg\"><button aria-pressed=\"false\">Blink</button><button aria-pressed=\"false\">Overlay</button><button aria-pressed=\"true\">Difference</button></div>",
+      "css": ".ds-seg{display:inline-flex}.ds-seg button{min-height:34px;padding:0 12px;background:#161b24;color:#e9e4d8;border:1px solid #343c4b;border-radius:0;font:15px/1.5 'Schibsted Grotesk',system-ui,sans-serif;cursor:pointer}.ds-seg button+button{margin-left:-1px}.ds-seg button:hover{border-color:#a8a395}.ds-seg button[aria-pressed=true]{background:#e9e4d8;border-color:#e9e4d8;color:#0b0d12;font-weight:600;position:relative}.ds-seg button:focus-visible{outline:2px solid #f2a33a;outline-offset:2px}"
+    },
+    {
+      "name": "Coordinate Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Ink field with amber caret.",
+      "html": "<input class=\"ds-input\" placeholder=\"RA °\" />",
+      "css": ".ds-input{min-height:34px;width:7rem;padding:0 10px;background:#0b0d12;color:#e9e4d8;border:1px solid #343c4b;border-radius:0;caret-color:#f2a33a;font:15px/1.5 'Schibsted Grotesk',system-ui,sans-serif}.ds-input::placeholder{color:#8a8679}.ds-input:focus-visible{outline:2px solid #f2a33a;outline-offset:2px}"
+    },
+    {
+      "name": "Status Stamp",
+      "kind": "chip",
+      "refersTo": "status-stamp",
+      "description": "Typographic status line on every candidate.",
+      "html": "<p class=\"ds-stamp\">Needs follow-up · unconfirmed</p>",
+      "css": ".ds-stamp{display:inline-block;margin:0;padding:2px 8px;font:500 0.75rem 'IBM Plex Mono',ui-monospace,monospace;text-transform:uppercase;letter-spacing:0.06em;color:#f2a33a;border:1.5px solid currentColor}"
+    },
+    {
+      "name": "Candidate Row",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Hairline list row with shape glyph and mono columns.",
+      "html": "<button class=\"ds-cand\" aria-pressed=\"true\"><svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\"><rect x=\"3\" y=\"3\" width=\"10\" height=\"10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/></svg><span class=\"m d\">c010</span><span>Variable-like</span><span class=\"m\">+7.5σ</span><span class=\"m d\">2026-03-07</span></button>",
+      "css": ".ds-cand{width:360px;min-height:34px;display:grid;grid-template-columns:16px 2.5rem 1fr auto 5.5rem;align-items:center;gap:10px;padding:0 8px;background:none;color:#e9e4d8;border:0;border-bottom:1px solid #262d39;text-align:left;font:0.875rem 'Schibsted Grotesk',system-ui,sans-serif;cursor:pointer}.ds-cand .m{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums;font-size:0.8125rem;text-align:right}.ds-cand .d{color:#a8a395}.ds-cand:hover{background:#161b24}.ds-cand[aria-pressed=true]{background:#161b24;box-shadow:inset 0 0 0 1px #f2a33a}.ds-cand[aria-pressed=true] svg{color:#f2a33a}.ds-cand:focus-visible{outline:2px solid #f2a33a;outline-offset:2px}"
+    },
+    {
+      "name": "Evidence Report",
+      "kind": "card",
+      "refersTo": "evidence-report",
+      "description": "The telegram block: stamped status, fixed label column, dashed rules.",
+      "html": "<article class=\"ds-report\"><header><h2>nep-d2-c010</h2><p class=\"st\">Needs follow-up · unconfirmed</p></header><dl><div><dt>Position</dt><dd>17h59m23.2s +66°37′14″ ICRS</dd></div><div><dt>Band</dt><dd>1.448 µm detector 2</dd></div></dl></article>",
+      "css": ".ds-report{width:340px;background:#0b0d12;color:#e9e4d8;border:1px solid #343c4b;padding:14px 16px 16px;display:grid;gap:14px}.ds-report header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;padding-bottom:10px;border-bottom:1px dashed #343c4b}.ds-report h2{margin:0;font:500 0.9375rem 'IBM Plex Mono',ui-monospace,monospace}.ds-report .st{margin:0;padding:2px 8px;font:500 0.75rem 'IBM Plex Mono',ui-monospace,monospace;text-transform:uppercase;letter-spacing:0.06em;color:#f2a33a;border:1.5px solid currentColor}.ds-report dl{margin:0;display:grid;gap:4px;font:0.8125rem 'IBM Plex Mono',ui-monospace,monospace}.ds-report dl div{display:grid;grid-template-columns:5.5rem 1fr;gap:8px}.ds-report dt{color:#a8a395;text-transform:uppercase;font-size:0.6875rem;letter-spacing:0.06em;line-height:1.8}.ds-report dd{margin:0}"
+    },
+    {
+      "name": "Tour Card",
+      "kind": "card",
+      "refersTo": "tour-card",
+      "description": "Inverted paper card for the guided tour.",
+      "html": "<div class=\"ds-tour\"><p class=\"c\">2 / 6</p><h2>Blink to spot changes</h2><p>Blink flips between this epoch and the median of all epochs.</p><div class=\"a\"><button class=\"l\">Skip tour</button><button>Back</button><button class=\"p\">Next</button></div></div>",
+      "css": ".ds-tour{width:340px;padding:16px 18px;background:#e9e4d8;color:#0b0d12;box-shadow:0 16px 40px rgba(0,0,0,0.55);display:grid;gap:8px;font:15px/1.5 'Schibsted Grotesk',system-ui,sans-serif}.ds-tour p,.ds-tour h2{margin:0}.ds-tour h2{font-size:1.0625rem;font-weight:800}.ds-tour .c{font:0.75rem 'IBM Plex Mono',ui-monospace,monospace;color:#5d5a51}.ds-tour .a{display:flex;gap:8px;align-items:center;justify-content:flex-end}.ds-tour button{min-height:34px;padding:0 12px;background:transparent;border:1px solid #b9b3a3;border-radius:0;color:inherit;font:inherit;cursor:pointer}.ds-tour .p{background:#0b0d12;border-color:#0b0d12;color:#e9e4d8}.ds-tour .l{margin-right:auto;padding:0;border:0;min-height:0;text-decoration:underline;text-decoration-color:#8a6420;text-underline-offset:3px}.ds-tour button:focus-visible{outline:2px solid #8a5a10;outline-offset:2px}"
+    },
+    {
+      "name": "Simulated Banner",
+      "kind": "custom",
+      "refersTo": "banner-simulated",
+      "description": "Mandatory label wherever simulated data appears.",
+      "html": "<div class=\"ds-sim\"><strong>SIMULATED DATA.</strong> Synthetic star field for software testing; not a SPHEREx observation.</div>",
+      "css": ".ds-sim{padding:8px 16px;font:0.875rem/1.5 'Schibsted Grotesk',system-ui,sans-serif;background:#3a2506;color:#ffd8a1;border-bottom:1px solid #262d39}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Astronomical Telegram",
+    "overview": "PARALLAX reads like a circular bulletin wired from an observatory at night: position, epoch, flux, uncertainty, status. The ground is night ink, the rails are cool graphite, text is warm bulletin paper, and one sodium-amber signal marks what the eye should go to. The sky image is the largest thing on every screen; the chrome around it is hairline-thin and square.\n\nDensity is instrument-grade: 15px body, 34px controls, monospace columns for every number. Decoration is absent. Atmosphere comes only from the intro's illustrative starfield, which is labelled as illustration.",
+    "keyCharacteristics": [
+      "Night-ink ground, paper text, one amber signal.",
+      "Every number is mono, tabular, in a fixed column.",
+      "1px hairlines and square corners everywhere.",
+      "Status is stamped, never celebrated; candidates are always \"unconfirmed\".",
+      "Meaning never rides on colour alone: shape glyphs, dashes and labels carry it too."
+    ],
+    "rules": [
+      {
+        "name": "The One Signal Rule",
+        "body": "Amber marks exactly one kind of thing: what is selected, actionable or flagged. If two unrelated things are amber, one is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Diverging Pair Rule",
+        "body": "The difference map runs cold blue (negative) through near-black (zero) to amber (positive), with lightness tracking magnitude so it still reads in greyscale; masked pixels are a neutral grey (#34302c). Blue appears nowhere else.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ephemeris Rule",
+        "body": "If it is a number with a unit, it is mono, tabular and right-aligned or in a fixed column.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Instrument Rule",
+        "body": "Panels at rest have no shadow. Only something floating over the workspace earns one.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do set every coordinate, date, flux and sigma in IBM Plex Mono with tabular numerals.",
+      "Do keep amber for selection, primary action, focus and flagged residuals only.",
+      "Do pair every colour-coded state with a shape, dash or text label.",
+      "Do stamp candidate status with \"unconfirmed\" and keep it typographic, not iconic.",
+      "Do label simulated data with the caution-umber banner on every screen it appears.",
+      "Do keep corners square and rules 1px."
+    ],
+    "donts": [
+      "Don't use blue as a UI accent; it belongs to the negative arm of the difference map.",
+      "Don't put shadows on resting panels.",
+      "Don't add celebratory or \"discovery\" treatments to candidates.",
+      "Don't set measurements in the proportional grotesk."
+    ]
+  }
+}

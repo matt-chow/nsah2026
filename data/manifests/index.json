@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "fields": [
+    {
+      "manifest_id": "nep-d2",
+      "path": "manifests/nep-d2.json",
+      "title": "North Ecliptic Pole, 1.45 um (SPHEREx detector 2)",
+      "data_kind": "real",
+      "ra_deg": 270.0,
+      "dec_deg": 66.5607,
+      "radius_arcsec": 452.02500000000003,
+      "observations": 10,
+      "candidates": 40,
+      "data_release": "DR1 + QR3",
+      "wavelength_um": 1.44521
+    },
+    {
+      "manifest_id": "sep-d4",
+      "path": "manifests/sep-d4.json",
+      "title": "South Ecliptic Pole, 2.56 um (SPHEREx detector 4)",
+      "data_kind": "real",
+      "ra_deg": 90.0,
+      "dec_deg": -66.5607,
+      "radius_arcsec": 452.02500000000003,
+      "observations": 10,
+      "candidates": 40,
+      "data_release": "DR1 + QR3",
+      "wavelength_um": 2.5587
+    },
+    {
+      "manifest_id": "synthetic-fixture-001",
+      "path": "manifests/synthetic-fixture.json",
+      "title": "Synthetic fixture: simulated three-epoch field",
+      "data_kind": "simulated",
+      "ra_deg": 180.0,
+      "dec_deg": 0.0,
+      "radius_arcsec": 198.4,
+      "observations": 3,
+      "candidates": 0,
+      "data_release": null,
+      "wavelength_um": 2.0
+    }
+  ]
+}

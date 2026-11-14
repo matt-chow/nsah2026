@@ -38,6 +38,7 @@
       "additionalProperties": false,
       "properties": {
         "candidate_id": {
+          "pattern": "^[A-Za-z0-9._-]{1,128}$",
           "title": "Candidate Id",
           "type": "string"
         },
@@ -50,6 +51,16 @@
             "rejected"
           ],
           "title": "Status",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "new_source_like",
+            "variable_like",
+            "dipole_like",
+            "artifact_like"
+          ],
+          "title": "Kind",
           "type": "string"
         },
         "observation_ids": {
@@ -72,12 +83,44 @@
           "title": "Dec Deg",
           "type": "number"
         },
+        "pixel_x": {
+          "description": "0-based column on the shared grid",
+          "title": "Pixel X",
+          "type": "number"
+        },
+        "pixel_y": {
+          "description": "0-based row on the shared grid (FITS orientation)",
+          "title": "Pixel Y",
+          "type": "number"
+        },
+        "measurements": {
+          "items": {
+            "$ref": "#/$defs/Measurement"
+          },
+          "title": "Measurements",
+          "type": "array"
+        },
+        "light_curve": {
+          "description": "Residual at this position, all epochs",
+          "items": {
+            "$ref": "#/$defs/LightCurvePoint"
+          },
+          "title": "Light Curve",
+          "type": "array"
+        },
         "evidence": {
           "description": "Measured facts supporting/refuting the candidate",
           "items": {
             "type": "string"
           },
           "title": "Evidence",
+          "type": "array"
+        },
+        "caveats": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Caveats",
           "type": "array"
         },
         "method": {
@@ -88,10 +131,16 @@
       "required": [
         "candidate_id",
         "status",
+        "kind",
         "observation_ids",
         "ra_deg",
         "dec_deg",
+        "pixel_x",
+        "pixel_y",
+        "measurements",
+        "light_curve",
         "evidence",
+        "caveats",
         "method"
       ],
       "title": "Candidate",
@@ -200,6 +249,87 @@
         "acknowledgement"
       ],
       "title": "Dataset",
+      "type": "object"
+    },
+    "Difference": {
+      "additionalProperties": false,
+      "properties": {
+        "difference_id": {
+          "pattern": "^[A-Za-z0-9._-]{1,128}$",
+          "title": "Difference Id",
+          "type": "string"
+        },
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "validated",
+            "visualization_only"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reasons": {
+          "description": "Why quantitative use is disabled, if it is",
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "background_mjysr": {
+          "description": "Background subtracted from the epoch",
+          "title": "Background Mjysr",
+          "type": "number"
+        },
+        "noise_scale": {
+          "description": "Empirical rescale applied to significance",
+          "exclusiveMinimum": 0.0,
+          "title": "Noise Scale",
+          "type": "number"
+        },
+        "error_floor_fraction": {
+          "description": "Fractional template error added",
+          "minimum": 0.0,
+          "title": "Error Floor Fraction",
+          "type": "number"
+        },
+        "threshold_sigma": {
+          "exclusiveMinimum": 0.0,
+          "title": "Threshold Sigma",
+          "type": "number"
+        },
+        "display_png": {
+          "description": "Significance map, diverging, clipped at display_range",
+          "title": "Display Png",
+          "type": "string"
+        },
+        "display_range_sigma": {
+          "exclusiveMinimum": 0.0,
+          "title": "Display Range Sigma",
+          "type": "number"
+        }
+      },
+      "required": [
+        "difference_id",
+        "observation_id",
+        "status",
+        "reasons",
+        "method",
+        "background_mjysr",
+        "noise_scale",
+        "error_floor_fraction",
+        "threshold_sigma",
+        "display_png",
+        "display_range_sigma"
+      ],
+      "title": "Difference",
       "type": "object"
     },
     "Epoch": {
@@ -336,6 +466,87 @@
       "title": "Image",
       "type": "object"
     },
+    "LightCurvePoint": {
+      "additionalProperties": false,
+      "properties": {
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "mjd_mid": {
+          "title": "Mjd Mid",
+          "type": "number"
+        },
+        "delta_flux_ujy": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Aperture residual vs template; null if masked",
+          "title": "Delta Flux Ujy"
+        },
+        "uncertainty_ujy": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Uncertainty Ujy"
+        }
+      },
+      "required": [
+        "observation_id",
+        "mjd_mid",
+        "delta_flux_ujy",
+        "uncertainty_ujy"
+      ],
+      "title": "LightCurvePoint",
+      "type": "object"
+    },
+    "Measurement": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "1-sigma; null if not available",
+          "title": "Uncertainty"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "value",
+        "uncertainty",
+        "unit"
+      ],
+      "title": "Measurement",
+      "type": "object"
+    },
     "Observation": {
       "additionalProperties": false,
       "properties": {
@@ -441,6 +652,32 @@
           "default": null,
           "title": "Calibration Version"
         },
+        "collection": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Archive collection of this file",
+          "title": "Collection"
+        },
+        "data_release": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Release label, e.g. 'DR1'",
+          "title": "Data Release"
+        },
         "processing": {
           "description": "Exact command/parameters that produced the assets",
           "title": "Processing",
@@ -485,6 +722,19 @@
           ],
           "default": null,
           "title": "Masked Fraction"
+        },
+        "psf_fwhm_arcsec": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Psf Fwhm Arcsec"
         },
         "notes": {
           "items": {
@@ -598,12 +848,53 @@
       ],
       "title": "Target",
       "type": "object"
+    },
+    "Template": {
+      "additionalProperties": false,
+      "description": "Reference image every epoch is differenced against (all observations share its grid).",
+      "properties": {
+        "observation_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Observation Ids",
+          "type": "array"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "display_png": {
+          "title": "Display Png",
+          "type": "string"
+        },
+        "science_fits": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Science Fits"
+        }
+      },
+      "required": [
+        "observation_ids",
+        "method",
+        "display_png",
+        "science_fits"
+      ],
+      "title": "Template",
+      "type": "object"
     }
   },
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0.0",
+      "const": "1.1.0",
       "title": "Schema Version",
       "type": "string"
     },
@@ -656,6 +947,37 @@
         "$ref": "#/$defs/Comparison"
       },
       "title": "Comparisons",
+      "type": "array"
+    },
+    "alignment": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "How epochs were resampled to one grid; null if not aligned",
+      "title": "Alignment"
+    },
+    "template": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Template"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "differences": {
+      "items": {
+        "$ref": "#/$defs/Difference"
+      },
+      "title": "Differences",
       "type": "array"
     },
     "candidates": {

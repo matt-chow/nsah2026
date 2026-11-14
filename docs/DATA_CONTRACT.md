@@ -22,7 +22,7 @@ bump regenerates the schema and fixture, and tests catch drift.
 
 | Field | Type | Req | Constraints / meaning |
 |---|---|---|---|
-| `schema_version` | `"1.0.0"` | ✓ | |
+| `schema_version` | `"1.1.0"` | ✓ | |
 | `manifest_id` | string | ✓ | `^[A-Za-z0-9._-]{1,128}$` |
 | `data_kind` | `real` \| `simulated` | ✓ | All observations must match. Simulated ⇒ `notice` set and `dataset.mission="SIMULATED"`. |
 | `title` | string | ✓ | |
@@ -38,7 +38,7 @@ bump regenerates the schema and fixture, and tests catch drift.
 `radius_arcsec` ∈ (0, 3600].
 
 **Dataset (provenance of the whole set):** `mission` (`SPHEREx` | `SIMULATED`), `archive`
-(e.g. `IRSA`), `collection` (e.g. `spherex_qr`), `data_release` (exact archive label),
+(e.g. `IRSA`), `collection` (e.g. `spherex_qr3`), `data_release` (exact archive label),
 `citation`, `acknowledgement`. Nullable fields are null only for simulations.
 
 ## Observation
@@ -124,3 +124,32 @@ There is no "confirmed" status, and the schema rejects it.
 
 The fixture is deliberately built so that e1/e2 are compatible and e3 is on another detector,
 which exercises both paths in the UI.
+
+## 1.1.0 additions (difference imaging)
+
+All of these fields are optional and additive. The Python model in `models.py` is authoritative,
+and `manifest.schema.json` is generated from it.
+
+| Where | Field | Meaning |
+|---|---|---|
+| top level | `alignment` | How the epochs were resampled onto one grid, or null. If it is set, every observation must share one size and WCS. A `template` or any `differences` require it. |
+| top level | `template` | `{observation_ids, method, display_png, science_fits}`: the median reference image. |
+| top level | `differences[]` | One entry per epoch. `status` is `validated` or `visualization_only`, and `reasons` explain why quantitative use is off. Also: `noise_scale` (*k*), `error_floor_fraction` (*f*), `background_mjysr`, `threshold_sigma`, `display_png`, `display_range_sigma`. |
+| candidate | `kind` | `new_source_like` \| `variable_like` \| `dipole_like` \| `artifact_like`. These are heuristic resemblance labels, never identifications. |
+| candidate | `pixel_x`, `pixel_y` | 0-based position on the shared grid, in FITS orientation (row 0 = bottom) |
+| candidate | `measurements[]` | `{name, value, uncertainty (1σ or null), unit}` |
+| candidate | `light_curve[]` | `{observation_id, mjd_mid, delta_flux_ujy, uncertainty_ujy}`. Null means masked. |
+| candidate | `caveats[]` | Limitations specific to this residual |
+| observation `quality` | `psf_fwhm_arcsec` | `PSF_FWHM` header keyword of the L2 image, or null |
+| observation `provenance` | `collection`, `data_release` | Per-file IRSA collection and release (`DR1`, `QR3`) |
+
+**Difference PNG encoding.**
+- The PNG is 8-bit grey. Value 0 means masked. Values 1 to 255 map linearly onto
+  [−`display_range_sigma`, +`display_range_sigma`], so 128 is 0σ.
+- The browser decodes it with `decodeSigma()` (`web/src/lib/sky.ts`) for the σ readout, and
+  colours it with a diverging map: amber for brighter, blue for fainter.
+- Rows are flipped like every display PNG. The display row is H − 1 − the FITS row.
+
+**Index.** `data/manifests/index.json` (`parallax index`) lists the fields the app offers. Each
+entry has `manifest_id`, `path`, `title`, `data_kind`, the centre and radius, observation and
+candidate counts, the release and the wavelength.

@@ -54,7 +54,7 @@ uv run parallax make-fixture  # regenerate the SIMULATED fixture (deterministic)
 uv run parallax validate <manifest.json>
 ```
 
-## Data preprocessing workflow (Phase 1 onward)
+## Data preprocessing workflow
 
 1. Choose a field and record why (coverage, compatible epochs).
 2. Query IRSA (SIA2) through the archive adapter. Download **cutouts only** into `.cache/parallax/`.
@@ -62,7 +62,7 @@ uv run parallax validate <manifest.json>
 4. Write science FITS (original HDUs) and display PNGs to `data/processed/<field>/` and the
    manifest to `data/manifests/<field>.json`.
 5. `uv run parallax validate data/manifests/<field>.json`, then `./scripts/check.ps1`.
-6. Point the web app at the manifest (currently `MANIFEST_URL` in `web/src/app/App.tsx`).
+6. `uv run parallax index` to list the field in `data/manifests/index.json`; the app offers every indexed field. Steps 2–4 are automated by `uv run parallax build-field` (see README).
 
 ## Troubleshooting
 

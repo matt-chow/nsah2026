@@ -1,0 +1,5784 @@
+{
+  "schema_version": "1.1.0",
+  "manifest_id": "nep-d2",
+  "data_kind": "real",
+  "title": "North Ecliptic Pole, 1.45 um (SPHEREx detector 2)",
+  "notice": null,
+  "target": {
+    "label": "North Ecliptic Pole, 1.45 um (SPHEREx detector 2)",
+    "ra_deg": 270.0,
+    "dec_deg": 66.5607,
+    "frame": "icrs",
+    "radius_arcsec": 452.02500000000003
+  },
+  "dataset": {
+    "mission": "SPHEREx",
+    "archive": "NASA/IPAC Infrared Science Archive (IRSA)",
+    "collection": "spherex_dr1, spherex_dr1_deep, spherex_qr3_deep",
+    "data_release": "DR1 + QR3",
+    "citation": "SPHEREx Level 2 Spectral Images, NASA/IPAC Infrared Science Archive.",
+    "acknowledgement": "This publication makes use of data products from the Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer (SPHEREx), which is a joint project of the Jet Propulsion Laboratory and the California Institute of Technology, and is funded by the National Aeronautics and Space Administration. This research has made use of the NASA/IPAC Infrared Science Archive, which is funded by the National Aeronautics and Space Administration and operated by the California Institute of Technology."
+  },
+  "observations": [
+    {
+      "observation_id": "nep-d2.2025W17_4B_0206_4",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 60791.106749546,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.44521,
+        "wavelength_min_um": 1.42766,
+        "wavelength_max_um": 1.46276,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.012,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2025W17_4B_0206_4.fits",
+        "display_png": "processed/nep-d2/2025W17_4B_0206_4.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1522 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W17_4B/l2b-v27-2026-196/2/level2_2025W17_4B_0206_4D2_spx_l2b-v27-2026-196.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W17_4B_0206_4/D2",
+        "retrieved_utc": "2026-11-14T02:46:06+00:00",
+        "source_sha256": "8bc1049918782e78d37bd5adb44ae753cd868b4d0ab97402403f4aa074cf4b3f",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-196.",
+        "cache_key": "ada365e45e269f4e12adb101d41bbfcffc6983677a216613450f4bb7e61e84cf"
+      }
+    },
+    {
+      "observation_id": "nep-d2.2025W25_2A_0549_4",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 60848.238949997,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.44551,
+        "wavelength_min_um": 1.42796,
+        "wavelength_max_um": 1.46306,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0157,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2025W25_2A_0549_4.fits",
+        "display_png": "processed/nep-d2/2025W25_2A_0549_4.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1368 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W25_2A/l2b-v27-2026-213/2/level2_2025W25_2A_0549_4D2_spx_l2b-v27-2026-213.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1_deep?2025W25_2A_0549_4/D2",
+        "retrieved_utc": "2026-11-14T02:46:13+00:00",
+        "source_sha256": "64d1cb4f6319c5ede818ad767f0f2e1b87573635c5460039576044baab53ee8d",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1_deep",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-213.",
+        "cache_key": "b491867bb06b56f18ea3cf51d07c19861826b4480dbcf49251a4fc11eb68c90a"
+      }
+    },
+    {
+      "observation_id": "nep-d2.2025W34_1B_0650_3",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 60908.427653689,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.44753,
+        "wavelength_min_um": 1.42995,
+        "wavelength_max_um": 1.46511,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0124,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2025W34_1B_0650_3.fits",
+        "display_png": "processed/nep-d2/2025W34_1B_0650_3.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1285 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W34_1B/l2b-v27-2026-228/2/level2_2025W34_1B_0650_3D2_spx_l2b-v27-2026-228.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1?2025W34_1B_0650_3/D2",
+        "retrieved_utc": "2026-11-14T02:46:19+00:00",
+        "source_sha256": "7b5395c8be12f20f921bffb1b24857f13ab393d1f071de7189edd7ba3a972005",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-228.",
+        "cache_key": "9a6d9d8ff4829971e026a095ebc85b105f127e1bde7bb340da701d43f9a0f3e0"
+      }
+    },
+    {
+      "observation_id": "nep-d2.2025W41_2B_0471_3",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 60959.71202656,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.44757,
+        "wavelength_min_um": 1.42999,
+        "wavelength_max_um": 1.46515,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0141,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2025W41_2B_0471_3.fits",
+        "display_png": "processed/nep-d2/2025W41_2B_0471_3.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1337 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W41_2B/l2b-v27-2026-242/2/level2_2025W41_2B_0471_3D2_spx_l2b-v27-2026-242.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1?2025W41_2B_0471_3/D2",
+        "retrieved_utc": "2026-11-14T02:46:22+00:00",
+        "source_sha256": "cc71892b5f1d5850fee37274788f13b0ee88f9631cbb959eed8895fdaeb17e36",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-242.",
+        "cache_key": "f6ceabb9c9cd99066e7c0b16eb8d11402627cb1518b138eeed45a44e4cda3819"
+      }
+    },
+    {
+      "observation_id": "nep-d2.2025W51_1A_0020_3",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61024.087387219,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.44775,
+        "wavelength_min_um": 1.43017,
+        "wavelength_max_um": 1.46534,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0121,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2025W51_1A_0020_3.fits",
+        "display_png": "processed/nep-d2/2025W51_1A_0020_3.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1477 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W51_1A/l2b-v27-2026-210/2/level2_2025W51_1A_0020_3D2_spx_l2b-v27-2026-210.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1?2025W51_1A_0020_3/D2",
+        "retrieved_utc": "2026-11-14T02:46:28+00:00",
+        "source_sha256": "93310fedea2a6bdbd4306174e57b6ba079f7ed01c32c8efe0d54c5f506df0d4f",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-210.",
+        "cache_key": "6c36a1bee0390d5a76304cbf34ccd5028d021f137f8cd64258b04bf17e8f400f"
+      }
+    },
+    {
+      "observation_id": "nep-d2.2026W07_1A_0435_3",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61081.865715784,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.44753,
+        "wavelength_min_um": 1.42995,
+        "wavelength_max_um": 1.46512,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0141,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2026W07_1A_0435_3.fits",
+        "display_png": "processed/nep-d2/2026W07_1A_0435_3.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1559 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W07_1A/l2b-v27-2026-225/2/level2_2026W07_1A_0435_3D2_spx_l2b-v27-2026-225.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1?2026W07_1A_0435_3/D2",
+        "retrieved_utc": "2026-11-14T02:46:35+00:00",
+        "source_sha256": "51c94a6fb1a4f17e56881d362d85e03277ac407b6cf63e211f43f86583c8d01d",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-225.",
+        "cache_key": "99548905720f302ebcc63a92b8ea9274d9158f30fc62552454527b00754267e8"
+      }
+    },
+    {
+      "observation_id": "nep-d2.2026W10_2B_0350_3",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61106.375040668,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.44756,
+        "wavelength_min_um": 1.42997,
+        "wavelength_max_um": 1.46514,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0141,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2026W10_2B_0350_3.fits",
+        "display_png": "processed/nep-d2/2026W10_2B_0350_3.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1568 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W10_2B/l2b-v27-2026-231/2/level2_2026W10_2B_0350_3D2_spx_l2b-v27-2026-231.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_dr1?2026W10_2B_0350_3/D2",
+        "retrieved_utc": "2026-11-14T02:46:40+00:00",
+        "source_sha256": "bc8c294505bd4994c391f1a239d2b4dbd0a101966f005014c0ec437b35e19296",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_dr1",
+        "data_release": "DR1",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-231.",
+        "cache_key": "02b563a0a9df63b2480c3f4a2dfd98cf01fab0400d251cadbc256745b7a32235"
+      }
+    },
+    {
+      "observation_id": "nep-d2.2026W23_2A_0025_4",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61195.649211872,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.44529,
+        "wavelength_min_um": 1.42773,
+        "wavelength_max_um": 1.46284,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0161,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2026W23_2A_0025_4.fits",
+        "display_png": "processed/nep-d2/2026W23_2A_0025_4.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1397 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W23_2A/l2b-v27-2026-270/2/level2_2026W23_2A_0025_4D2_spx_l2b-v27-2026-270.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_qr3_deep?2026W23_2A_0025_4/D2",
+        "retrieved_utc": "2026-11-14T02:47:30+00:00",
+        "source_sha256": "ac6ca1fd5ebd42e2f4fec32305b145f36d81a01ea32dccd8ed748e401373b60d",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_qr3_deep",
+        "data_release": "QR3",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-270.",
+        "cache_key": "32db75a98a93c929c7428408e256ffab16aeda4f90305d324bf666ab4101e8c1"
+      }
+    },
+    {
+      "observation_id": "nep-d2.2026W31_1B_0475_3",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61250.494930611,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.4456,
+        "wavelength_min_um": 1.42805,
+        "wavelength_max_um": 1.46316,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0178,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2026W31_1B_0475_3.fits",
+        "display_png": "processed/nep-d2/2026W31_1B_0475_3.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1295 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W31_1B/l2b-v27-2026-224/2/level2_2026W31_1B_0475_3D2_spx_l2b-v27-2026-224.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_qr3_deep?2026W31_1B_0475_3/D2",
+        "retrieved_utc": "2026-11-14T02:47:43+00:00",
+        "source_sha256": "ae04036522ddc9deaee7e25d0e0c0347efa18041a335f70c35e1ce3e2454fe3c",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_qr3_deep",
+        "data_release": "QR3",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-224.",
+        "cache_key": "33dc52a23a38cd4c573b799b31ebc8bbcc6ddfafc8bba0c6a72e1e7bbb709887"
+      }
+    },
+    {
+      "observation_id": "nep-d2.2026W39_2A_0642_4",
+      "data_kind": "real",
+      "epoch": {
+        "mjd_mid": 61310.569631687,
+        "time_scale": "utc",
+        "exposure_s": 113.5826,
+        "source_keyword": "MJD-AVG"
+      },
+      "spectral": {
+        "detector": 2,
+        "wavelength_center_um": 1.44512,
+        "wavelength_min_um": 1.42758,
+        "wavelength_max_um": 1.46267,
+        "basis": "spectral-wcs"
+      },
+      "image": {
+        "width_px": 147,
+        "height_px": 147,
+        "pixel_scale_arcsec": 6.15,
+        "units": "MJy/sr",
+        "wcs": {
+          "WCSAXES": 2,
+          "CRPIX1": 74.0,
+          "CRPIX2": 74.0,
+          "CDELT1": -0.0017083333333333,
+          "CDELT2": 0.0017083333333333,
+          "CUNIT1": "deg",
+          "CUNIT2": "deg",
+          "CTYPE1": "RA---TAN",
+          "CTYPE2": "DEC--TAN",
+          "CRVAL1": 270.0,
+          "CRVAL2": 66.5607,
+          "LONPOLE": 180.0,
+          "LATPOLE": 66.5607,
+          "MJDREF": 0.0,
+          "RADESYS": "ICRS"
+        }
+      },
+      "quality": {
+        "flags_available": true,
+        "variance_available": true,
+        "masked_fraction": 0.0129,
+        "psf_fwhm_arcsec": 7.46070125580342,
+        "notes": [
+          "L2 DQA: Pass"
+        ]
+      },
+      "assets": {
+        "science_fits": "processed/nep-d2/2026W39_2A_0642_4.fits",
+        "display_png": "processed/nep-d2/2026W39_2A_0642_4.png",
+        "display_stretch": "asinh(template p0.5-p99.5, a=0.1), background 0.1303 MJy/sr subtracted"
+      },
+      "provenance": {
+        "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W39_2A/l2b-v27-2026-271/2/level2_2026W39_2A_0642_4D2_spx_l2b-v27-2026-271.fits?center=270.000000,66.560700&size=1356arcsec",
+        "source_id": "ivo://irsa.ipac/spherex_qr3_deep?2026W39_2A_0642_4/D2",
+        "retrieved_utc": "2026-11-14T02:47:55+00:00",
+        "source_sha256": "97481036af898f0f65f9fe1b1897ade1c4a55a63505bf4c85674bbaf0ac59379",
+        "calibration_version": "l2b-v27",
+        "collection": "spherex_qr3_deep",
+        "data_release": "QR3",
+        "processing": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood. Pipeline build 2026-271.",
+        "cache_key": "6cbdd41804fe004d692bad2d61b2dd1f2381f39beb3b3ba59acdf33ef71995ec"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "reference_id": "nep-d2.2025W17_4B_0206_4",
+      "target_id": "nep-d2.2025W25_2A_0549_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W17_4B_0206_4",
+      "target_id": "nep-d2.2025W34_1B_0650_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W17_4B_0206_4",
+      "target_id": "nep-d2.2025W41_2B_0471_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W17_4B_0206_4",
+      "target_id": "nep-d2.2025W51_1A_0020_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W17_4B_0206_4",
+      "target_id": "nep-d2.2026W07_1A_0435_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W17_4B_0206_4",
+      "target_id": "nep-d2.2026W10_2B_0350_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W17_4B_0206_4",
+      "target_id": "nep-d2.2026W23_2A_0025_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W17_4B_0206_4",
+      "target_id": "nep-d2.2026W31_1B_0475_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W17_4B_0206_4",
+      "target_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W25_2A_0549_4",
+      "target_id": "nep-d2.2025W34_1B_0650_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W25_2A_0549_4",
+      "target_id": "nep-d2.2025W41_2B_0471_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W25_2A_0549_4",
+      "target_id": "nep-d2.2025W51_1A_0020_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W25_2A_0549_4",
+      "target_id": "nep-d2.2026W07_1A_0435_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W25_2A_0549_4",
+      "target_id": "nep-d2.2026W10_2B_0350_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W25_2A_0549_4",
+      "target_id": "nep-d2.2026W23_2A_0025_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W25_2A_0549_4",
+      "target_id": "nep-d2.2026W31_1B_0475_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W25_2A_0549_4",
+      "target_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W34_1B_0650_3",
+      "target_id": "nep-d2.2025W41_2B_0471_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W34_1B_0650_3",
+      "target_id": "nep-d2.2025W51_1A_0020_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W34_1B_0650_3",
+      "target_id": "nep-d2.2026W07_1A_0435_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W34_1B_0650_3",
+      "target_id": "nep-d2.2026W10_2B_0350_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W34_1B_0650_3",
+      "target_id": "nep-d2.2026W23_2A_0025_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W34_1B_0650_3",
+      "target_id": "nep-d2.2026W31_1B_0475_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W34_1B_0650_3",
+      "target_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W41_2B_0471_3",
+      "target_id": "nep-d2.2025W51_1A_0020_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W41_2B_0471_3",
+      "target_id": "nep-d2.2026W07_1A_0435_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W41_2B_0471_3",
+      "target_id": "nep-d2.2026W10_2B_0350_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W41_2B_0471_3",
+      "target_id": "nep-d2.2026W23_2A_0025_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W41_2B_0471_3",
+      "target_id": "nep-d2.2026W31_1B_0475_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W41_2B_0471_3",
+      "target_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W51_1A_0020_3",
+      "target_id": "nep-d2.2026W07_1A_0435_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W51_1A_0020_3",
+      "target_id": "nep-d2.2026W10_2B_0350_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W51_1A_0020_3",
+      "target_id": "nep-d2.2026W23_2A_0025_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W51_1A_0020_3",
+      "target_id": "nep-d2.2026W31_1B_0475_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2025W51_1A_0020_3",
+      "target_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W07_1A_0435_3",
+      "target_id": "nep-d2.2026W10_2B_0350_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W07_1A_0435_3",
+      "target_id": "nep-d2.2026W23_2A_0025_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W07_1A_0435_3",
+      "target_id": "nep-d2.2026W31_1B_0475_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W07_1A_0435_3",
+      "target_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W10_2B_0350_3",
+      "target_id": "nep-d2.2026W23_2A_0025_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W10_2B_0350_3",
+      "target_id": "nep-d2.2026W31_1B_0475_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W10_2B_0350_3",
+      "target_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W23_2A_0025_4",
+      "target_id": "nep-d2.2026W31_1B_0475_3",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W23_2A_0025_4",
+      "target_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "compatible",
+      "reasons": []
+    },
+    {
+      "reference_id": "nep-d2.2026W31_1B_0475_3",
+      "target_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "compatible",
+      "reasons": []
+    }
+  ],
+  "alignment": "IRSA cutouts resampled (bilinear, SIP-aware astropy WCS) onto a 147x147 north-up TAN grid at 6.15 arcsec/px centered on the target; hard-flagged pixels masked, flags OR-combined over the 2x2 source neighbourhood.",
+  "template": {
+    "observation_ids": [
+      "nep-d2.2025W17_4B_0206_4",
+      "nep-d2.2025W25_2A_0549_4",
+      "nep-d2.2025W34_1B_0650_3",
+      "nep-d2.2025W41_2B_0471_3",
+      "nep-d2.2025W51_1A_0020_3",
+      "nep-d2.2026W07_1A_0435_3",
+      "nep-d2.2026W10_2B_0350_3",
+      "nep-d2.2026W23_2A_0025_4",
+      "nep-d2.2026W31_1B_0475_3",
+      "nep-d2.2026W39_2A_0642_4"
+    ],
+    "method": "Per-pixel median of background-subtracted epochs (>=3 valid); variance (pi/2)*mean(var)/n. Shown for reference; each epoch is differenced against the median of the other epochs.",
+    "display_png": "processed/nep-d2/template.png",
+    "science_fits": "processed/nep-d2/template.fits"
+  },
+  "differences": [
+    {
+      "difference_id": "nep-d2.2025W17_4B_0206_4.diff",
+      "observation_id": "nep-d2.2025W17_4B_0206_4",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.152155,
+      "noise_scale": 0.6842,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2025W17_4B_0206_4.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "nep-d2.2025W25_2A_0549_4.diff",
+      "observation_id": "nep-d2.2025W25_2A_0549_4",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.136828,
+      "noise_scale": 0.6802,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2025W25_2A_0549_4.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "nep-d2.2025W34_1B_0650_3.diff",
+      "observation_id": "nep-d2.2025W34_1B_0650_3",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.128468,
+      "noise_scale": 0.6936,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2025W34_1B_0650_3.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "nep-d2.2025W41_2B_0471_3.diff",
+      "observation_id": "nep-d2.2025W41_2B_0471_3",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.133718,
+      "noise_scale": 0.6863,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2025W41_2B_0471_3.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "nep-d2.2025W51_1A_0020_3.diff",
+      "observation_id": "nep-d2.2025W51_1A_0020_3",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.147678,
+      "noise_scale": 0.6861,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2025W51_1A_0020_3.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "nep-d2.2026W07_1A_0435_3.diff",
+      "observation_id": "nep-d2.2026W07_1A_0435_3",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.155937,
+      "noise_scale": 0.6928,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2026W07_1A_0435_3.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "nep-d2.2026W10_2B_0350_3.diff",
+      "observation_id": "nep-d2.2026W10_2B_0350_3",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.15682,
+      "noise_scale": 0.6736,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2026W10_2B_0350_3.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "nep-d2.2026W23_2A_0025_4.diff",
+      "observation_id": "nep-d2.2026W23_2A_0025_4",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.13969,
+      "noise_scale": 0.6892,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2026W23_2A_0025_4.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "nep-d2.2026W31_1B_0475_3.diff",
+      "observation_id": "nep-d2.2026W31_1B_0475_3",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.129484,
+      "noise_scale": 0.6879,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2026W31_1B_0475_3.diff.png",
+      "display_range_sigma": 10.0
+    },
+    {
+      "difference_id": "nep-d2.2026W39_2A_0642_4.diff",
+      "observation_id": "nep-d2.2026W39_2A_0642_4",
+      "status": "validated",
+      "reasons": [],
+      "method": "(epoch - background - template) / sqrt(k^2 (var + var_template) + (0.32 * template)^2); k from faint pixels per epoch, floor from bright pixels",
+      "background_mjysr": 0.130272,
+      "noise_scale": 0.6854,
+      "error_floor_fraction": 0.32,
+      "threshold_sigma": 5.0,
+      "display_png": "processed/nep-d2/2026W39_2A_0642_4.diff.png",
+      "display_range_sigma": 10.0
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "nep-d2-c001",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W51_1A_0020_3"
+      ],
+      "ra_deg": 270.086036,
+      "dec_deg": 66.601676,
+      "pixel_x": 53.0,
+      "pixel_y": 97.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -9.59,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -117.6,
+          "uncertainty": 26.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -25.5,
+          "uncertainty": 15.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44775,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 24.4,
+          "uncertainty_ujy": 27.9
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -7.0,
+          "uncertainty_ujy": 26.7
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 21.4,
+          "uncertainty_ujy": 26.0
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 6.0,
+          "uncertainty_ujy": 26.9
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -117.6,
+          "uncertainty_ujy": 26.8
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 77.9,
+          "uncertainty_ujy": 27.6
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -19.6,
+          "uncertainty_ujy": 27.7
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -21.8,
+          "uncertainty_ujy": 26.1
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -16.0,
+          "uncertainty_ujy": 26.1
+        }
+      ],
+      "evidence": [
+        "peak -9.6 sigma over 1 px; aperture change -118 +/- 27 uJy",
+        "reference flux at this position -25 +/- 15 uJy (S/N -1.7)",
+        "touches pixels flagged OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c002",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "nep-d2.2025W51_1A_0020_3"
+      ],
+      "ra_deg": 269.939713,
+      "dec_deg": 66.627313,
+      "pixel_x": 87.0,
+      "pixel_y": 112.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 9.08,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 6261.2,
+          "uncertainty": 1669.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 85286.7,
+          "uncertainty": 158.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44775,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 4438.9,
+          "uncertainty_ujy": 17192.4
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -10151.0,
+          "uncertainty_ujy": 17353.6
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 3917.5,
+          "uncertainty_ujy": 17316.0
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 7329.5,
+          "uncertainty_ujy": 17178.6
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -3863.5,
+          "uncertainty_ujy": 17337.9
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +9.1 sigma over 1 px; aperture change +6261 +/- 1670 uJy",
+        "reference flux at this position 85287 +/- 159 uJy (S/N 537.2)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c003",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W41_2B_0471_3"
+      ],
+      "ra_deg": 269.939713,
+      "dec_deg": 66.627313,
+      "pixel_x": 87.0,
+      "pixel_y": 112.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 8.27,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 5854.7,
+          "uncertainty": 12991.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 86470.9,
+          "uncertainty": 165.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44757,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 4438.9,
+          "uncertainty_ujy": 17192.4
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -10151.0,
+          "uncertainty_ujy": 17353.6
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 3917.5,
+          "uncertainty_ujy": 17316.0
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 7329.5,
+          "uncertainty_ujy": 17178.6
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -3863.5,
+          "uncertainty_ujy": 17337.9
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +8.3 sigma over 1 px; aperture change +5855 +/- 12992 uJy",
+        "reference flux at this position 86471 +/- 165 uJy (S/N 523.1)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c004",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W17_4B_0206_4"
+      ],
+      "ra_deg": 270.299257,
+      "dec_deg": 66.54504,
+      "pixel_x": 3.28,
+      "pixel_y": 64.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 8.19,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 184.3,
+          "uncertainty": 27.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 15.4,
+          "uncertainty": 13.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44521,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 184.3,
+          "uncertainty_ujy": 27.5
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 21.6,
+          "uncertainty_ujy": 23.8
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -41.6,
+          "uncertainty_ujy": 24.3
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -30.6,
+          "uncertainty_ujy": 23.8
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -52.5,
+          "uncertainty_ujy": 24.8
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 42.1,
+          "uncertainty_ujy": 25.8
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -36.6,
+          "uncertainty_ujy": 25.2
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 37.4,
+          "uncertainty_ujy": 26.0
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -12.0,
+          "uncertainty_ujy": 23.8
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 18.8,
+          "uncertainty_ujy": 23.7
+        }
+      ],
+      "evidence": [
+        "peak +8.2 sigma over 2 px; aperture change +184 +/- 28 uJy",
+        "reference flux at this position 15 +/- 14 uJy (S/N 1.1)",
+        "touches pixels flagged PERSIST, OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c005",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W23_2A_0025_4"
+      ],
+      "ra_deg": 270.304885,
+      "dec_deg": 66.557489,
+      "pixel_x": 2.0,
+      "pixel_y": 71.29,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 8.12,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 203.2,
+          "uncertainty": 28.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -30.9,
+          "uncertainty": 13.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44529,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -17.1,
+          "uncertainty_ujy": 24.8
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -19.0,
+          "uncertainty_ujy": 23.0
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 26.9,
+          "uncertainty_ujy": 23.9
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -2.7,
+          "uncertainty_ujy": 23.0
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -39.0,
+          "uncertainty_ujy": 24.2
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -26.0,
+          "uncertainty_ujy": 25.3
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 75.4,
+          "uncertainty_ujy": 25.5
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 203.2,
+          "uncertainty_ujy": 28.6
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -18.3,
+          "uncertainty_ujy": 22.3
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -6.7,
+          "uncertainty_ujy": 23.0
+        }
+      ],
+      "evidence": [
+        "peak +8.1 sigma over 2 px; aperture change +203 +/- 29 uJy",
+        "reference flux at this position -31 +/- 13 uJy (S/N -2.3)",
+        "touches pixels flagged TRANSIENT, OUTLIER, HALO",
+        "within 3 px of the grid edge",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c006",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W10_2B_0350_3"
+      ],
+      "ra_deg": 269.86257,
+      "dec_deg": 66.56064,
+      "pixel_x": 105.0,
+      "pixel_y": 73.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 8.1,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 125.1,
+          "uncertainty": 24.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 25.1,
+          "uncertainty": 15.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44756,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -3.2,
+          "uncertainty_ujy": 29.3
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 57.2,
+          "uncertainty_ujy": 29.6
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -11.5,
+          "uncertainty_ujy": 28.4
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -17.5,
+          "uncertainty_ujy": 27.8
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 36.2,
+          "uncertainty_ujy": 28.5
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -89.6,
+          "uncertainty_ujy": 30.2
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -18.6,
+          "uncertainty_ujy": 29.8
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -46.6,
+          "uncertainty_ujy": 28.1
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 34.0,
+          "uncertainty_ujy": 27.9
+        }
+      ],
+      "evidence": [
+        "peak +8.1 sigma over 1 px; aperture change +125 +/- 24 uJy",
+        "reference flux at this position 25 +/- 16 uJy (S/N 1.6)",
+        "touches pixels flagged TRANSIENT, OUTLIER, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c007",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W07_1A_0435_3"
+      ],
+      "ra_deg": 269.707003,
+      "dec_deg": 66.473429,
+      "pixel_x": 141.46,
+      "pixel_y": 22.08,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 7.81,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 563.6,
+          "uncertainty": 35.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 104.4,
+          "uncertainty": 15.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44753,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 10.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 14.4,
+          "uncertainty_ujy": 33.8
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -33.2,
+          "uncertainty_ujy": 32.4
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -0.0,
+          "uncertainty_ujy": 32.6
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 563.6,
+          "uncertainty_ujy": 35.9
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 18.7,
+          "uncertainty_ujy": 33.0
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 24.7,
+          "uncertainty_ujy": 32.3
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -21.0,
+          "uncertainty_ujy": 31.5
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -48.6,
+          "uncertainty_ujy": 31.4
+        }
+      ],
+      "evidence": [
+        "peak +7.8 sigma over 10 px; aperture change +564 +/- 36 uJy",
+        "reference flux at this position 104 +/- 15 uJy (S/N 6.8)",
+        "touches pixels flagged PERSIST, OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c008",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W17_4B_0206_4"
+      ],
+      "ra_deg": 269.781797,
+      "dec_deg": 66.46659,
+      "pixel_x": 124.0,
+      "pixel_y": 18.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 7.56,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 3640.9,
+          "uncertainty": 4053.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 19988.2,
+          "uncertainty": 62.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44521,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 3640.9,
+          "uncertainty_ujy": 4053.7
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 589.7,
+          "uncertainty_ujy": 4170.3
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 161.8,
+          "uncertainty_ujy": 4170.5
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 9901.7,
+          "uncertainty_ujy": 4055.1
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -8692.8,
+          "uncertainty_ujy": 4369.4
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 1139.8,
+          "uncertainty_ujy": 4254.7
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 757.9,
+          "uncertainty_ujy": 4170.1
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 2767.5,
+          "uncertainty_ujy": 4256.5
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -4081.7,
+          "uncertainty_ujy": 4366.8
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -3582.1,
+          "uncertainty_ujy": 4256.1
+        }
+      ],
+      "evidence": [
+        "peak +7.6 sigma over 1 px; aperture change +3641 +/- 4054 uJy",
+        "reference flux at this position 19988 +/- 62 uJy (S/N 320.2)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c009",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W17_4B_0206_4"
+      ],
+      "ra_deg": 269.833218,
+      "dec_deg": 66.454695,
+      "pixel_x": 112.0,
+      "pixel_y": 11.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 7.53,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -496.1,
+          "uncertainty": 1196.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 6109.5,
+          "uncertainty": 36.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44521,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -496.1,
+          "uncertainty_ujy": 1196.0
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 1046.7,
+          "uncertainty_ujy": 1158.2
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 778.6,
+          "uncertainty_ujy": 1161.9
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -100.5,
+          "uncertainty_ujy": 1188.1
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -628.6,
+          "uncertainty_ujy": 1196.0
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -124.3,
+          "uncertainty_ujy": 1166.2
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 297.1,
+          "uncertainty_ujy": 1188.7
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 1242.6,
+          "uncertainty_ujy": 1161.6
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 103.4,
+          "uncertainty_ujy": 1188.6
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 404.5,
+          "uncertainty_ujy": 1166.4
+        }
+      ],
+      "evidence": [
+        "peak +7.5 sigma over 1 px; aperture change -496 +/- 1196 uJy",
+        "reference flux at this position 6110 +/- 37 uJy (S/N 166.5)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c010",
+      "status": "needs_followup",
+      "kind": "variable_like",
+      "observation_ids": [
+        "nep-d2.2026W10_2B_0350_3"
+      ],
+      "ra_deg": 269.846586,
+      "dec_deg": 66.620417,
+      "pixel_x": 108.64,
+      "pixel_y": 108.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 7.49,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 799.4,
+          "uncertainty": 98.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 129.1,
+          "uncertainty": 14.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44756,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -34.8,
+          "uncertainty_ujy": 40.1
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -11.5,
+          "uncertainty_ujy": 40.3
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 43.5,
+          "uncertainty_ujy": 40.4
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 23.3,
+          "uncertainty_ujy": 39.5
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -44.1,
+          "uncertainty_ujy": 39.7
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -17.0,
+          "uncertainty_ujy": 41.0
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 799.4,
+          "uncertainty_ujy": 98.1
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 54.6,
+          "uncertainty_ujy": 40.1
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -2.8,
+          "uncertainty_ujy": 40.4
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -28.1,
+          "uncertainty_ujy": 39.9
+        }
+      ],
+      "evidence": [
+        "peak +7.5 sigma over 2 px; aperture change +799 +/- 98 uJy",
+        "reference flux at this position 129 +/- 14 uJy (S/N 9.0)",
+        "brighter than the reference at a persistent source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c011",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W39_2A_0642_4"
+      ],
+      "ra_deg": 269.731945,
+      "dec_deg": 66.468221,
+      "pixel_x": 135.65,
+      "pixel_y": 19.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 7.49,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 210.3,
+          "uncertainty": 33.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 72.3,
+          "uncertainty": 14.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44512,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -8.4,
+          "uncertainty_ujy": 32.0
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 25.6,
+          "uncertainty_ujy": 32.0
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 16.2,
+          "uncertainty_ujy": 32.5
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -79.7,
+          "uncertainty_ujy": 32.9
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 49.4,
+          "uncertainty_ujy": 33.1
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -20.8,
+          "uncertainty_ujy": 32.5
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -4.9,
+          "uncertainty_ujy": 32.2
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 210.3,
+          "uncertainty_ujy": 33.1
+        }
+      ],
+      "evidence": [
+        "peak +7.5 sigma over 2 px; aperture change +210 +/- 33 uJy",
+        "reference flux at this position 72 +/- 15 uJy (S/N 5.0)",
+        "touches pixels flagged PERSIST",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c012",
+      "status": "needs_followup",
+      "kind": "new_source_like",
+      "observation_ids": [
+        "nep-d2.2026W23_2A_0025_4"
+      ],
+      "ra_deg": 269.815599,
+      "dec_deg": 66.524204,
+      "pixel_x": 116.0,
+      "pixel_y": 51.7,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 7.23,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 784.0,
+          "uncertainty": 98.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 1.4,
+          "uncertainty": 13.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44529,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 3.5,
+          "uncertainty_ujy": 28.7
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -0.5,
+          "uncertainty_ujy": 27.3
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 45.7,
+          "uncertainty_ujy": 27.8
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 9.9,
+          "uncertainty_ujy": 27.8
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -37.3,
+          "uncertainty_ujy": 28.2
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 0.3,
+          "uncertainty_ujy": 28.7
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -2.3,
+          "uncertainty_ujy": 27.8
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 784.0,
+          "uncertainty_ujy": 98.5
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -26.5,
+          "uncertainty_ujy": 27.1
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +7.2 sigma over 2 px; aperture change +784 +/- 98 uJy",
+        "reference flux at this position 1 +/- 14 uJy (S/N 0.1)",
+        "no significant reference source: transient, moving object, or artifact",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c013",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W07_1A_0435_3"
+      ],
+      "ra_deg": 269.7463,
+      "dec_deg": 66.591245,
+      "pixel_x": 132.0,
+      "pixel_y": 91.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 7.15,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 292.0,
+          "uncertainty": 55.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 224.1,
+          "uncertainty": 16.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44753,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -35.9,
+          "uncertainty_ujy": 55.7
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -36.3,
+          "uncertainty_ujy": 56.0
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -62.3,
+          "uncertainty_ujy": 56.0
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -2.0,
+          "uncertainty_ujy": 55.0
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 17.5,
+          "uncertainty_ujy": 54.8
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 292.0,
+          "uncertainty_ujy": 55.8
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -19.0,
+          "uncertainty_ujy": 54.7
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -14.0,
+          "uncertainty_ujy": 55.6
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -16.1,
+          "uncertainty_ujy": 54.0
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 0.8,
+          "uncertainty_ujy": 54.8
+        }
+      ],
+      "evidence": [
+        "peak +7.1 sigma over 1 px; aperture change +292 +/- 56 uJy",
+        "reference flux at this position 224 +/- 17 uJy (S/N 13.4)",
+        "touches pixels flagged PERSIST",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c014",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W41_2B_0471_3"
+      ],
+      "ra_deg": 269.813459,
+      "dec_deg": 66.486203,
+      "pixel_x": 116.57,
+      "pixel_y": 29.46,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 7.11,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 227.2,
+          "uncertainty": 22.2,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -9.4,
+          "uncertainty": 10.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44757,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 4.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -0.6,
+          "uncertainty_ujy": 18.9
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -49.4,
+          "uncertainty_ujy": 17.5
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 30.9,
+          "uncertainty_ujy": 18.2
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 227.2,
+          "uncertainty_ujy": 22.2
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -21.8,
+          "uncertainty_ujy": 18.6
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 41.9,
+          "uncertainty_ujy": 18.9
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -9.4,
+          "uncertainty_ujy": 18.2
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -31.8,
+          "uncertainty_ujy": 18.0
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 21.5,
+          "uncertainty_ujy": 18.3
+        }
+      ],
+      "evidence": [
+        "peak +7.1 sigma over 4 px; aperture change +227 +/- 22 uJy",
+        "reference flux at this position -9 +/- 10 uJy (S/N -0.9)",
+        "touches pixels flagged PERSIST, OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c015",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W39_2A_0642_4"
+      ],
+      "ra_deg": 270.188901,
+      "dec_deg": 66.552045,
+      "pixel_x": 29.0,
+      "pixel_y": 68.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 7.09,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 765.1,
+          "uncertainty": 96.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 37.2,
+          "uncertainty": 15.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44512,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 7.3,
+          "uncertainty_ujy": 32.0
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 25.3,
+          "uncertainty_ujy": 30.5
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -20.0,
+          "uncertainty_ujy": 30.7
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -6.7,
+          "uncertainty_ujy": 31.5
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 66.7,
+          "uncertainty_ujy": 31.5
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -64.2,
+          "uncertainty_ujy": 32.8
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -1.3,
+          "uncertainty_ujy": 32.6
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -14.9,
+          "uncertainty_ujy": 31.3
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 36.8,
+          "uncertainty_ujy": 30.9
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 765.1,
+          "uncertainty_ujy": 96.8
+        }
+      ],
+      "evidence": [
+        "peak +7.1 sigma over 1 px; aperture change +765 +/- 97 uJy",
+        "reference flux at this position 37 +/- 16 uJy (S/N 2.4)",
+        "touches pixels flagged OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c016",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W31_1B_0475_3"
+      ],
+      "ra_deg": 270.047177,
+      "dec_deg": 66.526526,
+      "pixel_x": 62.0,
+      "pixel_y": 53.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 6.82,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 157.2,
+          "uncertainty": 31.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 14.9,
+          "uncertainty": 15.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.4456,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -10.1,
+          "uncertainty_ujy": 28.7
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -34.6,
+          "uncertainty_ujy": 26.7
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -21.2,
+          "uncertainty_ujy": 27.4
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 3.5,
+          "uncertainty_ujy": 27.4
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -65.4,
+          "uncertainty_ujy": 27.9
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 47.6,
+          "uncertainty_ujy": 28.9
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 33.8,
+          "uncertainty_ujy": 28.2
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -23.6,
+          "uncertainty_ujy": 27.2
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 157.2,
+          "uncertainty_ujy": 31.9
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 23.9,
+          "uncertainty_ujy": 27.3
+        }
+      ],
+      "evidence": [
+        "peak +6.8 sigma over 1 px; aperture change +157 +/- 32 uJy",
+        "reference flux at this position 15 +/- 15 uJy (S/N 1.0)",
+        "touches pixels flagged TRANSIENT, OUTLIER, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c017",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W25_2A_0549_4"
+      ],
+      "ra_deg": 270.044608,
+      "dec_deg": 66.55386,
+      "pixel_x": 62.61,
+      "pixel_y": 69.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 6.74,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 92.0,
+          "uncertainty": 21.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 54.1,
+          "uncertainty": 13.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44551,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 22.3,
+          "uncertainty_ujy": 26.9
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -3.0,
+          "uncertainty_ujy": 24.9
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -68.5,
+          "uncertainty_ujy": 25.0
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -9.7,
+          "uncertainty_ujy": 25.7
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 19.2,
+          "uncertainty_ujy": 26.3
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -20.7,
+          "uncertainty_ujy": 26.2
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 26.9,
+          "uncertainty_ujy": 25.3
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 56.1,
+          "uncertainty_ujy": 24.7
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -14.3,
+          "uncertainty_ujy": 25.2
+        }
+      ],
+      "evidence": [
+        "peak +6.7 sigma over 2 px; aperture change +92 +/- 21 uJy",
+        "reference flux at this position 54 +/- 14 uJy (S/N 4.0)",
+        "touches pixels flagged TRANSIENT, OUTLIER, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c018",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W25_2A_0549_4"
+      ],
+      "ra_deg": 269.773209,
+      "dec_deg": 66.469994,
+      "pixel_x": 126.0,
+      "pixel_y": 20.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 6.68,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 1282.8,
+          "uncertainty": 8373.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 38570.1,
+          "uncertainty": 83.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44551,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -274.0,
+          "uncertainty_ujy": 8379.4
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 1282.8,
+          "uncertainty_ujy": 8373.3
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 7840.3,
+          "uncertainty_ujy": 7675.6
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -1175.2,
+          "uncertainty_ujy": 8371.1
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -1947.2,
+          "uncertainty_ujy": 7773.2
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 4965.9,
+          "uncertainty_ujy": 7779.8
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 7905.1,
+          "uncertainty_ujy": 7675.4
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -5702.9,
+          "uncertainty_ujy": 8468.9
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -5611.8,
+          "uncertainty_ujy": 8471.0
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 1457.4,
+          "uncertainty_ujy": 7779.7
+        }
+      ],
+      "evidence": [
+        "peak +6.7 sigma over 1 px; aperture change +1283 +/- 8373 uJy",
+        "reference flux at this position 38570 +/- 84 uJy (S/N 459.6)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c019",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W41_2B_0471_3"
+      ],
+      "ra_deg": 269.735189,
+      "dec_deg": 66.608039,
+      "pixel_x": 134.54,
+      "pixel_y": 100.84,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 6.62,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -351.1,
+          "uncertainty": 1444.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 6791.9,
+          "uncertainty": 37.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44757,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 3.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 511.3,
+          "uncertainty_ujy": 1445.4
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 283.4,
+          "uncertainty_ujy": 1435.4
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 243.3,
+          "uncertainty_ujy": 1452.3
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -351.1,
+          "uncertainty_ujy": 1444.6
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 0.7,
+          "uncertainty_ujy": 1452.5
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -1358.5,
+          "uncertainty_ujy": 1462.9
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 962.6,
+          "uncertainty_ujy": 1435.1
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 1316.8,
+          "uncertainty_ujy": 1444.9
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 79.4,
+          "uncertainty_ujy": 1452.2
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -647.9,
+          "uncertainty_ujy": 1462.4
+        }
+      ],
+      "evidence": [
+        "peak +6.6 sigma over 3 px; aperture change -351 +/- 1445 uJy",
+        "reference flux at this position 6792 +/- 38 uJy (S/N 180.9)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c020",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W34_1B_0650_3"
+      ],
+      "ra_deg": 269.759911,
+      "dec_deg": 66.517808,
+      "pixel_x": 129.0,
+      "pixel_y": 48.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 6.57,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -2803.6,
+          "uncertainty": 7815.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 34731.9,
+          "uncertainty": 82.2,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44753,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -5597.0,
+          "uncertainty_ujy": 7864.6
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 3243.5,
+          "uncertainty_ujy": 7364.0
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -2803.6,
+          "uncertainty_ujy": 7815.1
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 2296.1,
+          "uncertainty_ujy": 7456.5
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 4539.6,
+          "uncertainty_ujy": 7372.8
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 298.0,
+          "uncertainty_ujy": 7418.6
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -10944.7,
+          "uncertainty_ujy": 7864.2
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -7050.1,
+          "uncertainty_ujy": 7865.5
+        }
+      ],
+      "evidence": [
+        "peak +6.6 sigma over 1 px; aperture change -2804 +/- 7815 uJy",
+        "reference flux at this position 34732 +/- 82 uJy (S/N 422.7)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c021",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W23_2A_0025_4"
+      ],
+      "ra_deg": 269.905465,
+      "dec_deg": 66.574338,
+      "pixel_x": 95.0,
+      "pixel_y": 81.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 6.38,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 143.9,
+          "uncertainty": 30.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -21.1,
+          "uncertainty": 15.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44529,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -27.4,
+          "uncertainty_ujy": 28.0
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -9.1,
+          "uncertainty_ujy": 26.2
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 11.2,
+          "uncertainty_ujy": 26.4
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -37.0,
+          "uncertainty_ujy": 27.3
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 94.1,
+          "uncertainty_ujy": 29.0
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -49.7,
+          "uncertainty_ujy": 27.2
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 143.9,
+          "uncertainty_ujy": 30.8
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 25.0,
+          "uncertainty_ujy": 26.5
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -9.8,
+          "uncertainty_ujy": 26.2
+        }
+      ],
+      "evidence": [
+        "peak +6.4 sigma over 1 px; aperture change +144 +/- 31 uJy",
+        "reference flux at this position -21 +/- 15 uJy (S/N -1.4)",
+        "touches pixels flagged TRANSIENT, OUTLIER, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c022",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W23_2A_0025_4"
+      ],
+      "ra_deg": 269.823627,
+      "dec_deg": 66.601601,
+      "pixel_x": 114.0,
+      "pixel_y": 97.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 6.23,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 163.5,
+          "uncertainty": 36.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 123.1,
+          "uncertainty": 16.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44529,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 34.7,
+          "uncertainty_ujy": 33.8
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 37.8,
+          "uncertainty_ujy": 32.6
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -104.9,
+          "uncertainty_ujy": 32.5
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -66.6,
+          "uncertainty_ujy": 32.4
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -10.0,
+          "uncertainty_ujy": 32.9
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -3.0,
+          "uncertainty_ujy": 33.5
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -3.7,
+          "uncertainty_ujy": 32.6
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 163.5,
+          "uncertainty_ujy": 36.5
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 4.5,
+          "uncertainty_ujy": 32.3
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -38.7,
+          "uncertainty_ujy": 31.9
+        }
+      ],
+      "evidence": [
+        "peak +6.2 sigma over 1 px; aperture change +163 +/- 36 uJy",
+        "reference flux at this position 123 +/- 16 uJy (S/N 7.6)",
+        "touches pixels flagged TRANSIENT, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c023",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W34_1B_0650_3"
+      ],
+      "ra_deg": 270.226558,
+      "dec_deg": 66.444369,
+      "pixel_x": 20.0,
+      "pixel_y": 5.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 6.13,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 116.7,
+          "uncertainty": 30.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -27.5,
+          "uncertainty": 15.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44753,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 35.0,
+          "uncertainty_ujy": 29.0
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -32.4,
+          "uncertainty_ujy": 26.0
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 116.7,
+          "uncertainty_ujy": 30.3
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 47.2,
+          "uncertainty_ujy": 29.6
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -21.3,
+          "uncertainty_ujy": 28.0
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -53.3,
+          "uncertainty_ujy": 29.3
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 27.9,
+          "uncertainty_ujy": 27.8
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -29.2,
+          "uncertainty_ujy": 27.7
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -41.5,
+          "uncertainty_ujy": 26.3
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 69.1,
+          "uncertainty_ujy": 27.0
+        }
+      ],
+      "evidence": [
+        "peak +6.1 sigma over 1 px; aperture change +117 +/- 30 uJy",
+        "reference flux at this position -28 +/- 16 uJy (S/N -1.8)",
+        "touches pixels flagged OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c024",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W34_1B_0650_3"
+      ],
+      "ra_deg": 270.132925,
+      "dec_deg": 66.521352,
+      "pixel_x": 42.0,
+      "pixel_y": 50.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.96,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 207.2,
+          "uncertainty": 30.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 10.1,
+          "uncertainty": 15.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44753,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -8.3,
+          "uncertainty_ujy": 28.4
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -96.6,
+          "uncertainty_ujy": 26.3
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 207.2,
+          "uncertainty_ujy": 30.0
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -102.1,
+          "uncertainty_ujy": 28.2
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -20.8,
+          "uncertainty_ujy": 28.6
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -51.5,
+          "uncertainty_ujy": 28.6
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -38.6,
+          "uncertainty_ujy": 28.3
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 63.7,
+          "uncertainty_ujy": 27.6
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 32.3,
+          "uncertainty_ujy": 27.3
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -6.8,
+          "uncertainty_ujy": 27.6
+        }
+      ],
+      "evidence": [
+        "peak +6.0 sigma over 1 px; aperture change +207 +/- 30 uJy",
+        "reference flux at this position 10 +/- 15 uJy (S/N 0.7)",
+        "touches pixels flagged TRANSIENT, OUTLIER, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c025",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W25_2A_0549_4"
+      ],
+      "ra_deg": 269.875308,
+      "dec_deg": 66.589692,
+      "pixel_x": 102.0,
+      "pixel_y": 90.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.95,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -839.5,
+          "uncertainty": 926.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 4541.7,
+          "uncertainty": 32.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44551,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -839.5,
+          "uncertainty_ujy": 926.6
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 489.6,
+          "uncertainty_ujy": 903.0
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 28.8,
+          "uncertainty_ujy": 923.1
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -1107.5,
+          "uncertainty_ujy": 902.6
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -509.7,
+          "uncertainty_ujy": 922.9
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -599.7,
+          "uncertainty_ujy": 924.5
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -46.0,
+          "uncertainty_ujy": 924.1
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -52.3,
+          "uncertainty_ujy": 902.9
+        }
+      ],
+      "evidence": [
+        "peak +5.9 sigma over 1 px; aperture change -840 +/- 927 uJy",
+        "reference flux at this position 4542 +/- 32 uJy (S/N 140.2)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c026",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W31_1B_0475_3"
+      ],
+      "ra_deg": 269.741841,
+      "dec_deg": 66.606613,
+      "pixel_x": 133.0,
+      "pixel_y": 100.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.79,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -79.7,
+          "uncertainty": 1644.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 8009.7,
+          "uncertainty": 40.7,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.4456,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -1234.6,
+          "uncertainty_ujy": 1652.3
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -1387.7,
+          "uncertainty_ujy": 1644.2
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 1217.9,
+          "uncertainty_ujy": 1576.0
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 138.6,
+          "uncertainty_ujy": 1584.1
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 1005.6,
+          "uncertainty_ujy": 1574.8
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -507.6,
+          "uncertainty_ujy": 1653.4
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 763.7,
+          "uncertainty_ujy": 1643.5
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -816.6,
+          "uncertainty_ujy": 1584.1
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -79.7,
+          "uncertainty_ujy": 1644.4
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 2173.2,
+          "uncertainty_ujy": 1585.6
+        }
+      ],
+      "evidence": [
+        "peak +5.8 sigma over 1 px; aperture change -80 +/- 1644 uJy",
+        "reference flux at this position 8010 +/- 41 uJy (S/N 196.8)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c027",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W34_1B_0650_3"
+      ],
+      "ra_deg": 269.764876,
+      "dec_deg": 66.446065,
+      "pixel_x": 128.0,
+      "pixel_y": 6.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.79,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 91.2,
+          "uncertainty": 27.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 26.0,
+          "uncertainty": 15.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44753,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -9.0,
+          "uncertainty_ujy": 28.2
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -19.2,
+          "uncertainty_ujy": 27.1
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 91.2,
+          "uncertainty_ujy": 27.6
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 11.3,
+          "uncertainty_ujy": 28.0
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -13.0,
+          "uncertainty_ujy": 28.5
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 39.6,
+          "uncertainty_ujy": 29.5
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -22.7,
+          "uncertainty_ujy": 27.6
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -20.5,
+          "uncertainty_ujy": 27.6
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -29.4,
+          "uncertainty_ujy": 27.3
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -24.6,
+          "uncertainty_ujy": 26.9
+        }
+      ],
+      "evidence": [
+        "peak +5.8 sigma over 1 px; aperture change +91 +/- 28 uJy",
+        "reference flux at this position 26 +/- 15 uJy (S/N 1.7)",
+        "touches pixels flagged PERSIST, OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c028",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W25_2A_0549_4"
+      ],
+      "ra_deg": 270.038634,
+      "dec_deg": 66.548737,
+      "pixel_x": 64.0,
+      "pixel_y": 66.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.77,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 107.5,
+          "uncertainty": 22.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 50.3,
+          "uncertainty": 15.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44551,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -78.0,
+          "uncertainty_ujy": 29.4
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 2.8,
+          "uncertainty_ujy": 27.8
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -55.4,
+          "uncertainty_ujy": 27.5
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -19.7,
+          "uncertainty_ujy": 30.1
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 16.1,
+          "uncertainty_ujy": 29.8
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 31.1,
+          "uncertainty_ujy": 28.8
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -22.8,
+          "uncertainty_ujy": 28.0
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 15.6,
+          "uncertainty_ujy": 27.4
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +5.8 sigma over 1 px; aperture change +108 +/- 23 uJy",
+        "reference flux at this position 50 +/- 16 uJy (S/N 3.2)",
+        "touches pixels flagged TRANSIENT, OUTLIER, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c029",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W51_1A_0020_3"
+      ],
+      "ra_deg": 269.957125,
+      "dec_deg": 66.518764,
+      "pixel_x": 83.0,
+      "pixel_y": 48.46,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.76,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 192.8,
+          "uncertainty": 25.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": -21.4,
+          "uncertainty": 13.3,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44775,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 8.4,
+          "uncertainty_ujy": 24.6
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -19.0,
+          "uncertainty_ujy": 23.7
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -63.8,
+          "uncertainty_ujy": 23.4
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -10.0,
+          "uncertainty_ujy": 23.3
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 192.8,
+          "uncertainty_ujy": 25.9
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 11.0,
+          "uncertainty_ujy": 25.1
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 4.1,
+          "uncertainty_ujy": 24.2
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -0.1,
+          "uncertainty_ujy": 23.8
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -4.1,
+          "uncertainty_ujy": 23.4
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 62.6,
+          "uncertainty_ujy": 23.4
+        }
+      ],
+      "evidence": [
+        "peak +5.8 sigma over 2 px; aperture change +193 +/- 26 uJy",
+        "reference flux at this position -21 +/- 13 uJy (S/N -1.6)",
+        "touches pixels flagged PERSIST, OUTLIER",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c030",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W25_2A_0549_4"
+      ],
+      "ra_deg": 270.128947,
+      "dec_deg": 66.581147,
+      "pixel_x": 43.0,
+      "pixel_y": 85.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.7,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 136.3,
+          "uncertainty": 98.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 466.8,
+          "uncertainty": 18.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44551,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 60.2,
+          "uncertainty_ujy": 96.2
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 136.3,
+          "uncertainty_ujy": 98.8
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 67.3,
+          "uncertainty_ujy": 96.6
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -17.3,
+          "uncertainty_ujy": 97.0
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 50.2,
+          "uncertainty_ujy": 95.9
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -26.1,
+          "uncertainty_ujy": 99.4
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 116.9,
+          "uncertainty_ujy": 96.2
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 80.5,
+          "uncertainty_ujy": 99.1
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 6.6,
+          "uncertainty_ujy": 97.8
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -9.4,
+          "uncertainty_ujy": 98.6
+        }
+      ],
+      "evidence": [
+        "peak +5.7 sigma over 1 px; aperture change +136 +/- 99 uJy",
+        "reference flux at this position 467 +/- 18 uJy (S/N 26.0)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c031",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W31_1B_0475_3"
+      ],
+      "ra_deg": 270.141065,
+      "dec_deg": 66.44447,
+      "pixel_x": 40.0,
+      "pixel_y": 5.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -5.67,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -142.7,
+          "uncertainty": 31.0,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 38.5,
+          "uncertainty": 15.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.4456,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 26.0,
+          "uncertainty_ujy": 29.3
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -12.3,
+          "uncertainty_ujy": 30.3
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 17.0,
+          "uncertainty_ujy": 27.9
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -29.0,
+          "uncertainty_ujy": 27.5
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -8.7,
+          "uncertainty_ujy": 28.8
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 14.8,
+          "uncertainty_ujy": 30.4
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 13.0,
+          "uncertainty_ujy": 29.8
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 1.8,
+          "uncertainty_ujy": 27.9
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -142.7,
+          "uncertainty_ujy": 31.0
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -52.4,
+          "uncertainty_ujy": 27.0
+        }
+      ],
+      "evidence": [
+        "peak -5.7 sigma over 1 px; aperture change -143 +/- 31 uJy",
+        "reference flux at this position 39 +/- 16 uJy (S/N 2.4)",
+        "negative residual where the reference shows no source",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c032",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W17_4B_0206_4"
+      ],
+      "ra_deg": 269.797808,
+      "dec_deg": 66.602637,
+      "pixel_x": 120.0,
+      "pixel_y": 97.62,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.57,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 174.0,
+          "uncertainty": 1191.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 8146.9,
+          "uncertainty": 39.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44521,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -1940.5,
+          "uncertainty_ujy": 1829.9
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 4358.7,
+          "uncertainty_ujy": 1563.8
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 1802.4,
+          "uncertainty_ujy": 1638.3
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -4631.9,
+          "uncertainty_ujy": 1829.7
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -2383.9,
+          "uncertainty_ujy": 1776.9
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -111.0,
+          "uncertainty_ujy": 1623.6
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 1952.9,
+          "uncertainty_ujy": 1623.7
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -1676.0,
+          "uncertainty_ujy": 1776.8
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 2313.3,
+          "uncertainty_ujy": 1563.1
+        }
+      ],
+      "evidence": [
+        "peak +5.6 sigma over 2 px; aperture change +174 +/- 1192 uJy",
+        "reference flux at this position 8147 +/- 40 uJy (S/N 204.3)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c033",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W34_1B_0650_3"
+      ],
+      "ra_deg": 269.935397,
+      "dec_deg": 66.630728,
+      "pixel_x": 88.0,
+      "pixel_y": 114.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.52,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -7175.2,
+          "uncertainty": 15604.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 74076.1,
+          "uncertainty": 153.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44753,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 5085.0,
+          "uncertainty_ujy": 15313.4
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -7175.2,
+          "uncertainty_ujy": 15604.9
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 409.6,
+          "uncertainty_ujy": 15507.7
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -1358.3,
+          "uncertainty_ujy": 15412.1
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -9306.4,
+          "uncertainty_ujy": 15613.3
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        }
+      ],
+      "evidence": [
+        "peak +5.5 sigma over 1 px; aperture change -7175 +/- 15605 uJy",
+        "reference flux at this position 74076 +/- 153 uJy (S/N 483.9)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c034",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W17_4B_0206_4"
+      ],
+      "ra_deg": 269.896878,
+      "dec_deg": 66.572624,
+      "pixel_x": 97.0,
+      "pixel_y": 80.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": -5.49,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -84.4,
+          "uncertainty": 36.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 123.4,
+          "uncertainty": 16.4,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44521,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -84.4,
+          "uncertainty_ujy": 36.9
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -15.9,
+          "uncertainty_ujy": 36.0
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -44.7,
+          "uncertainty_ujy": 36.2
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -17.1,
+          "uncertainty_ujy": 34.8
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -5.1,
+          "uncertainty_ujy": 36.0
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 107.9,
+          "uncertainty_ujy": 37.5
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 34.7,
+          "uncertainty_ujy": 37.5
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 94.3,
+          "uncertainty_ujy": 39.2
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": 21.7,
+          "uncertainty_ujy": 36.6
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 13.8,
+          "uncertainty_ujy": 34.8
+        }
+      ],
+      "evidence": [
+        "peak -5.5 sigma over 1 px; aperture change -84 +/- 37 uJy",
+        "reference flux at this position 123 +/- 16 uJy (S/N 7.5)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c035",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W31_1B_0475_3"
+      ],
+      "ra_deg": 270.295053,
+      "dec_deg": 66.452797,
+      "pixel_x": 4.0,
+      "pixel_y": 10.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.45,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 69.2,
+          "uncertainty": 21.2,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 14.7,
+          "uncertainty": 15.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.4456,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -5.3,
+          "uncertainty_ujy": 29.4
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": -7.6,
+          "uncertainty_ujy": 27.2
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -31.6,
+          "uncertainty_ujy": 27.4
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -28.6,
+          "uncertainty_ujy": 27.9
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 68.2,
+          "uncertainty_ujy": 30.2
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -27.3,
+          "uncertainty_ujy": 29.0
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 13.9,
+          "uncertainty_ujy": 29.2
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 2.1,
+          "uncertainty_ujy": 27.4
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": 13.0,
+          "uncertainty_ujy": 26.8
+        }
+      ],
+      "evidence": [
+        "peak +5.5 sigma over 1 px; aperture change +69 +/- 21 uJy",
+        "reference flux at this position 15 +/- 16 uJy (S/N 0.9)",
+        "touches pixels flagged TRANSIENT, OUTLIER, HALO",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c036",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W34_1B_0650_3"
+      ],
+      "ra_deg": 270.185449,
+      "dec_deg": 66.664799,
+      "pixel_x": 30.0,
+      "pixel_y": 134.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.39,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 545.2,
+          "uncertainty": 714.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 5341.4,
+          "uncertainty": 33.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44753,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -94.8,
+          "uncertainty_ujy": 1109.9
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 890.0,
+          "uncertainty_ujy": 1083.0
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": -2179.4,
+          "uncertainty_ujy": 1166.2
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 1024.6,
+          "uncertainty_ujy": 1092.9
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": -389.5,
+          "uncertainty_ujy": 1143.0
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": -449.2,
+          "uncertainty_ujy": 1109.0
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -590.5,
+          "uncertainty_ujy": 1167.8
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -48.3,
+          "uncertainty_ujy": 1142.9
+        }
+      ],
+      "evidence": [
+        "peak +5.4 sigma over 1 px; aperture change +545 +/- 715 uJy",
+        "reference flux at this position 5341 +/- 34 uJy (S/N 157.4)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c037",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W41_2B_0471_3"
+      ],
+      "ra_deg": 269.909644,
+      "dec_deg": 66.606799,
+      "pixel_x": 94.0,
+      "pixel_y": 100.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.34,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 133.4,
+          "uncertainty": 1025.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 4924.5,
+          "uncertainty": 33.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44757,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 63.5,
+          "uncertainty_ujy": 1010.6
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 473.2,
+          "uncertainty_ujy": 1010.4
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 372.2,
+          "uncertainty_ujy": 1026.4
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 133.4,
+          "uncertainty_ujy": 1025.1
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 794.0,
+          "uncertainty_ujy": 1008.4
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -384.6,
+          "uncertainty_ujy": 1010.2
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 386.4,
+          "uncertainty_ujy": 1025.2
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 91.4,
+          "uncertainty_ujy": 1010.4
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -508.5,
+          "uncertainty_ujy": 1028.0
+        }
+      ],
+      "evidence": [
+        "peak +5.3 sigma over 1 px; aperture change +133 +/- 1025 uJy",
+        "reference flux at this position 4924 +/- 34 uJy (S/N 145.1)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c038",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W17_4B_0206_4"
+      ],
+      "ra_deg": 269.759921,
+      "dec_deg": 66.516786,
+      "pixel_x": 129.0,
+      "pixel_y": 47.4,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.29,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -5417.4,
+          "uncertainty": 7866.8,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 35185.4,
+          "uncertainty": 82.5,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44521,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -5417.4,
+          "uncertainty_ujy": 7866.8
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 3320.4,
+          "uncertainty_ujy": 7366.1
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": -2601.7,
+          "uncertainty_ujy": 7816.9
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": 2139.5,
+          "uncertainty_ujy": 7459.0
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 4617.8,
+          "uncertainty_ujy": 7375.1
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 45.3,
+          "uncertainty_ujy": 7420.6
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 4153.4,
+          "uncertainty_ujy": 7366.5
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -10886.3,
+          "uncertainty_ujy": 7866.2
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -7185.9,
+          "uncertainty_ujy": 7867.6
+        }
+      ],
+      "evidence": [
+        "peak +5.3 sigma over 2 px; aperture change -5417 +/- 7867 uJy",
+        "reference flux at this position 35185 +/- 82 uJy (S/N 426.6)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c039",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2026W39_2A_0642_4"
+      ],
+      "ra_deg": 269.781797,
+      "dec_deg": 66.46659,
+      "pixel_x": 124.0,
+      "pixel_y": 18.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.29,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": -3582.1,
+          "uncertainty": 4256.1,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 21059.3,
+          "uncertainty": 63.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44512,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 1.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": 3640.9,
+          "uncertainty_ujy": 4053.7
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 589.7,
+          "uncertainty_ujy": 4170.3
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 161.8,
+          "uncertainty_ujy": 4170.5
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": 9901.7,
+          "uncertainty_ujy": 4055.1
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": -8692.8,
+          "uncertainty_ujy": 4369.4
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": 1139.8,
+          "uncertainty_ujy": 4254.7
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 757.9,
+          "uncertainty_ujy": 4170.1
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 2767.5,
+          "uncertainty_ujy": 4256.5
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -4081.7,
+          "uncertainty_ujy": 4366.8
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -3582.1,
+          "uncertainty_ujy": 4256.1
+        }
+      ],
+      "evidence": [
+        "peak +5.3 sigma over 1 px; aperture change -3582 +/- 4256 uJy",
+        "reference flux at this position 21059 +/- 64 uJy (S/N 331.0)",
+        "aperture change below 3 sigma although the peak pixel is significant: typical of an undersampled PSF shifting between pixels",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    },
+    {
+      "candidate_id": "nep-d2-c040",
+      "status": "likely_artifact",
+      "kind": "artifact_like",
+      "observation_ids": [
+        "nep-d2.2025W25_2A_0549_4"
+      ],
+      "ra_deg": 270.169715,
+      "dec_deg": 66.582817,
+      "pixel_x": 33.52,
+      "pixel_y": 86.0,
+      "measurements": [
+        {
+          "name": "peak significance",
+          "value": 5.28,
+          "uncertainty": null,
+          "unit": "sigma"
+        },
+        {
+          "name": "aperture flux change",
+          "value": 828.8,
+          "uncertainty": 673.9,
+          "unit": "uJy"
+        },
+        {
+          "name": "reference flux",
+          "value": 3064.7,
+          "uncertainty": 27.6,
+          "unit": "uJy"
+        },
+        {
+          "name": "wavelength",
+          "value": 1.44551,
+          "uncertainty": null,
+          "unit": "um"
+        },
+        {
+          "name": "area above 3 sigma",
+          "value": 2.0,
+          "uncertainty": null,
+          "unit": "px"
+        }
+      ],
+      "light_curve": [
+        {
+          "observation_id": "nep-d2.2025W17_4B_0206_4",
+          "mjd_mid": 60791.10675,
+          "delta_flux_ujy": -335.4,
+          "uncertainty_ujy": 714.8
+        },
+        {
+          "observation_id": "nep-d2.2025W25_2A_0549_4",
+          "mjd_mid": 60848.23895,
+          "delta_flux_ujy": 828.8,
+          "uncertainty_ujy": 673.9
+        },
+        {
+          "observation_id": "nep-d2.2025W34_1B_0650_3",
+          "mjd_mid": 60908.427654,
+          "delta_flux_ujy": 294.0,
+          "uncertainty_ujy": 674.8
+        },
+        {
+          "observation_id": "nep-d2.2025W41_2B_0471_3",
+          "mjd_mid": 60959.712027,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2025W51_1A_0020_3",
+          "mjd_mid": 61024.087387,
+          "delta_flux_ujy": null,
+          "uncertainty_ujy": null
+        },
+        {
+          "observation_id": "nep-d2.2026W07_1A_0435_3",
+          "mjd_mid": 61081.865716,
+          "delta_flux_ujy": -279.7,
+          "uncertainty_ujy": 674.0
+        },
+        {
+          "observation_id": "nep-d2.2026W10_2B_0350_3",
+          "mjd_mid": 61106.375041,
+          "delta_flux_ujy": 692.3,
+          "uncertainty_ujy": 660.9
+        },
+        {
+          "observation_id": "nep-d2.2026W23_2A_0025_4",
+          "mjd_mid": 61195.649212,
+          "delta_flux_ujy": 466.3,
+          "uncertainty_ujy": 674.8
+        },
+        {
+          "observation_id": "nep-d2.2026W31_1B_0475_3",
+          "mjd_mid": 61250.494931,
+          "delta_flux_ujy": -295.3,
+          "uncertainty_ujy": 715.2
+        },
+        {
+          "observation_id": "nep-d2.2026W39_2A_0642_4",
+          "mjd_mid": 61310.569632,
+          "delta_flux_ujy": -329.8,
+          "uncertainty_ujy": 715.1
+        }
+      ],
+      "evidence": [
+        "peak +5.3 sigma over 2 px; aperture change +829 +/- 674 uJy",
+        "reference flux at this position 3065 +/- 28 uJy (S/N 110.8)",
+        "touches pixels flagged PERSIST",
+        "only this epoch deviates by more than 5 sigma: cosmic rays, unflagged detector events and moving objects all look like this, so a second detection is needed"
+      ],
+      "caveats": [
+        "Single-detector, single-wavelength comparison; no PSF matching.",
+        "Not cross-matched against catalogs in this build."
+      ],
+      "method": "template difference, |S| >= 5.0 peak, grown to 3.0 sigma, r=1.5 px aperture"
+    }
+  ],
+  "generated_by": {
+    "tool": "parallax-science",
+    "version": "0.1.0",
+    "command": "parallax build-field nep-d2 --ra 270.0 --dec 66.5607 --detector 2 --epochs 10 --title \"North Ecliptic Pole, 1.45 um (SPHEREx detector 2)\""
+  }
+}

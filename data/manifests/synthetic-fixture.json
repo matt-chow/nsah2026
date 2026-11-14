@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "manifest_id": "synthetic-fixture-001",
   "data_kind": "simulated",
   "title": "Synthetic fixture: simulated three-epoch field",
@@ -63,6 +63,7 @@
         "flags_available": true,
         "variance_available": true,
         "masked_fraction": 0.0,
+        "psf_fwhm_arcsec": null,
         "notes": [
           "Simulated Gaussian PSF and white noise; no artifacts modeled."
         ]
@@ -78,6 +79,8 @@
         "retrieved_utc": null,
         "source_sha256": null,
         "calibration_version": "simulated-v1",
+        "collection": null,
+        "data_release": null,
         "processing": "parallax make-fixture (seed=2026)",
         "cache_key": "e9dee768ba71cdc6a9de3041d9aa4d1a3dfaa164475914db77ce610703f6399c"
       }
@@ -125,6 +128,7 @@
         "flags_available": true,
         "variance_available": true,
         "masked_fraction": 0.0,
+        "psf_fwhm_arcsec": null,
         "notes": [
           "Simulated Gaussian PSF and white noise; no artifacts modeled."
         ]
@@ -140,6 +144,8 @@
         "retrieved_utc": null,
         "source_sha256": null,
         "calibration_version": "simulated-v1",
+        "collection": null,
+        "data_release": null,
         "processing": "parallax make-fixture (seed=2026)",
         "cache_key": "b8334e4c551d6087f73bd48960e045da50b2aedb8fdd9c62a99ab420566de581"
       }
@@ -187,6 +193,7 @@
         "flags_available": true,
         "variance_available": true,
         "masked_fraction": 0.0,
+        "psf_fwhm_arcsec": null,
         "notes": [
           "Simulated Gaussian PSF and white noise; no artifacts modeled."
         ]
@@ -202,6 +209,8 @@
         "retrieved_utc": null,
         "source_sha256": null,
         "calibration_version": "simulated-v1",
+        "collection": null,
+        "data_release": null,
         "processing": "parallax make-fixture (seed=2026)",
         "cache_key": "1117e032f382d5fbf698876a8efbada5a192d5305261a44c01f22c4485c7e545"
       }
@@ -233,6 +242,9 @@
       ]
     }
   ],
+  "alignment": null,
+  "template": null,
+  "differences": [],
   "candidates": [],
   "generated_by": {
     "tool": "parallax-science",

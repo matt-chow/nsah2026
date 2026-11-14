@@ -14,11 +14,16 @@ try {
   Step 'ruff lint' { uv run ruff check . }
   Step 'ruff format' { uv run ruff format --check . }
   Step 'pytest' { uv run pytest }
-  Step 'validate fixture' { uv run parallax validate ../data/manifests/synthetic-fixture.json }
+  Get-ChildItem ../data/manifests/*.json -Exclude manifest.schema.json, index.json | ForEach-Object {
+    $m = $_.FullName
+    Step "validate $($_.Name)" { uv run parallax validate $m }
+  }
 } finally { Pop-Location }
 
 Push-Location "$root/web"
 try { Step 'web check (types, lint, format, tests, build)' { npm run check } } finally { Pop-Location }
+
+Step 'api tests' { node --test "$root/api/*.test.mjs" }
 
 Write-Host '==> data size budget (25 MB total, 5 MB per file)'
 $files = Get-ChildItem "$root/data" -Recurse -File

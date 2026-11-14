@@ -115,6 +115,12 @@ def validate_manifest(
                 if shape != (obs.image.height_px, obs.image.width_px):
                     errors.append(f"{oid}: FITS IMAGE shape {shape} != manifest dimensions")
 
+    if data_root is not None:
+        extra = [d.display_png for d in manifest.differences]
+        if manifest.template:
+            extra += [manifest.template.display_png, manifest.template.science_fits]
+        errors += [f"missing asset {rel}" for rel in extra if not (data_root / rel).is_file()]
+
     for c in manifest.comparisons:
         # Stored statuses are re-derived so a hand-edited manifest cannot claim compatibility.
         expected = assess_compatibility(by_id[c.reference_id], by_id[c.target_id], tol)

@@ -6,7 +6,14 @@ import pytest
 from conftest import DATA_DIR
 from pydantic import ValidationError
 
-from parallax_science.cli import FIXTURE_MANIFEST, SCHEMA_PATH, main, schema_text
+from parallax_science.cli import (
+    FIXTURE_MANIFEST,
+    INDEX_PATH,
+    SCHEMA_PATH,
+    index_text,
+    main,
+    schema_text,
+)
 from parallax_science.models import Manifest
 from parallax_science.validation import load_manifest, validate_manifest
 
@@ -97,3 +104,24 @@ def test_target_outside_footprint_detected():
     raw["target"]["ra_deg"] = 10.0
     errors = validate_manifest(Manifest.model_validate(raw))
     assert any("outside the image footprint" in e for e in errors)
+
+
+REAL = sorted(
+    p
+    for p in (DATA_DIR / "manifests").glob("*.json")
+    if p.name not in (SCHEMA_PATH.name, INDEX_PATH.name, FIXTURE_MANIFEST.name)
+)
+
+
+@pytest.mark.parametrize("path", REAL, ids=[p.stem for p in REAL])
+def test_committed_real_manifests_validate(path):
+    m = load_manifest(path)
+    assert m.data_kind == "real" and m.dataset.acknowledgement
+    assert all(o.provenance.source_url and o.provenance.source_sha256 for o in m.observations)
+    assert validate_manifest(m, data_root=DATA_DIR) == []
+
+
+def test_committed_index_is_current():
+    assert (DATA_DIR / INDEX_PATH).read_text(encoding="utf-8") == index_text(DATA_DIR), (
+        "run `uv run parallax index`"
+    )

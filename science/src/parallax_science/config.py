@@ -12,8 +12,8 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 class RequestLimits(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    max_results: int = Field(default=50, ge=1, le=500, description="Archive rows per search")
-    max_cutout_arcsec: float = Field(default=600.0, gt=0.0, le=3600.0, description="Cutout side")
+    max_results: int = Field(default=5000, ge=1, le=20000, description="Archive rows per query")
+    max_cutout_arcsec: float = Field(default=1800.0, gt=0.0, le=3600.0, description="Cutout side")
     max_download_mb: float = Field(default=200.0, gt=0.0, le=2000.0, description="Per run, total")
     max_concurrency: int = Field(default=2, ge=1, le=4)
     timeout_s: float = Field(default=60.0, gt=0.0, le=600.0)

@@ -52,3 +52,5 @@ phase. Times are per-team estimates of focused hours.
 | Date | What | Result |
 |---|---|---|
 | 2026-11-13 | Initial JS bundle (bootstrap) | 72.7 kB gzip |
+| 2026-11-13 | Initial JS, full workspace (React + app, fonts as CSS) | 83.3 kB gzip JS, 4.0 kB gzip CSS |
+| 2026-11-13 | `data/` total (2 real fields × 10 epochs + fixture) | 6.88 MB |
