@@ -65,6 +65,9 @@ uv run parallax index
 
 ## Deployment
 
+Live: <https://nsah2026.vercel.app> (with the IRSA lookup) and
+<https://matt-chow.github.io/nsah2026/> (static mirror, no lookup).
+
 The app is fully static. `web/dist` contains the app and `data/`. `vercel.json` builds it and
 deploys `api/sia.mjs` as the only function. On a host without functions (GitHub Pages), search
 still works for prepared fields and reports that the live lookup is unavailable.

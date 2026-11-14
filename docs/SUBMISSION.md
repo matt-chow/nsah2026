@@ -91,8 +91,9 @@ asks IRSA whether SPHEREx has observed any coordinate you type.
    URL has a `#field` hash.
 3. Record with OBS or the Windows Game Bar (Win + Alt + R) at 1080p, 30 fps. Record the
    narration separately and keep it under 2:30.
-4. Step 9 needs the Vercel deployment, because the live lookup is a function. On a static host,
-   it shows "live archive lookup is not available on this deployment". Say that instead.
+4. Step 9 needs the Vercel deployment (https://nsah2026.vercel.app), because the live lookup is
+   a function. On GitHub Pages it shows "live archive lookup is not available on this
+   deployment".
 5. Upload as unlisted and put the link on the project page. Add the Limitations list below to
    the video description.
 
