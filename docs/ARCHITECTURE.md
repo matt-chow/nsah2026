@@ -41,7 +41,8 @@ results; it never decides scientific compatibility.
 | Features | `web/src/features/{sky-explorer,timeline,candidates,discover,analysis}` | search, date axis, "What changed?" list + summary + evidence report + light curve, the Discover story (built from the manifest), Analyze checks + calibration table | import each other's internals |
 | Living Observatory | `web/src/features/{globe,spacecraft,spectrum,journal,arcade}` | lazy pages behind `#/sky`, `#/spacecraft`, `#/spectrum`, `#/journal`, `#/arcade`; they read the same manifests and index, write only to `localStorage` (journal, arcade progress) | change measurements, import observatory internals |
 | Shared UI | `web/src/components/` | `SkyCanvas` (pan/zoom, blink/overlay/split/difference, stretch, loupe, scale bar, markers), `Term` (glossary popovers via native `popover`), `ObservationDetails` | |
-| Live lookup | `api/sia.mjs` | optional Vercel function: exposure counts from IRSA SIA2 | proxy images, keep state |
+| Live lookup | `api/index.py` (FastAPI) | optional Vercel FastAPI function: live exposure counts and newest release date from IRSA SIA2 | proxy images, keep state |
+| Sky Flipbook | `data/flipbook/index.html` (three.js from jsDelivr, iframed by the `#/flipbook` tab) + `/api/spherex` in `api/index.py` (logic in `api/_spherex.py`) | plays every SPHEREx DR1 cutout of a position, reprojected north-up and background-subtracted server-side; standalone experiment, not manifest-backed | validate pairs via `assess_compatibility()`; needs the function deployed |
 | Web libs | `web/src/lib/` | `checkPair` (reads the pipeline verdict for an A/B pair; never recomputes it), readable dates, manifest/index parsing, TAN pixel↔sky for display, σ decoding, image cache | |
 
 Python modules are flat files rather than subpackages; split a module only when it outgrows one
@@ -60,8 +61,8 @@ Ruff, pytest. PNG writing uses the stdlib (`zlib`), so there is no Pillow depend
 
 `npm run build` emits `web/dist/` containing the app and a copy of `data/`. Any static host
 works, and `base: './'` supports sub-path hosting. Production is Vercel (`vercel.json`): the same
-static build plus one optional function, `api/sia.mjs`. IRSA sends no CORS headers, so the browser
-cannot query it directly. The function returns exposure counts only and stores nothing. Its
+static build plus one optional function, `api/index.py` (FastAPI). IRSA sends no CORS headers, so the browser
+cannot query it directly. The function (FastAPI, stdlib + `fastapi` only, so no astropy in the bundle) returns exposure counts and newest dates only, caches at the edge for an hour, and stores nothing. The browser calls it on field load and on coordinate search. Its
 failure, or a host without functions, degrades to "live lookup not available". Disposable caches live in `.cache/` outside
 `data/`, so they cannot be published by accident.
 

@@ -23,7 +23,8 @@ try {
 Push-Location "$root/web"
 try { Step 'web check (types, lint, format, tests, build)' { npm run check } } finally { Pop-Location }
 
-Step 'api tests' { node --test "$root/api/*.test.mjs" }
+Step 'api tests' { uv run --no-project --with fastapi --with httpx --with pytest pytest -q "$root/api/_test_sia.py" }
+Step 'flipbook api self-checks' { python3 "$root/api/_test_spherex.py" }
 
 Write-Host '==> data size budget (25 MB total, 5 MB per file)'
 $files = Get-ChildItem "$root/data" -Recurse -File

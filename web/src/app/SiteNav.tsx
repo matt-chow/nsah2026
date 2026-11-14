@@ -1,13 +1,15 @@
 import { memo } from 'react';
 import { useJournal } from '../features/journal/store.ts';
 
-export type Section = 'observatory' | 'sky' | 'spacecraft' | 'spectrum' | 'journal' | 'arcade';
+export type Section =
+  'observatory' | 'sky' | 'spacecraft' | 'spectrum' | 'journal' | 'flipbook' | 'arcade';
 
 const LINKS: { id: Exclude<Section, 'observatory' | 'arcade'>; label: string }[] = [
   { id: 'sky', label: 'Sky globe' },
   { id: 'spacecraft', label: 'Spacecraft' },
   { id: 'spectrum', label: 'Spectrum' },
   { id: 'journal', label: 'Journal' },
+  { id: 'flipbook', label: 'Sky Flipbook' },
 ];
 
 interface Props {
