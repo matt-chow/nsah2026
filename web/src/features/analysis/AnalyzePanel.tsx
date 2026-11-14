@@ -31,52 +31,55 @@ export const AnalyzePanel = memo(function AnalyzePanel(props: Props) {
         Verdicts come from the pipeline&apos;s compatibility check (detector, wavelength, units,
         calibration, pixel scale, common grid); the browser only displays them.
       </p>
-      <div className="table-scroll">
-        <table className="calib mono">
-          <caption className="visually-hidden">Per-epoch calibration</caption>
-          <thead>
-            <tr>
-              <th scope="col">Epoch (UTC)</th>
-              <th scope="col">Rel.</th>
-              <th scope="col">λ µm</th>
-              <th scope="col">k</th>
-              <th scope="col">floor</th>
-              <th scope="col">Difference</th>
-            </tr>
-          </thead>
-          <tbody>
-            {observations.map((o) => {
-              const d = differences.get(o.observation_id);
-              return (
-                <tr key={o.observation_id} aria-current={o === epoch || undefined}>
-                  <th scope="row">
-                    <button
-                      type="button"
-                      className="link"
-                      onClick={() => onSelectEpoch(o.observation_id)}
-                    >
-                      {isoDate(o.epoch.mjd_mid)}
-                    </button>
-                  </th>
-                  <td>{o.provenance.data_release ?? 'SIM'}</td>
-                  <td>{o.spectral.wavelength_center_um.toFixed(4)}</td>
-                  <td>{d ? d.noise_scale.toFixed(2) : '—'}</td>
-                  <td>{d ? d.error_floor_fraction.toFixed(2) : '—'}</td>
-                  <td className={d?.status === 'validated' ? '' : 'dim'}>
-                    {d ? d.status.replace('_', ' ') : 'not run'}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      <p className="small dim">
-        k rescales the archive variance so faint-pixel noise has unit width; floor is the fractional
-        error added for star-shaped mismatch. Numbers are withheld wherever the difference is not
-        validated.
-      </p>
-      <details className="meta" open>
+      <details className="inspector-section">
+        <summary>Per-date calibration & noise checks</summary>
+        <div className="table-scroll">
+          <table className="calib mono">
+            <caption className="visually-hidden">Per-epoch calibration</caption>
+            <thead>
+              <tr>
+                <th scope="col">Epoch (UTC)</th>
+                <th scope="col">Rel.</th>
+                <th scope="col">λ µm</th>
+                <th scope="col">k</th>
+                <th scope="col">floor</th>
+                <th scope="col">Difference</th>
+              </tr>
+            </thead>
+            <tbody>
+              {observations.map((o) => {
+                const d = differences.get(o.observation_id);
+                return (
+                  <tr key={o.observation_id} aria-current={o === epoch || undefined}>
+                    <th scope="row">
+                      <button
+                        type="button"
+                        className="link"
+                        onClick={() => onSelectEpoch(o.observation_id)}
+                      >
+                        {isoDate(o.epoch.mjd_mid)}
+                      </button>
+                    </th>
+                    <td>{o.provenance.data_release ?? 'SIM'}</td>
+                    <td>{o.spectral.wavelength_center_um.toFixed(4)}</td>
+                    <td>{d ? d.noise_scale.toFixed(2) : '—'}</td>
+                    <td>{d ? d.error_floor_fraction.toFixed(2) : '—'}</td>
+                    <td className={d?.status === 'validated' ? '' : 'dim'}>
+                      {d ? d.status.replace('_', ' ') : 'not run'}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p className="small dim">
+          k rescales the archive variance so faint-pixel noise has unit width; floor is the
+          fractional error added for star-shaped mismatch. Numbers are withheld wherever the
+          difference is not validated.
+        </p>
+      </details>
+      <details className="meta">
         <summary>Observation A: metadata and provenance</summary>
         <ObservationDetails obs={epoch} />
         {manifest.alignment && <p className="small dim">{manifest.alignment}</p>}

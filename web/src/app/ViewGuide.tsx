@@ -15,7 +15,7 @@ interface Props {
 export const ViewGuide = memo(function ViewGuide(props: Props) {
   const { mode, comparable, simulated, pixelScale, dates, markers } = props;
   return (
-    <details className="guide" open>
+    <details className="guide">
       <summary>What am I looking at?</summary>
       <div className="guide-body">
         {mode === 'difference' ? (
@@ -43,8 +43,8 @@ export const ViewGuide = memo(function ViewGuide(props: Props) {
             <p>
               A speckle of faint gold and blue everywhere is <Term k="noise">noise</Term>, and that
               is expected. Gold-and-blue pairs on bright stars usually mean the star landed on the
-              pixels slightly differently, not that it changed. An isolated spot strong compared
-              to the speckle may warrant follow-up; its shape alone cannot confirm a real object.
+              pixels slightly differently, not that it changed. An isolated spot strong compared to
+              the speckle may warrant follow-up; its shape alone cannot confirm a real object.
             </p>
           </>
         ) : (

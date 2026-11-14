@@ -1,6 +1,12 @@
 // One authored icon set: 16px grid, 1.5 stroke, round joins. Decorative unless labelled.
 
 const PATHS = {
+  inspector: 'M2.5 3h11v10h-11zM9.5 3v10',
+  settings: 'M2 4h12M2 12h12M5 2v4M11 10v4',
+  switch: 'M2 5h11M10 2l3 3-3 3M14 11H3M6 8l-3 3 3 3',
+  fullscreen: 'M6 2H2v4M10 2h4v4M2 10v4h4M14 10v4h-4',
+  menu: 'M2 4h12M2 8h12M2 12h12',
+
   bookmark: 'M4.5 2.5h7v11l-3.5-2.6-3.5 2.6z',
   bookmarked: 'M4.5 2.5h7v11l-3.5-2.6-3.5 2.6z M6.5 6.5l1.2 1.2 2.3-2.4',
   download: 'M8 2.5v8M4.5 7.5 8 11l3.5-3.5M3 13.5h10',
