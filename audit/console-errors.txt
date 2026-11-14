@@ -1,0 +1,8 @@
+PARALLAX production audit — 2026-11-14T07:24:48.422Z — https://nsah2026.vercel.app/
+Console errors/warnings and page errors (0 raw, 0 unique):
+(none)
+
+Network failures / HTTP >= 400 (0):
+(none)
+
+Arcade rerun (missions 2-3, card-scoped selectors, desktop + mobile): console errors 0, page errors 0. See audit/arcade-rerun.json.

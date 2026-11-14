@@ -1,0 +1,730 @@
+{
+  "steps": [
+    {
+      "ctx": "desktop",
+      "area": "Intro",
+      "step": "intro shows with enter buttons",
+      "ok": true,
+      "detail": "2 buttons"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Intro",
+      "step": "enter observatory (Discover)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "real NEP image loaded on canvas",
+      "ok": true,
+      "detail": "337 lit samples"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "Discover story steps 1→5 via Next",
+      "ok": true,
+      "detail": "1 A patch of sky 2 The same sky, on different dates 3 Switch"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "switch to Explore tab",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "mode: Fade",
+      "ok": true,
+      "detail": "4 Jun 2026 with typical sky (median of 10 dates) faded in at 50%"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "mode: Split",
+      "ok": true,
+      "detail": "4 Jun 2026 on the left, typical sky (median of 10 dates) on the right"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "mode: Highlight changes",
+      "ok": true,
+      "detail": "What changed on 4 Jun 2026, compared with the typical sky of the other dates"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "mode: Switch dates",
+      "ok": true,
+      "detail": "A: 4 Jun 2026"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "blink Play toggles frames",
+      "ok": true,
+      "detail": "2 distinct captions"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "time-lapse \"Play all dates\" present",
+      "ok": false,
+      "detail": "not on production (built locally, not deployed)"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "timeline: select last date",
+      "ok": true,
+      "detail": "A 27 Sept 2026 · date 10 of 10 · 2 months after the previous"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "arrow keys step dates",
+      "ok": true,
+      "detail": "date changed"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "candidate list → evidence report",
+      "ok": true,
+      "detail": "evidence with units shown"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "loupe toggle",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "Analyze tab shows provenance",
+      "ok": true,
+      "detail": "mentions irsa, DR1, QR3, MJD, µm, calibration"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "coordinate search pins inside field",
+      "ok": true,
+      "detail": "Right ascension, degrees Declination, degrees Find Inside North Ecliptic Pole, 1.45 um (SPHEREx dete"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "coordinate search outside fields (live IRSA lookup)",
+      "ok": true,
+      "detail": "Right ascension, degrees Declination, degrees Find IRSA lists 362 SPHEREx exposures here (spherex_dr1 226, spherex_qr3 136). No prepared field covers it yet, so"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "load field sep-d4",
+      "ok": true,
+      "detail": "sep-d4"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "load field synthetic-fixture-001",
+      "ok": true,
+      "detail": "synthetic-fixture-001, SIMULATED banner shown"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Observatory",
+      "step": "incompatible pair refused (synthetic dates 1 vs 3)",
+      "ok": true,
+      "detail": "These two dates cannot be compared fairly: different detectors (3 vs 4); wavelength offset 50.00% exceeds 1.00%. Showing date A alone; pick "
+    },
+    {
+      "ctx": "desktop",
+      "area": "Globe",
+      "step": "drag rotates",
+      "ok": true,
+      "detail": "ICRS · seen from inside, east left · ×1.0 → RA 263.62° Dec +25.69° · ×1.0"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Globe",
+      "step": "zoom buttons",
+      "ok": true,
+      "detail": "ICRS · seen from inside, east left · ×1.6"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Globe",
+      "step": "keyboard (+, arrows, 0)",
+      "ok": true,
+      "detail": "ICRS · seen from inside, east left · ×1.0"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Globe",
+      "step": "hover tooltip over a field",
+      "ok": true,
+      "detail": "no tooltip at centre after selecting field"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Globe",
+      "step": "field card → detail → observatory link",
+      "ok": true,
+      "detail": "#nep-d2 → https://nsah2026.vercel.app/#nep-d2 (workspace: 1)"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Spacecraft",
+      "step": "hotspots select parts",
+      "ok": true,
+      "detail": "5 hotspots: Photon shields, Telescope, Detectors and filters, Spacecraft bus, Solar panel"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Spacecraft",
+      "step": "drag orbits model",
+      "ok": true,
+      "detail": "hotspot moved with model"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Spacecraft",
+      "step": "zoom + reset",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Spacecraft",
+      "step": "\"More detail\" expands",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "desktop",
+      "area": "Spacecraft",
+      "step": "scan demo plays and completes",
+      "ok": true,
+      "detail": "Pointing 51 of 51 · 102 of 102"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Spectrum",
+      "step": "channel count and slider",
+      "ok": true,
+      "detail": "102 channel rects; now Channel 69, 3.836 micrometres, band 5"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Spectrum",
+      "step": "click a channel",
+      "ok": true,
+      "detail": "Channel 81 of 102 Centre 4.253 µm Covers 4.234–4.271 µm Detector band 5 (3.82–4.42 µm, R ≈ 112) What is a channel, exact"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Spectrum",
+      "step": "observation link opens viewer",
+      "ok": true,
+      "detail": "#nep-d2 → workspace 1"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Arcade",
+      "step": "mission 1 \"The one that appeared\" full run",
+      "ok": true,
+      "detail": "miss feedback: \"Not there either. Look for a compact orange spot; you can al\" · complete: \"Investigation complete You said A real change: worth asking for follow-up observations Pipeline tria\""
+    },
+    {
+      "ctx": "desktop",
+      "area": "Arcade",
+      "step": "mission 2 \"Glitch or genuine?\" full run",
+      "ok": false,
+      "detail": "locator.click: Timeout 30000ms exceeded."
+    },
+    {
+      "ctx": "desktop",
+      "area": "Arcade",
+      "step": "mission 3 \"Fair comparison?\" full run",
+      "ok": false,
+      "detail": "locator.click: Timeout 30000ms exceeded."
+    },
+    {
+      "ctx": "desktop",
+      "area": "Arcade",
+      "step": "progress persisted on hub",
+      "ok": false,
+      "detail": "locator.innerText: Timeout 30000ms exceeded."
+    },
+    {
+      "ctx": "desktop",
+      "area": "Journal",
+      "step": "bookmark observation in observatory",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "desktop",
+      "area": "Journal",
+      "step": "entries listed",
+      "ok": true,
+      "detail": "2 entries"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Journal",
+      "step": "hypothesis persists after reload",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "desktop",
+      "area": "Journal",
+      "step": "download JSON export",
+      "ok": true,
+      "detail": "parallax-notebook.json: 2 items"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Journal",
+      "step": "reopen navigates to observatory",
+      "ok": true,
+      "detail": "https://nsah2026.vercel.app/#nep-d2"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Routing",
+      "step": "unknown hash falls back gracefully",
+      "ok": true,
+      "detail": "PARALLAX Observatory Sky globe Spacecraft Spectrum Journal 2 Discovery Arcade Discover Explore Analy"
+    },
+    {
+      "ctx": "desktop",
+      "area": "A11y",
+      "step": "Tab focus visible on nav",
+      "ok": true,
+      "detail": "BUTTON \"+\" outline=solid 2px"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Intro",
+      "step": "intro shows with enter buttons",
+      "ok": true,
+      "detail": "2 buttons"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Intro",
+      "step": "enter observatory (Discover)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "real NEP image loaded on canvas",
+      "ok": true,
+      "detail": "586 lit samples"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "Discover story steps 1→5 via Next",
+      "ok": true,
+      "detail": "STEP 5 OF 5  Weigh the evidence  The extra light measures 78"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "switch to Explore tab",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "mode: Fade",
+      "ok": true,
+      "detail": "4 Jun 2026 with typical sky (median of 10 dates) faded in at 50%"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "mode: Split",
+      "ok": true,
+      "detail": "4 Jun 2026 on the left, typical sky (median of 10 dates) on the right"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "mode: Highlight changes",
+      "ok": true,
+      "detail": "What changed on 4 Jun 2026, compared with the typical sky of the other dates"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "mode: Switch dates",
+      "ok": true,
+      "detail": "A: 4 Jun 2026"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "blink Play toggles frames",
+      "ok": true,
+      "detail": "2 distinct captions"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "time-lapse \"Play all dates\" present",
+      "ok": false,
+      "detail": "not on production (built locally, not deployed)"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "timeline: select last date",
+      "ok": true,
+      "detail": "A 27 Sept 2026 · date 10 of 10 · 2 months after the previous"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "arrow keys step dates",
+      "ok": true,
+      "detail": "date changed"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "candidate list → evidence report",
+      "ok": true,
+      "detail": "evidence with units shown"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "loupe toggle",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "Analyze tab shows provenance",
+      "ok": true,
+      "detail": "mentions irsa, DR1, QR3, MJD, µm, calibration"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "coordinate search pins inside field",
+      "ok": true,
+      "detail": "Right ascension, degrees Declination, degrees Find Inside North Ecliptic Pole, 1.45 um (SPHEREx dete"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "coordinate search outside fields (live IRSA lookup)",
+      "ok": true,
+      "detail": "Right ascension, degrees Declination, degrees Find IRSA lists 362 SPHEREx exposures here (spherex_dr1 226, spherex_qr3 136). No prepared field covers it yet, so"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "load field sep-d4",
+      "ok": true,
+      "detail": "sep-d4"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "load field synthetic-fixture-001",
+      "ok": true,
+      "detail": "synthetic-fixture-001, SIMULATED banner shown"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Observatory",
+      "step": "incompatible pair refused (synthetic dates 1 vs 3)",
+      "ok": true,
+      "detail": "These two dates cannot be compared fairly: different detectors (3 vs 4); wavelength offset 50.00% exceeds 1.00%. Showing date A alone; pick "
+    },
+    {
+      "ctx": "mobile",
+      "area": "Globe",
+      "step": "drag rotates",
+      "ok": true,
+      "detail": "ICRS · seen from inside, east left · ×1.0 → RA 257.62° Dec +14.25° · ×1.0"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Globe",
+      "step": "zoom buttons",
+      "ok": true,
+      "detail": "ICRS · seen from inside, east left · ×1.6"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Globe",
+      "step": "keyboard (+, arrows, 0)",
+      "ok": true,
+      "detail": "ICRS · seen from inside, east left · ×1.0"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Globe",
+      "step": "hover tooltip over a field",
+      "ok": true,
+      "detail": "no tooltip at centre after selecting field"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Globe",
+      "step": "field card → detail → observatory link",
+      "ok": true,
+      "detail": "#nep-d2 → https://nsah2026.vercel.app/#nep-d2 (workspace: 1)"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Spacecraft",
+      "step": "hotspots select parts",
+      "ok": true,
+      "detail": "5 hotspots: Photon shields, Telescope, Detectors and filters, Spacecraft bus, Solar panel"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Spacecraft",
+      "step": "drag orbits model",
+      "ok": true,
+      "detail": "hotspot moved with model"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Spacecraft",
+      "step": "zoom + reset",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Spacecraft",
+      "step": "\"More detail\" expands",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "mobile",
+      "area": "Spacecraft",
+      "step": "scan demo plays and completes",
+      "ok": true,
+      "detail": "Pointing 51 of 51 · 102 of 102"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Spectrum",
+      "step": "channel count and slider",
+      "ok": true,
+      "detail": "102 channel rects; now Channel 69, 3.836 micrometres, band 5"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Spectrum",
+      "step": "click a channel",
+      "ok": true,
+      "detail": "Channel 81 of 102 Centre 4.253 µm Covers 4.234–4.271 µm Detector band 5 (3.82–4.42 µm, R ≈ 112) What is a channel, exact"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Spectrum",
+      "step": "observation link opens viewer",
+      "ok": true,
+      "detail": "#nep-d2 → workspace 1"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Arcade",
+      "step": "mission 1 \"The one that appeared\" full run",
+      "ok": true,
+      "detail": "miss feedback: \"Not there either. Look for a compact orange spot; you can al\" · complete: \"Investigation complete You said A real change: worth asking for follow-up observations Pipeline tria\""
+    },
+    {
+      "ctx": "mobile",
+      "area": "Arcade",
+      "step": "mission 2 \"Glitch or genuine?\" full run",
+      "ok": false,
+      "detail": "locator.click: Timeout 30000ms exceeded."
+    },
+    {
+      "ctx": "mobile",
+      "area": "Arcade",
+      "step": "mission 3 \"Fair comparison?\" full run",
+      "ok": false,
+      "detail": "locator.click: Timeout 30000ms exceeded."
+    },
+    {
+      "ctx": "mobile",
+      "area": "Arcade",
+      "step": "progress persisted on hub",
+      "ok": false,
+      "detail": "locator.innerText: Timeout 30000ms exceeded."
+    },
+    {
+      "ctx": "mobile",
+      "area": "Journal",
+      "step": "bookmark observation in observatory",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "mobile",
+      "area": "Journal",
+      "step": "entries listed",
+      "ok": true,
+      "detail": "2 entries"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Journal",
+      "step": "hypothesis persists after reload",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "ctx": "mobile",
+      "area": "Journal",
+      "step": "download JSON export",
+      "ok": true,
+      "detail": "parallax-notebook.json: 2 items"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Journal",
+      "step": "reopen navigates to observatory",
+      "ok": true,
+      "detail": "https://nsah2026.vercel.app/#nep-d2"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Routing",
+      "step": "unknown hash falls back gracefully",
+      "ok": true,
+      "detail": "PARALLAX Observatory Sky globe Spacecraft Spectrum Journal 2 Discovery Arcade Discover Explore Analy"
+    },
+    {
+      "ctx": "mobile",
+      "area": "A11y",
+      "step": "Tab focus visible on nav",
+      "ok": true,
+      "detail": "BUTTON \"+\" outline=solid 2px"
+    },
+    {
+      "ctx": "reduced-motion",
+      "area": "Globe",
+      "step": "field card jumps without animation frames",
+      "ok": true,
+      "detail": "2 rAF calls in 1 s"
+    },
+    {
+      "ctx": "reduced-motion",
+      "area": "Observatory",
+      "step": "Discover does not auto-blink",
+      "ok": true,
+      "detail": "static"
+    },
+    {
+      "ctx": "idle",
+      "area": "Performance",
+      "step": "no idle rAF loop on #nep-d2",
+      "ok": true,
+      "detail": "0 rAF in 2 s idle"
+    },
+    {
+      "ctx": "idle",
+      "area": "Performance",
+      "step": "no idle rAF loop on #/sky",
+      "ok": true,
+      "detail": "0 rAF in 2 s idle"
+    },
+    {
+      "ctx": "idle",
+      "area": "Performance",
+      "step": "no idle rAF loop on #/spacecraft",
+      "ok": true,
+      "detail": "0 rAF in 2 s idle"
+    },
+    {
+      "ctx": "idle",
+      "area": "Offline",
+      "step": "offline after load shows a notice",
+      "ok": true,
+      "detail": "offline notice shown"
+    }
+  ],
+  "shots": [
+    "screenshots/desktop-01-intro.png",
+    "screenshots/desktop-02-observatory-discover.png",
+    "screenshots/desktop-03-observatory-discover-step5.png",
+    "screenshots/desktop-04-observatory-fade.png",
+    "screenshots/desktop-04-observatory-split.png",
+    "screenshots/desktop-04-observatory-difference.png",
+    "screenshots/desktop-04-observatory-blink.png",
+    "screenshots/desktop-05-observatory-evidence.png",
+    "screenshots/desktop-06-observatory-analyze.png",
+    "screenshots/desktop-07-observatory-search.png",
+    "screenshots/desktop-08-observatory-sep.png",
+    "screenshots/desktop-08-observatory-synthetic.png",
+    "screenshots/desktop-09-observatory-refused.png",
+    "screenshots/desktop-10-globe.png",
+    "screenshots/desktop-11-globe-selected.png",
+    "screenshots/desktop-12-spacecraft.png",
+    "screenshots/desktop-13-spacecraft-scan.png",
+    "screenshots/desktop-14-spectrum.png",
+    "screenshots/desktop-15-arcade-hub.png",
+    "screenshots/desktop-16-arcade-compare.png",
+    "screenshots/desktop-17-arcade-identify.png",
+    "screenshots/desktop-18-arcade-evaluate.png",
+    "screenshots/desktop-19-arcade-complete.png",
+    "screenshots/desktop-23-journal.png",
+    "screenshots/desktop-24-unknown-route.png",
+    "screenshots/mobile-01-intro.png",
+    "screenshots/mobile-02-observatory-discover.png",
+    "screenshots/mobile-03-observatory-discover-step5.png",
+    "screenshots/mobile-04-observatory-fade.png",
+    "screenshots/mobile-04-observatory-split.png",
+    "screenshots/mobile-04-observatory-difference.png",
+    "screenshots/mobile-04-observatory-blink.png",
+    "screenshots/mobile-05-observatory-evidence.png",
+    "screenshots/mobile-06-observatory-analyze.png",
+    "screenshots/mobile-07-observatory-search.png",
+    "screenshots/mobile-08-observatory-sep.png",
+    "screenshots/mobile-08-observatory-synthetic.png",
+    "screenshots/mobile-09-observatory-refused.png",
+    "screenshots/mobile-10-globe.png",
+    "screenshots/mobile-11-globe-selected.png",
+    "screenshots/mobile-12-spacecraft.png",
+    "screenshots/mobile-13-spacecraft-scan.png",
+    "screenshots/mobile-14-spectrum.png",
+    "screenshots/mobile-15-arcade-hub.png",
+    "screenshots/mobile-16-arcade-compare.png",
+    "screenshots/mobile-17-arcade-identify.png",
+    "screenshots/mobile-18-arcade-evaluate.png",
+    "screenshots/mobile-19-arcade-complete.png",
+    "screenshots/mobile-23-journal.png",
+    "screenshots/mobile-24-unknown-route.png"
+  ],
+  "netFail": [],
+  "consoleLog": []
+}

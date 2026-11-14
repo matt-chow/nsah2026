@@ -1,0 +1,47 @@
+{
+  "steps": [
+    {
+      "ctx": "desktop",
+      "area": "Arcade",
+      "step": "mission 2 \"Glitch or genuine?\" full run",
+      "ok": true,
+      "detail": "4/6 agreed; summary: All investigations All six sorted You and the pipeline's triage agreed on 4 of 6"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Arcade",
+      "step": "mission 3 \"Fair comparison?\" full run",
+      "ok": true,
+      "detail": "3 pairs; simulated labels 1; feedback: Agreed with the compatibility check | Look again | Look again"
+    },
+    {
+      "ctx": "desktop",
+      "area": "Arcade",
+      "step": "progress persisted on hub after reload",
+      "ok": true,
+      "detail": "Finished 1×, Finished 1×"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Arcade",
+      "step": "mission 2 \"Glitch or genuine?\" full run",
+      "ok": true,
+      "detail": "4/6 agreed; summary: All investigations All six sorted You and the pipeline's triage agreed on 4 of 6"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Arcade",
+      "step": "mission 3 \"Fair comparison?\" full run",
+      "ok": true,
+      "detail": "3 pairs; simulated labels 1; feedback: Agreed with the compatibility check | Look again | Look again"
+    },
+    {
+      "ctx": "mobile",
+      "area": "Arcade",
+      "step": "progress persisted on hub after reload",
+      "ok": true,
+      "detail": "Finished 1×, Finished 1×"
+    }
+  ],
+  "console": []
+}
