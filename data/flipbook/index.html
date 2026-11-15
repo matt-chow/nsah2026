@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPHEREx Sky Flipbook</title>
+<style>
+  :root { --panel: #0b1020d9; --fg: #dfe4f2; --muted: #9aa3bd; --line: #2a3352; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0a1022; color: var(--fg); font: 14px/1.4 system-ui, sans-serif; }
+  #scene { position: fixed; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; }
+  #flat { position: fixed; inset: 0; margin: auto; width: min(100vw, 100vh); height: min(100vw, 100vh); touch-action: none; }
+  [hidden] { display: none !important; }
+  .panel { position: fixed; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; backdrop-filter: blur(6px); }
+  #top { top: 12px; left: 12px; max-width: min(440px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow: auto; }
+  #bottom { bottom: 12px; left: 12px; right: 12px; max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.05rem; margin: 0 0 4px; }
+  p { margin: 0 0 8px; color: var(--muted); font-size: 13px; }
+  form, .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: end; margin-bottom: 8px; }
+  label { display: flex; flex-direction: column; font-size: 11px; color: var(--muted); gap: 2px; }
+  label.inline { flex-direction: row; align-items: center; gap: 4px; font-size: 12px; }
+  input, select, button { background: #10162a; color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; }
+  input { width: 130px; }
+  input[type=checkbox] { width: auto; }
+  button { cursor: pointer; }
+  button:disabled, select:disabled, input:disabled { opacity: .5; cursor: default; }
+  :focus-visible { outline: 2px solid #9cc0ff; outline-offset: 2px; }
+  .presets { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .presets button { font-size: 12px; padding: 3px 7px; }
+  #slider { width: 100%; }
+  .meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 8px; color: var(--muted); font-size: 12px; }
+  #status { min-height: 1.3em; margin: 4px 0 0; }
+  #retry { font-size: 12px; padding: 2px 7px; margin-left: 6px; }
+  #hide { position: absolute; top: 8px; right: 8px; padding: 2px 7px; font-size: 12px; }
+  #top.collapsed > :not(#hide):not(h1) { display: none; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="scene" aria-label="3D landscape under a sky showing the SPHEREx images. Drag to look around; scroll or pinch to zoom."></canvas>
+<canvas id="flat" width="1024" height="1024" hidden aria-label="Flat view of the SPHEREx images: target at the centre, north up, east left."></canvas>
+
+<div class="panel" id="top">
+  <button id="hide" aria-expanded="true" aria-label="Hide or show the panel">–</button>
+  <h1>SPHEREx Sky Flipbook</h1>
+  <p>Pick a patch of sky. Every SPHEREx exposure of it in one detector band plays overhead in time order, over the
+    static all-sky atlas. Drag to look around, scroll or pinch to zoom; red marks = target.</p>
+  <p id="nogl" role="alert" hidden>The 3D landscape needs WebGL, which this browser can't provide. Showing the sky flat
+    instead (target at the centre, north up, east left); zoom and playback still work.</p>
+  <div class="presets" id="presets" aria-label="Example targets"></div>
+  <form id="search">
+    <label>Right Ascension <input id="ra" required placeholder="08h55m10.8s / 133.795"></label>
+    <label>Declination <input id="dec" required placeholder="-7d14m42.5s / -7.245"></label>
+    <button>Find images</button>
+  </form>
+  <div class="row">
+    <label>Detector band <select id="band" disabled></select></label>
+    <label>Colours <select id="cmap">
+      <option value="inferno">Inferno</option><option value="viridis">Viridis</option><option value="grey">Grey</option>
+    </select></label>
+    <label class="inline"><input type="checkbox" id="pixels"> Show pixels</label>
+  </div>
+  <p id="legend">Backdrop: the SPHEREx all-sky atlas (a coadd of every DR1 exposure, so it never changes).
+    Centre square: the individual exposures, in time order. Both are display stretches, not measurements.</p>
+</div>
+
+<div class="panel" id="bottom">
+  <div class="row">
+    <button id="prev" disabled aria-label="Previous exposure">⏮</button>
+    <button id="play" disabled>▶ Play</button>
+    <button id="next" disabled aria-label="Next exposure">⏭</button>
+    <label class="inline">Speed <select id="speed">
+      <option value="2">2/s</option><option value="4" selected>4/s</option><option value="8">8/s</option><option value="15">15/s</option>
+    </select></label>
+    <label class="inline"><input type="checkbox" id="loop" checked> Loop</label>
+    <button id="blink" disabled aria-pressed="false" title="Alternate between the first and last exposure">Blink first ↔ last</button>
+  </div>
+  <div class="row">
+    <button id="zin" aria-label="Zoom in">＋</button>
+    <button id="zout" aria-label="Zoom out">－</button>
+    <button id="up">Look at target</button>
+    <button id="home">Reset view</button>
+  </div>
+  <input id="slider" type="range" min="0" max="0" value="0" disabled aria-label="Exposure">
+  <div class="meta"><span id="date">—</span><span id="scale"></span></div>
+  <p id="status" role="status"></p><button id="retry" hidden>Retry failed</button>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { Water } from 'three/addons/objects/Water.js';
+import { backdrop, colour, hatch, lut, wavelengths } from './atlas.js';
+import { ends, makeStretch, medianImage, nextFrame, nextPending, pack } from './playback.js';
+
+const PRESETS = {
+  // [ra, dec, band]. Fast movers use SIMBAD positions propagated to late 2025 (SPHEREx DR1 epoch), so they sit
+  // on the target marker; brown dwarfs default to long-wavelength bands where they're bright.
+  "Barnard's Star": ['269.4463', '4.7679', 'D1'],
+  'Epsilon Indi B': ['331.0964', '-56.8006', 'D5'],
+  'WISE 0855': ['133.7600', '-7.2422', 'D6'],
+  'RW Aurigae': ['05h07m49.54s', '+30d24m05.1s', 'D1'],
+  'R Draconis': ['16h32m40.18s', '+66d45m18.0s', 'D1'],
+};
+// 12 parallel cutouts: measured 5.6 s for a cold 39-frame band vs 8.4 s at 6 (2026-11-14, production).
+// BUFFER exposures fix the shared brightness scale; playback opens once they are in.
+const CONCURRENCY = 12, BUFFER = 12;
+// One scale model. An angle ρ on the sky is drawn MAG·ρ on the dome around the target (an honest, labelled
+// magnification: life size, a 6′ cutout would be a fifth of the Moon). The camera's vertical field of view is
+// separate and is what zoom changes, so the screen spans fov/MAG of sky. MAG = 60 puts a 6.15″ exposure pixel at
+// ~1.4 screen pixels in the default view (60° on ~800 px), so nothing is blown up; the atlas disc (FIELD = 1.5°
+// radius, 10.5″ per texture pixel against the atlas's 12.9″) then fills the 90° around the target.
+const MAG = 60, FIELD = 1.5, FOV_MIN = 3, FOV_MAX = 75, HOME = { pitch: 16, fov: 60 }, TARGET_FOV = 30;
+const NIGHT_CSS = '#0a1022';
+const $ = id => document.getElementById(id);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+// ---------------- 3D scene ----------------
+// Without WebGL the landscape can't render; the same sky is then drawn flat on #flat.
+let renderer = null;
+try { renderer = new THREE.WebGLRenderer({ canvas: $('scene'), antialias: true }); }
+catch { $('scene').hidden = true; $('flat').hidden = false; $('nogl').hidden = false; }
+renderer?.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene();
+const NIGHT = new THREE.Color(0x0a1022);
+scene.background = NIGHT;
+scene.fog = new THREE.Fog(NIGHT, 250, 900);
+const camera = new THREE.PerspectiveCamera(HOME.fov, 1, 0.1, 4000);
+const controls = new OrbitControls(camera, $('scene'));
+Object.assign(controls, { enableZoom: false, enablePan: false, rotateSpeed: -0.35, enableDamping: true, minPolarAngle: 0.02 });
+
+scene.add(new THREE.HemisphereLight(0x8fa3d6, 0x1a2414, 0.9));
+const moon = new THREE.DirectionalLight(0xc8d4ff, 0.9);
+moon.position.set(-150, 220, 400);  // low in the south, so it glints on the lake
+scene.add(moon);
+
+// Terrain: a forested plateau ending in a cliff at z≈0, a lake to the south with islands, hills around the far shore.
+const noise = (x, z) => Math.sin(x * 0.05) * Math.cos(z * 0.043) * 4 + Math.sin(x * 0.13 + z * 0.07) * 1.6 + Math.sin(z * 0.21 - x * 0.17) * 0.7;
+const smooth = (a, b, t) => { t = Math.min(1, Math.max(0, (t - a) / (b - a))); return t * t * (3 - 2 * t); };
+const cliffZ = x => 7 * Math.sin(x / 40) + 4 * Math.sin(x / 17 + 2);
+const ISLANDS = [[-90, 170, 45, 16], [130, 240, 60, 22], [20, 330, 30, 10]];  // x, z, radius, height
+function height(x, z) {
+  const fall = smooth(cliffZ(x) - 2, cliffZ(x) + 12, z);  // 0 on the plateau, 1 in the lake
+  let h = (40 + noise(x, z)) * (1 - fall) - 10 * fall;
+  h += 45 * smooth(380, 520, z) + 40 * smooth(260, 420, Math.abs(x)) * smooth(-20, 120, z);  // far shore, bay sides
+  for (const [ix, iz, r, ih] of ISLANDS) h += (ih + 10) * (1 - smooth(r * 0.3, r, Math.hypot(x - ix, z - iz)));
+  return h + noise(z, x) * 0.6 * fall;
+}
+const SIZE = 1200, SEG = 300;
+const ground = new THREE.PlaneGeometry(SIZE, SIZE, SEG, SEG).rotateX(-Math.PI / 2).translate(0, 0, 250);
+const gp = ground.attributes.position, gcol = [];
+const rock = new THREE.Color(0x56504a), grass = new THREE.Color(0x24331d), sand = new THREE.Color(0x4a4334), c = new THREE.Color();
+for (let i = 0; i < gp.count; i++) {
+  const x = gp.getX(i), z = gp.getZ(i), y = height(x, z);
+  gp.setY(i, y);
+  const slope = Math.abs(height(x + 1, z) - y) + Math.abs(height(x, z + 1) - y);
+  c.copy(grass).lerp(sand, 1 - smooth(0.5, 3, y)).lerp(rock, smooth(0.8, 1.6, slope));
+  gcol.push(c.r, c.g, c.b);
+}
+ground.setAttribute('color', new THREE.Float32BufferAttribute(gcol, 3));
+ground.computeVertexNormals();
+scene.add(new THREE.Mesh(ground, new THREE.MeshLambertMaterial({ vertexColors: true })));
+
+// Lake: three.js reflective Water. Its ripple normal map is generated here from tileable sine waves (no download).
+const NM = 256, nmData = new Uint8Array(NM * NM * 4);
+const WAVES = [[3, 1, 0.9], [-2, 5, 0.5], [7, -3, 0.25], [-9, -8, 0.15], [13, 4, 0.1], [4, 17, 0.07]];  // kx, ky, amp
+for (let y = 0; y < NM; y++) for (let x = 0; x < NM; x++) {
+  let dx = 0, dy = 0;
+  WAVES.forEach(([kx, ky, a], i) => { const ph = 2 * Math.PI * (kx * x + ky * y) / NM + i; dx += a * kx * Math.cos(ph); dy += a * ky * Math.cos(ph); });
+  const n = new THREE.Vector3(-dx * 0.08, -dy * 0.08, 1).normalize();
+  nmData.set([(n.x * 0.5 + 0.5) * 255, (n.y * 0.5 + 0.5) * 255, (n.z * 0.5 + 0.5) * 255, 255], (y * NM + x) * 4);
+}
+const waterNormals = new THREE.DataTexture(nmData, NM, NM);
+waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+waterNormals.needsUpdate = true;
+const water = new Water(new THREE.PlaneGeometry(4000, 4000), {
+  textureWidth: 1024, textureHeight: 1024, waterNormals, sunDirection: moon.position.clone().normalize(),
+  sunColor: 0xb8c8ff, waterColor: 0x021018, distortionScale: 3.5, fog: true,
+});
+water.rotation.x = -Math.PI / 2;
+water.material.uniforms.size.value = 0.8;
+scene.add(water);
+
+// Forest: instanced conifers (canopy cone + trunk) on land that isn't too steep or wet.
+const TREES = 3500, VIEW = new THREE.Vector3(0, 0, cliffZ(0) - 5);  // viewpoint: 5 m back from the cliff edge
+const canopy = new THREE.InstancedMesh(new THREE.ConeGeometry(2.2, 9, 7).translate(0, 7, 0), new THREE.MeshLambertMaterial(), TREES);
+const trunk = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.25, 0.35, 3, 5).translate(0, 1.5, 0), new THREE.MeshLambertMaterial({ color: 0x2a1d14 }), TREES);
+const m = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0);
+let placed = 0;
+for (let tries = 0; placed < TREES && tries < TREES * 20; tries++) {
+  const x = (Math.random() - 0.5) * SIZE * 0.95, z = 250 + (Math.random() - 0.5) * SIZE * 0.95, y = height(x, z);
+  const slope = Math.abs(height(x + 1, z) - y) + Math.abs(height(x, z + 1) - y);
+  // keep the viewpoint and the lookout's sight line clear
+  if (y < 1.5 || slope > 1.3 || Math.hypot(x - VIEW.x, z - VIEW.z) < 16) continue;
+  const s = 0.7 + Math.random() * 0.9;
+  m.compose(new THREE.Vector3(x, y - 0.3, z), q.setFromAxisAngle(up, Math.random() * 6.3), new THREE.Vector3(s, s * (0.8 + Math.random() * 0.5), s));
+  canopy.setMatrixAt(placed, m); trunk.setMatrixAt(placed, m);
+  canopy.setColorAt(placed, c.setHSL(0.3 + Math.random() * 0.06, 0.35, 0.09 + Math.random() * 0.07));
+  placed++;
+}
+canopy.count = trunk.count = placed;
+scene.add(canopy, trunk);
+
+// Sky: the atlas backdrop on a sky sphere, azimuthal-equidistant around the target, which sits at the sphere's
+// pole: a dome angle θ from the pole shows the sky θ/MAG from the target, so the canvas (radius FIELD on the sky)
+// fills the 90° around it. Unrotated, north is toward -z and east toward +x, as the real sky looks from below.
+// The sphere is tilted toward the south (the direction you face), so the target sits SKY_ALT degrees up and still
+// reads north-up/east-left on screen. The current exposure is a separate square at its true (magnified) size, so it
+// keeps its own resolution instead of being resampled into the backdrop.
+const R = 1500, SKY_ALT = 30, SKY_PX = 1024, PIX_ARCSEC = 6.15;  // flipbook cutouts: 6.15″ pixels (api/_spherex.py)
+const DEG = Math.PI / 180;
+const skyCanvas = Object.assign(document.createElement('canvas'), { width: SKY_PX, height: SKY_PX });
+const sctx = skyCanvas.getContext('2d');
+const atlasCanvas = Object.assign(document.createElement('canvas'), { width: SKY_PX, height: SKY_PX });
+const actx = atlasCanvas.getContext('2d');
+const skyTex = new THREE.CanvasTexture(skyCanvas);
+skyTex.colorSpace = THREE.SRGBColorSpace;
+skyTex.anisotropy = renderer?.capabilities.getMaxAnisotropy() ?? 1;
+const sky = new THREE.SphereGeometry(R, 128, 96);
+const sp = sky.attributes.position, suv = sky.attributes.uv;
+for (let i = 0; i < sp.count; i++) {
+  const x = sp.getX(i), y = sp.getY(i), z = sp.getZ(i), h = Math.hypot(x, z);
+  const r = 0.5 * Math.acos(clamp(y / R, -1, 1)) / DEG / (MAG * FIELD);  // 0.5 (canvas edge) at 90° from the pole
+  suv.setXY(i, h ? 0.5 - r * x / h : 0.5, h ? 0.5 - r * z / h : 0.5);
+}
+const skyGroup = new THREE.Group();
+skyGroup.rotation.x = DEG * (90 - SKY_ALT);
+skyGroup.add(new THREE.Mesh(sky, new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide, fog: false })));
+// Exposure square, D from the eye: row 0 (north) toward -z, column 0 (east) toward +x.
+const D = R * 0.97;
+let expRGBA = new Uint8Array(4), expTex = null, expMesh = null;
+const expCanvas = document.createElement('canvas');  // the same pixels for the flat (no-WebGL) view
+function exposureSize(n) {
+  if (expRGBA.length === n * n * 4) return;
+  expRGBA = new Uint8Array(n * n * 4);
+  expCanvas.width = expCanvas.height = n;
+  if (!renderer) return;
+  if (expMesh) { skyGroup.remove(expMesh); expMesh.geometry.dispose(); expTex.dispose(); }
+  expTex = new THREE.DataTexture(expRGBA, n, n);
+  expTex.colorSpace = THREE.SRGBColorSpace;
+  expTex.minFilter = THREE.LinearFilter;
+  expTex.magFilter = $('pixels').checked ? THREE.NearestFilter : THREE.LinearFilter;
+  const side = 2 * D * Math.tan(DEG * MAG * n * PIX_ARCSEC / 3600 / 2);
+  expMesh = new THREE.Mesh(new THREE.PlaneGeometry(side, side).rotateX(Math.PI / 2).scale(-1, 1, 1).translate(0, D, 0),
+    new THREE.MeshBasicMaterial({ map: expTex, side: THREE.DoubleSide, fog: false }));
+  expMesh.visible = false;
+  skyGroup.add(expMesh);
+}
+// Target marker: four ticks around the image centre (dome angles 5–9°, outside the 6° exposure square).
+const fromCentre = (deg, az) => {
+  const t = DEG * deg, a = DEG * az;
+  return new THREE.Vector3(Math.sin(t) * Math.sin(a), Math.cos(t), -Math.sin(t) * Math.cos(a)).multiplyScalar(R * 0.98);
+};
+const ticks = [];
+for (const az of [0, 90, 180, 270]) ticks.push(fromCentre(5, az), fromCentre(9, az));
+skyGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(ticks), new THREE.LineBasicMaterial({ color: 0xff6b6b, fog: false })));
+scene.add(skyGroup);
+
+// Compass letters a little above the horizon (real directions; unaffected by the sky tilt).
+for (const [txt, az] of [['N', 0], ['E', 90], ['S', 180], ['W', 270]]) {
+  const cv = Object.assign(document.createElement('canvas'), { width: 64, height: 64 }), g = cv.getContext('2d');
+  g.fillStyle = '#9cc0ff'; g.font = 'bold 44px system-ui, sans-serif'; g.textAlign = 'center'; g.fillText(txt, 32, 48);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), fog: false }));
+  s.position.copy(fromCentre(82, az)).multiplyScalar(0.5).add(VIEW); s.scale.set(36, 36, 1);
+  scene.add(s);
+}
+
+// Viewpoint: on the cliff top, facing south over the lake.
+camera.position.set(VIEW.x, height(VIEW.x, VIEW.z) + 1.8, VIEW.z);
+skyGroup.position.copy(camera.position);  // the eye at the sky's centre, so angles on the dome are true
+function look(pitchDeg, yawDeg) {
+  const p = DEG * pitchDeg, y = DEG * yawDeg;
+  controls.target.copy(camera.position).add(new THREE.Vector3(Math.sin(y) * Math.cos(p), Math.sin(p), -Math.cos(y) * Math.cos(p)).multiplyScalar(0.1));
+  controls.update();
+}
+look(HOME.pitch, 180);
+
+// ---------------- Zoom ----------------
+// Zoom narrows the camera's field of view only; the sky's scale (MAG) never changes, so the exposure and the
+// atlas keep their angular relation at every zoom level.
+let fovGoal = HOME.fov;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+const zoomTo = f => { fovGoal = clamp(f, FOV_MIN, FOV_MAX); scaleText(); if (!renderer) paintFlat(); };
+function scaleText() {
+  const deg = fovGoal / MAG;
+  $('scale').textContent = `Screen height ≈ ${deg >= 1 ? deg.toFixed(1) + '°' : Math.round(deg * 60) + '′'} of sky · ` +
+    `drawn ${MAG}× life size · red marks = target`;
+}
+$('zin').onclick = () => zoomTo(fovGoal / 1.5);
+$('zout').onclick = () => zoomTo(fovGoal * 1.5);
+$('up').onclick = () => { look(SKY_ALT, 180); zoomTo(TARGET_FOV); };
+$('home').onclick = () => { look(HOME.pitch, 180); zoomTo(HOME.fov); };
+const view = renderer ? $('scene') : $('flat');
+view.addEventListener('wheel', e => { e.preventDefault(); zoomTo(fovGoal * Math.exp(e.deltaY * 0.0015)); }, { passive: false });
+const touches = new Map();
+let pinch = 0;
+view.addEventListener('pointerdown', e => touches.set(e.pointerId, e));
+view.addEventListener('pointermove', e => {
+  if (!touches.has(e.pointerId)) return;
+  touches.set(e.pointerId, e);
+  if (touches.size !== 2) return;
+  const [a, b] = touches.values(), d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+  if (pinch) zoomTo(fovGoal * pinch / d);
+  pinch = d;
+});
+for (const t of ['pointerup', 'pointercancel', 'pointerleave']) view.addEventListener(t, e => { touches.delete(e.pointerId); pinch = 0; });
+scaleText();
+
+function resize() {
+  if (!renderer) return;
+  renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+renderer?.setAnimationLoop(() => {
+  water.material.uniforms.time.value += 1 / 90;
+  if (camera.fov !== fovGoal) {
+    camera.fov = reduced.matches || Math.abs(camera.fov - fovGoal) < 0.01 ? fovGoal : camera.fov + (fovGoal - camera.fov) * 0.2;
+    camera.updateProjectionMatrix();
+    controls.rotateSpeed = -0.35 * camera.fov / 70;  // drag moves the sky at the same rate under the finger
+  }
+  controls.update();
+  renderer.render(scene, camera);
+});
+
+// Flat fallback: the screen-height square of sky around the target at the same scale as the 3D view.
+const flat = $('flat').getContext('2d');
+function paintFlat() {
+  if (renderer) return;
+  const W = 1024, perDeg = W / (fovGoal / MAG);
+  flat.fillStyle = NIGHT_CSS; flat.fillRect(0, 0, W, W);
+  flat.imageSmoothingEnabled = true;
+  const s = 2 * FIELD * perDeg;
+  flat.drawImage(skyCanvas, (W - s) / 2, (W - s) / 2, s, s);
+  if (L?.shown) {
+    const e = L.n * PIX_ARCSEC / 3600 * perDeg;
+    flat.imageSmoothingEnabled = !$('pixels').checked;
+    flat.drawImage(expCanvas, (W - e) / 2, (W - e) / 2, e, e);
+  }
+  flat.strokeStyle = '#ff6b6b'; flat.lineWidth = 3;
+  const t0 = 5 / MAG * perDeg / 1.1, t1 = 9 / MAG * perDeg / 1.1;  // ticks just outside the exposure, as in 3D
+  flat.beginPath();
+  for (const [dx, dy] of [[0, -1], [1, 0], [0, 1], [-1, 0]]) { flat.moveTo(W / 2 + dx * t0, W / 2 + dy * t0); flat.lineTo(W / 2 + dx * t1, W / 2 + dy * t1); }
+  flat.stroke();
+}
+
+$('hide').onclick = () => {
+  const collapsed = $('top').classList.toggle('collapsed');
+  $('hide').textContent = collapsed ? '+' : '–';
+  $('hide').setAttribute('aria-expanded', String(!collapsed));
+};
+
+// ---------------- SPHEREx data ----------------
+// One job (L) per target + band: every exposure in time order, loaded CONCURRENCY at a time from the frame being
+// shown onward, cancelled as a whole by its AbortController when the target or band changes.
+let target = null, byBand = {}, L = null, searchGen = 0, timer = null, blinking = false, wantBand = null;
+let map = lut($('cmap').value), atlasLevels = null;
+
+function go(ra, dec, band) { $('ra').value = ra; $('dec').value = dec; wantBand = band; $('search').requestSubmit(); }
+for (const [name, [ra, dec, band]] of Object.entries(PRESETS)) {
+  const b = document.createElement('button');
+  b.textContent = name;
+  b.onclick = () => go(ra, dec, band);
+  $('presets').append(b);
+}
+const status = t => $('status').textContent = t;
+const mjdToDate = mjd => new Date((mjd - 40587) * 864e5).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+
+// A host without the /api/spherex function (GitHub Pages, a plain static server) answers with an HTML page,
+// sometimes with status 200, so a non-JSON body means "not available here", never an empty result.
+async function getJSON(url, signal) {
+  const r = await fetch(url, { signal });
+  const d = await r.json().catch(() => null);
+  if (!d) throw new Error(`the live archive lookup is not available on this deployment (HTTP ${r.status}). ` +
+                          'It runs on https://nsah2026.vercel.app/#/flipbook and in npm run dev.');
+  if (!r.ok || d.error) throw new Error(d.error ?? `HTTP ${r.status}`);
+  return d;
+}
+
+$('search').onsubmit = async e => {
+  e.preventDefault();
+  const g = ++searchGen;
+  L?.ac.abort(); L = null; stop(); setControls(false); retryButton();
+  // phones: the panel would cover the sky, so fold it once a search starts (＋ reopens it)
+  if (matchMedia('(max-width: 600px)').matches && !$('top').classList.contains('collapsed')) $('hide').click();
+  status('Searching IRSA for SPHEREx images…');
+  try {
+    const d = await getJSON(`/api/spherex?ra=${encodeURIComponent($('ra').value)}&dec=${encodeURIComponent($('dec').value)}`);
+    if (g !== searchGen) return;
+    if (!Array.isArray(d.frames)) throw new Error('unexpected response from the archive lookup');
+    target = d; byBand = {};
+    for (const f of d.frames) (byBand[f.band] ||= []).push(f);
+    const bands = Object.keys(byBand).sort();
+    if (!bands.length) return status('SPHEREx has no images covering this position yet.');
+    $('band').replaceChildren(...bands.map(b => {
+      const fs = byBand[b], lo = Math.min(...fs.map(f => f.um[0])), hi = Math.max(...fs.map(f => f.um[1]));
+      return new Option(`${b} · ${lo.toFixed(2)}–${hi.toFixed(2)} µm · ${fs.length} images`, b);
+    }));
+    if (bands.includes(wantBand)) $('band').value = wantBand;
+    $('band').disabled = false;
+    history.replaceState(null, '', `?ra=${encodeURIComponent($('ra').value)}&dec=${encodeURIComponent($('dec').value)}&band=${$('band').value}`);
+    loadBand();
+  } catch (err) { if (g === searchGen) status('Search failed: ' + err.message); }
+};
+$('band').onchange = () => {
+  history.replaceState(null, '', location.search.replace(/band=\w+/, 'band=' + $('band').value));
+  loadBand();
+};
+
+function loadBand() {
+  L?.ac.abort(); stop(); setControls(false);
+  const band = +$('band').value.replace(/\D/g, '');
+  const job = L = {
+    ac: new AbortController(), band, frame: 17 * (band - 1) + 8, active: 0, want: -1, k: 0, n: 0, shown: false,
+    stretch: null, fixing: false, said: 0,
+    // the backend returns every science exposure in t_min order (no cap), so this is the whole collection
+    frames: byBand[$('band').value].map(f => ({ url: f.url, mjd: f.mjd, state: 'pending' })),
+  };
+  $('slider').max = job.frames.length - 1;
+  atlasLevels = null; paintSky();
+  if (expMesh) expMesh.visible = false;
+  job.atlas = loadAtlas(job);
+  show(0);
+  pump(job);
+}
+
+// The atlas layer for the selected band: its middle channel (frame = 17·(band−1) + 8). SPHEREx filters vary across
+// the detector, so an exposure's own wavelength at the target can differ from this layer's.
+async function loadAtlas(job) {
+  try {
+    const [lv, um] = await Promise.all([backdrop(SKY_PX, target.ra, target.dec, FIELD, job.frame), wavelengths()]);
+    if (job !== L) return null;
+    atlasLevels = lv; paintSky();
+    $('legend').textContent = `Backdrop: SPHEREx DR1 all-sky atlas at ${um[job.frame]?.toFixed(2) ?? '?'} µm (middle of band ` +
+      `D${job.band}), a coadd of all exposures, so it never changes. Centre square: each D${job.band} exposure in time ` +
+      'order, at its own wavelength within the band. Display stretches, not measurements: all exposures share one ' +
+      `scale, matched to the atlas around them. Hatched = no data (off the detector or masked). Sky drawn ${MAG}× life size.`;
+    return lv;
+  } catch (err) {
+    if (job === L) $('legend').textContent = `Atlas backdrop unavailable (${err.message}); showing exposures only, on their own scale.`;
+    return null;
+  }
+}
+
+function paintSky() {
+  sctx.fillStyle = NIGHT_CSS; sctx.fillRect(0, 0, SKY_PX, SKY_PX);
+  if (atlasLevels) {
+    const im = actx.createImageData(SKY_PX, SKY_PX);
+    colour(atlasLevels, map, im.data, SKY_PX);
+    actx.putImageData(im, 0, 0);
+    const c = SKY_PX / 2;
+    sctx.save(); sctx.beginPath(); sctx.arc(c, c, c, 0, 2 * Math.PI); sctx.clip();
+    sctx.drawImage(atlasCanvas, 0, 0);
+    const fade = sctx.createRadialGradient(c, c, c * 0.8, c, c, c);  // soft edge instead of a hard disc rim
+    fade.addColorStop(0, '#0a102200'); fade.addColorStop(1, NIGHT_CSS);
+    sctx.fillStyle = fade; sctx.fillRect(0, 0, SKY_PX, SKY_PX);
+    sctx.restore();
+  }
+  skyTex.needsUpdate = true;
+  paintFlat();
+}
+
+// Start workers up to CONCURRENCY; each takes the frame playback waits on, else the next pending one from the
+// frame on screen, so loading follows the playhead and pending frames are buffered, never skipped.
+function pump(job) {
+  while (job.active < CONCURRENCY && nextPending(job.frames, job.k, job.want) >= 0) { job.active++; worker(job); }
+}
+async function worker(job) {
+  for (let i; job === L && (i = nextPending(job.frames, job.k, job.want)) >= 0;) {
+    const f = job.frames[i];
+    f.state = 'loading';
+    if (i === job.want) job.want = -1;
+    try {
+      const d = await getJSON(`/api/spherex?ra=${target.ra}&dec=${target.dec}&url=${encodeURIComponent(f.url)}`, job.ac.signal);
+      if (!Number.isInteger(d.n) || !Array.isArray(d.pix) || d.pix.length !== d.n * d.n || (job.n && d.n !== job.n)) {
+        throw new Error('unexpected cutout');
+      }
+      job.n = d.n;
+      f.pix = Float32Array.from(d.pix, v => v ?? NaN);
+      if (Number.isFinite(d.mjd)) f.mjd = d.mjd;  // MJD-AVG: mid-exposure, UTC
+      f.state = 'ok';
+      if (job.stretch) { f.lv = pack(f.pix, job.stretch); f.pix = null; }
+    } catch {
+      if (job !== L) break;
+      f.state = 'failed';
+    }
+    if (job !== L) break;
+    settle(job, i);
+  }
+  job.active--;
+  if (job === L) settle(job, -1);
+}
+
+// Once BUFFER exposures (or all) are in, fix the shared stretch from their median image (one-frame cosmic rays
+// and satellites can't set it) and the atlas levels under the footprint, then open playback.
+async function settle(job, i) {
+  const fs = job.frames, ok = fs.filter(f => f.state === 'ok').length;
+  const busy = fs.some(f => f.state === 'pending' || f.state === 'loading');
+  if (!job.stretch && !job.fixing && ok && (ok >= Math.min(BUFFER, fs.length) || !busy)) {
+    job.fixing = true;
+    const atlas = await job.atlas;
+    if (job !== L) return;
+    exposureSize(job.n);
+    let under = null;
+    if (atlas) {
+      // 3× the footprint: the coadd's wider PSF halo around a bright target would otherwise lift the matched background
+      const h = Math.round(3 * job.n * PIX_ARCSEC / 3600 / FIELD * SKY_PX / 4), c = SKY_PX / 2;
+      under = [];
+      for (let y = c - h; y < c + h; y++) under.push(...atlas.subarray(y * SKY_PX + c - h, y * SKY_PX + c + h));
+      under = Uint8Array.from(under);
+    }
+    job.stretch = makeStretch(medianImage(fs.filter(f => f.pix).map(f => f.pix)), under);
+    for (const f of fs) if (f.pix) { f.lv = pack(f.pix, job.stretch); f.pix = null; }
+    setControls(true);
+    show(job.k);
+    return report(job, true);
+  } else if (i === job.k || i === nextFrame(fs, job.k, true)) show(job.k);  // the frame on screen or next arrived
+  report(job, !busy);
+}
+
+function report(job, force) {
+  if (!force && performance.now() - job.said < 500) return;
+  job.said = performance.now();
+  const fs = job.frames, ok = fs.filter(f => f.state === 'ok'), failed = fs.length - ok.length -
+    fs.filter(f => f.state === 'pending' || f.state === 'loading').length;
+  const range = ok.length ? `, ${mjdToDate(ok[0].mjd).slice(0, 10)} → ${mjdToDate(ok.at(-1).mjd).slice(0, 10)}` : '';
+  if (!ok.length && !fs.some(f => f.state !== 'failed')) status('Could not load any images (IRSA may be busy).');
+  else status(`${ok.length} of ${fs.length} exposures loaded${range}` + (failed ? ` · ${failed} failed` : '') +
+              (!job.stretch ? ` · playback opens after ${Math.min(BUFFER, fs.length)}` : ''));
+  retryButton(failed);
+}
+function retryButton(failed = 0) {
+  $('retry').hidden = !failed;
+  $('retry').textContent = `Retry ${failed} failed`;
+}
+$('retry').onclick = () => {
+  if (!L) return;
+  for (const f of L.frames) if (f.state === 'failed') f.state = 'pending';
+  pump(L); report(L, true);
+};
+
+// Colour the frame on screen into the exposure texture; a frame not loaded yet or failed shows a hatch.
+function show(k) {
+  const job = L;
+  if (!job) return;
+  job.k = k;
+  $('slider').value = k;
+  const f = job.frames[k];
+  if (f.state !== 'ok' && f.state !== 'failed') { job.want = k; pump(job); }
+  if (job.stretch) {
+    if (f.lv) colour(f.lv, map, expRGBA, job.n);
+    else for (let i = 0; i < job.n * job.n; i++) expRGBA.set([...hatch(i, job.n), 255], i * 4);
+    expCanvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(expRGBA.buffer), job.n), 0, 0);
+    if (expTex) { expTex.needsUpdate = true; expMesh.visible = true; }
+    job.shown = true;
+    paintFlat();
+  }
+  $('date').textContent = `${mjdToDate(f.mjd)} · ${k + 1} of ${job.frames.length}` +
+    (f.state === 'failed' ? ' · failed to load' : f.state === 'ok' ? '' : ' · loading…');
+}
+
+$('cmap').onchange = () => { map = lut($('cmap').value); paintSky(); if (L) show(L.k); };
+$('pixels').onchange = () => {
+  if (expTex) { expTex.magFilter = $('pixels').checked ? THREE.NearestFilter : THREE.LinearFilter; expTex.needsUpdate = true; }
+  paintFlat();
+};
+function setControls(on) { for (const id of ['play', 'prev', 'next', 'blink', 'slider']) $(id).disabled = !on; }
+function stop() {
+  clearInterval(timer); timer = null; blinking = false;
+  $('play').textContent = '▶ Play'; $('blink').setAttribute('aria-pressed', 'false');
+}
+// Each tick advances one frame; if the next frame is still loading, it waits on it (and asks for it first).
+function tick() {
+  const job = L;
+  if (!job) return stop();
+  if (blinking) {
+    const e = ends(job.frames), last = job.frames.length - 1;
+    if (job.frames[last].state === 'pending') { job.want = last; pump(job); }
+    if (e) show(job.k === e[0] ? e[1] : e[0]);
+    return;
+  }
+  const j = nextFrame(job.frames, job.k, $('loop').checked);
+  if (j === null) return stop();
+  if (j >= 0) return show(j);
+  for (let i = 1; i < job.frames.length; i++) {
+    const w = (job.k + i) % job.frames.length;
+    if (job.frames[w].state !== 'failed') { job.want = w; pump(job); break; }
+  }
+}
+function run() { clearInterval(timer); timer = setInterval(tick, 1000 / (blinking ? 2 : +$('speed').value)); }
+
+$('slider').oninput = () => { stop(); show(+$('slider').value); };
+$('prev').onclick = () => { stop(); if (L) show(Math.max(0, L.k - 1)); };
+$('next').onclick = () => { stop(); if (L) show(Math.min(L.frames.length - 1, L.k + 1)); };
+$('play').onclick = () => {
+  if (timer && !blinking) return stop();
+  stop(); run();
+  $('play').textContent = '⏸ Pause';
+};
+$('blink').onclick = () => {
+  if (blinking) return stop();
+  stop(); blinking = true; run();
+  $('blink').setAttribute('aria-pressed', 'true');
+};
+$('speed').onchange = () => { if (timer && !blinking) run(); };
+
+const params = new URLSearchParams(location.search);  // shareable links: ?ra=..&dec=..&band=..
+if (params.get('ra') && params.get('dec')) go(params.get('ra'), params.get('dec'), params.get('band'));
+</script>
+</body>
+</html>

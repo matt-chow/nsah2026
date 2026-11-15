@@ -23,6 +23,7 @@ import { buildStory, DiscoverPanel, storyCandidate } from '../features/discover/
 import { BookmarkButton } from '../features/journal/BookmarkButton.tsx';
 import { CoordinateSearch } from '../features/sky-explorer/CoordinateSearch.tsx';
 import { Timeline } from '../features/timeline/Timeline.tsx';
+import { archiveLookup } from '../lib/archive.ts';
 import { checkPair, type PairCheck } from '../lib/compare.ts';
 import { loadImage } from '../lib/imageCache.ts';
 import { changeEntry, observationEntry } from '../lib/journal.ts';
@@ -48,6 +49,8 @@ const PAGES: Record<
   spacecraft: named(() => import('../features/spacecraft/SpacecraftPage.tsx'), 'SpacecraftPage'),
   spectrum: named(() => import('../features/spectrum/SpectrumPage.tsx'), 'SpectrumPage'),
   journal: named(() => import('../features/journal/JournalPage.tsx'), 'JournalPage'),
+  atlas: named(() => import('../features/atlas/AtlasPage.tsx'), 'AtlasPage'),
+  flipbook: named(() => import('../features/flipbook/FlipbookPage.tsx'), 'FlipbookPage'),
   arcade: named(() => import('../features/arcade/ArcadePage.tsx'), 'ArcadePage'),
 };
 
@@ -70,7 +73,7 @@ const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').match
 /** `#/sky` names a page; `#nep-d2/c012` opens a field (and change) in the observatory. */
 function readHash() {
   const h = decodeURIComponent(location.hash.slice(1));
-  const page = h.startsWith('/') ? h.slice(1).split('/')[0] : '';
+  const page = h.startsWith('/') ? h.slice(1).split(/[/?]/)[0] : '';
   const section: Section = page && page in PAGES ? (page as Section) : 'observatory';
   const [field, cand] = section === 'observatory' ? h.split('/') : [];
   return { section, field: field || null, cand: cand || null };
@@ -233,6 +236,30 @@ const MODES: { id: Mode; label: string; key: string }[] = [
   { id: 'difference', label: 'Highlight changes', key: 'D' },
 ];
 
+/** Page-load lookup: what IRSA lists at this field right now, beyond the pre-built epochs. */
+function useLiveArchive(manifest: Manifest) {
+  const [res, setRes] = useState({ id: '', text: '' });
+  const { ra_deg, dec_deg } = manifest.target;
+  const real = manifest.data_kind === 'real';
+  useEffect(() => {
+    if (!real) return;
+    const ctrl = new AbortController();
+    archiveLookup(ra_deg, dec_deg, ctrl.signal).then((c) => {
+      if (!c || ctrl.signal.aborted) return;
+      const n = c.reduce((s, x) => s + x.exposures, 0);
+      const more = c.some((x) => x.truncated) ? '+' : '';
+      const newest = c.reduce(
+        (m, x) => (x.latest_release && x.latest_release > m ? x.latest_release : m),
+        '',
+      );
+      const text = `live: IRSA lists ${n}${more} exposures here${newest ? `, newest released ${newest}` : ''}`;
+      setRes({ id: manifest.manifest_id, text });
+    });
+    return () => ctrl.abort();
+  }, [real, ra_deg, dec_deg, manifest.manifest_id]);
+  return res.id === manifest.manifest_id ? res.text : '';
+}
+
 interface WorkspaceProps {
   manifest: Manifest;
   fields: FieldSummary[];
@@ -253,6 +280,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
   );
   const chapters = useMemo(() => buildStory(manifest, observations), [manifest, observations]);
   const hasDiff = differences.size > 0;
+  const live = useLiveArchive(manifest);
   const first = observations[0] as Observation; // parseManifest guarantees one
   const wcs = useMemo(() => tanWcs(first.image.wcs), [first]);
 
@@ -473,6 +501,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
       <header className="topbar">
         <div className="workspace-title">
           <h1>{displayTitle(manifest.target.label).split(',')[0]}</h1>
+          {live && <p aria-live="polite">{live}</p>}
           <p>
             {manifest.data_kind === 'real' ? 'SPHEREx observations' : 'SIMULATED observations'} ·{' '}
             {observations.length} dates · {first.spectral.wavelength_center_um.toFixed(2)} µm
