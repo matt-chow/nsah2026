@@ -92,8 +92,8 @@ const SIGNS = [
     ),
   },
   {
-    name: 'Moved',
-    text: 'An asteroid is a gold spot in a different place on each date.',
+    name: 'Possible motion',
+    text: 'A moving object may appear in different places. Misalignment can also look like motion.',
     art: (
       <>
         <circle cx="12" cy="30" r="3" className="a-gold" />
@@ -105,7 +105,7 @@ const SIGNS = [
   },
   {
     name: 'Artifact',
-    text: 'Residue round a bright star, or one hot pixel: the instrument, not the sky.',
+    text: 'Residue near a bright star or a single pixel may come from the instrument or image processing.',
     art: (
       <>
         <path d="M22 13a7 7 0 0 1 0 14" className="a-arc gold" />

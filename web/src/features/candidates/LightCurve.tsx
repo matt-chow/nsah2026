@@ -125,6 +125,26 @@ export const LightCurve = memo(function LightCurve(props: Props) {
           );
         })}
       </svg>
+      <details className="lc-data">
+        <summary>Dates and measured values (select a date)</summary>
+        <ul>
+          {pts.map((p) => (
+            <li key={p.observation_id}>
+              <button
+                type="button"
+                aria-pressed={p.observation_id === activeEpochId}
+                onClick={() => onSelectEpoch(p.observation_id)}
+              >
+                {isoDate(p.mjd_mid)} ·{' '}
+                {p.delta_flux_ujy == null || p.uncertainty_ujy == null
+                  ? 'No usable measurement'
+                  : `${p.delta_flux_ujy.toFixed(1)} ± ${p.uncertainty_ujy.toFixed(1)} µJy`}
+                {hits.has(p.observation_id) ? ' · flagged' : ''}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </details>
       <figcaption className="muted small">
         Flux change vs. the other epochs, µJy, ±1σ. Squares: epochs where the residual crossed the
         detection threshold; dots: the rest; ring: the epoch on screen. × marks a masked epoch.

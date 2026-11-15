@@ -15,7 +15,7 @@ interface Props {
 export const ViewGuide = memo(function ViewGuide(props: Props) {
   const { mode, comparable, simulated, pixelScale, dates, markers } = props;
   return (
-    <details className="guide" open>
+    <details className="guide">
       <summary>What am I looking at?</summary>
       <div className="guide-body">
         {mode === 'difference' ? (
@@ -43,8 +43,8 @@ export const ViewGuide = memo(function ViewGuide(props: Props) {
             <p>
               A speckle of faint gold and blue everywhere is <Term k="noise">noise</Term>, and that
               is expected. Gold-and-blue pairs on bright stars usually mean the star landed on the
-              pixels slightly differently, not that it changed. A real change looks like a single
-              round spot that is strong compared to the speckle.
+              pixels slightly differently, not that it changed. An isolated spot strong compared to
+              the speckle may warrant follow-up; its shape alone cannot confirm a real object.
             </p>
           </>
         ) : (
@@ -57,9 +57,9 @@ export const ViewGuide = memo(function ViewGuide(props: Props) {
               shades of grey: the more light, the whiter.
             </p>
             <ul>
-              <li>White dots: stars in our galaxy, or distant galaxies.</li>
+              <li>Bright spots: often stars in our galaxy or distant galaxies.</li>
               <li>Larger fuzzy blobs: usually galaxies or very bright stars.</li>
-              <li>Black: empty sky, with a little grainy noise.</li>
+              <li>Black: less infrared light; it does not necessarily mean empty sky.</li>
               <li>
                 Each small square is one <Term k="pixel">pixel</Term>, {pixelScale.toFixed(2)}{' '}
                 arcseconds wide. Zoom in and you will see stars are only a few pixels across.
@@ -74,13 +74,14 @@ export const ViewGuide = memo(function ViewGuide(props: Props) {
               <p>
                 <strong>Switch dates</strong> flips between image A and image B, like a cartoon
                 flipbook. Your eye is very good at spotting anything that jumps, appears or
-                vanishes. Most stars should sit perfectly still.
+                vanishes. Most stars should stay in the same place; apparent shifts can also come
+                from imperfect alignment.
               </p>
             ) : mode === 'overlay' ? (
               <p>
-                <strong>Fade</strong> lays image B over image A. Move the B slider: at 0% you see
-                only A, at 100% only B. A star that fades in or out as you slide is different on the
-                two dates.
+                <strong>Fade</strong> lays image B over image A. Move the “Image B opacity” slider:
+                at 0% you see only A, at 100% only B. A star that fades in or out as you slide is
+                different on the two dates.
               </p>
             ) : (
               <p>
@@ -101,7 +102,7 @@ export const ViewGuide = memo(function ViewGuide(props: Props) {
                 <Glyph kind="variable_like" /> got brighter or fainter
               </li>
               <li>
-                <Glyph kind="new_source_like" /> appeared where nothing was before
+                <Glyph kind="new_source_like" /> possible appearance above the detection threshold
               </li>
               <li>
                 <Glyph kind="dipole_like" /> shifted, or the images are slightly misaligned
@@ -118,8 +119,8 @@ export const ViewGuide = memo(function ViewGuide(props: Props) {
         )}
         <p>
           <strong>The timeline</strong> below the image has one tick per date ({dates} in all),
-          spaced by real time, so gaps mean months when SPHEREx was looking elsewhere. Click a tick,
-          or press ← →, to change date A.
+          spaced by real time, so gaps show time between the prepared observations, not necessarily
+          an absence of telescope visits. Click a tick, or press ← →, to change date A.
         </p>
         <p>
           <strong>The bar</strong> in the corner shows a distance on the sky (′ is an arcminute, a

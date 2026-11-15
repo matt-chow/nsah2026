@@ -93,6 +93,12 @@ export const CandidateList = memo(function CandidateList(props: ListProps) {
 
   return (
     <section className="candidates" aria-labelledby="cand-h" data-tour="candidates">
+      {plain && (
+        <p className="small dim">
+          Unconfirmed leads, not discoveries. The image shows all {all.length} markers; this list
+          shows {shown.length}. Selecting a lead opens a flagged date and centres the image.
+        </p>
+      )}
       <div className="candidates-head">
         <h2 id="cand-h">{title}</h2>
         <div className="segmented" role="group" aria-label="Filter residuals">
@@ -101,7 +107,7 @@ export const CandidateList = memo(function CandidateList(props: ListProps) {
             aria-pressed={filter === 'followup'}
             onClick={() => setFilter('followup')}
           >
-            {plain ? 'Worth a second look' : 'Needs follow-up'}{' '}
+            {plain ? 'Follow-up' : 'Needs follow-up'}{' '}
             <span className="mono">{followup.length}</span>
           </button>
           <button type="button" aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>
@@ -129,7 +135,10 @@ export const CandidateList = memo(function CandidateList(props: ListProps) {
                 >
                   <Glyph kind={c.kind} />
                   <span className="cand-id mono">{c.candidate_id.split('-').at(-1)}</span>
-                  <span className="cand-kind">{plain ? plainKind(c) : KIND[c.kind].label}</span>
+                  <span className="cand-kind">
+                    {plain ? plainKind(c) : KIND[c.kind].label}
+                    <span className="cand-status">{STATUS_LABEL[c.status]} · unconfirmed</span>
+                  </span>
                   <span className="cand-sig mono">
                     {p == null ? '' : `${p >= 0 ? '+' : '−'}${Math.abs(p).toFixed(1)}σ`}
                   </span>
@@ -169,12 +178,21 @@ export const ChangeSummary = memo(function ChangeSummary(props: SummaryProps) {
     <article className="summary" aria-labelledby="summary-h" data-tour="evidence">
       <header className="summary-head">
         <h3 id="summary-h">
+          <span className="mono">{c.candidate_id.split('-').at(-1)}</span>
+          {' · '}
           <Glyph kind={c.kind} /> {plainKind(c)}
           {first && <span className="dim"> · {longDate(first.epoch.mjd_mid)}</span>}
         </h3>
         <p className={`stamp ${c.status}`}>{PLAIN_STATUS[c.status]} · unconfirmed</p>
       </header>
       <p>{KIND[c.kind].plain}</p>
+      <p className="small dim">
+        Position:{' '}
+        <span className="mono">
+          {formatRa(c.ra_deg)} {formatDec(c.dec_deg)}
+        </span>{' '}
+        ICRS
+      </p>
       <p>
         Seen on {c.observation_ids.length} of {n} dates.{' '}
         {validated && p != null ? (
@@ -194,15 +212,18 @@ export const ChangeSummary = memo(function ChangeSummary(props: SummaryProps) {
           <>Numbers are withheld: this comparison failed its noise check.</>
         )}
       </p>
-      <LightCurve candidate={c} activeEpochId={activeEpochId} onSelectEpoch={onSelectEpoch} />
-      <p className="small">
-        <strong>Reading the chart:</strong> each mark is one date, left to right in time. Height is
-        how much brighter (up) or fainter (down) this spot was than usual; the dashed line is “no
-        change”. The vertical bar through each mark is its <Term k="uncertainty">uncertainty</Term>:
-        if it reaches the dashed line, that date may show no change at all. Squares mark the dates
-        where the change was strong enough to flag; × marks a date with no usable pixels here. Click
-        a mark to view that date.
-      </p>
+      <details className="inspector-section">
+        <summary>Light curve & uncertainty</summary>
+        <LightCurve candidate={c} activeEpochId={activeEpochId} onSelectEpoch={onSelectEpoch} />
+        <p className="small">
+          <strong>Reading the chart:</strong> each mark is one date, left to right in time. Height
+          is how much brighter (up) or fainter (down) this spot was than usual; the dashed line is
+          “no change”. The vertical bar through each mark is its{' '}
+          <Term k="uncertainty">uncertainty</Term>: if it reaches the dashed line, that date may
+          show no change at all. Squares mark the dates where the change was strong enough to flag;
+          × marks a date with no usable pixels here. Click a mark to view that date.
+        </p>
+      </details>
       <p className="small dim">
         A spot that changed in archive images, not a confirmed object. Seeing it again, with another
         telescope or a later SPHEREx visit, is what would confirm it.{' '}

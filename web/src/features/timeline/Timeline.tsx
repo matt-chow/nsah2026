@@ -1,4 +1,5 @@
-import { memo, type CSSProperties } from 'react';
+import { memo, useState, type CSSProperties } from 'react';
+import type { PairCheck } from '../../lib/compare.ts';
 import { interval, isoDate, longDate } from '../../lib/time.ts';
 import type { Difference, Observation } from '../../types/manifest.ts';
 
@@ -8,6 +9,10 @@ interface Props {
   selectedId: string;
   onSelect: (id: string) => void;
   highlight: Set<string>; // epochs where the selected candidate was detected
+  referenceId: string | null;
+  comparingDates: boolean;
+  onReferenceSelect: (id: string) => void;
+  getCompatibility: (id: string, role: 'A' | 'B') => PairCheck;
   quiet: boolean; // true while frames animate: no screen-reader announcement per frame
 }
 
@@ -16,7 +21,19 @@ interface Props {
  * touch-sized date buttons, so clustered visits stay readable and easy to hit.
  */
 export const Timeline = memo(function Timeline(props: Props) {
-  const { observations, differences, selectedId, onSelect, highlight, quiet } = props;
+  const {
+    observations,
+    differences,
+    selectedId,
+    onSelect,
+    highlight,
+    quiet,
+    referenceId,
+    onReferenceSelect,
+    getCompatibility,
+  } = props;
+  const [chosenRole, setRole] = useState<'A' | 'B'>('A');
+  const role = props.comparingDates ? chosenRole : 'A';
   const n = Math.max(1, observations.length);
   const t0 = observations[0]?.epoch.mjd_mid ?? 0;
   const t1 = observations.at(-1)?.epoch.mjd_mid ?? t0;
@@ -34,7 +51,7 @@ export const Timeline = memo(function Timeline(props: Props) {
     years.push({ y, mjd });
   }
   const months = [];
-  for (let d = new Date(isoDate(t0)); ;) {
+  for (let d = new Date(isoDate(t0)); ; ) {
     d = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1));
     const mjd = d.getTime() / 86400000 + 40587;
     if (mjd > t1) break;
@@ -43,6 +60,32 @@ export const Timeline = memo(function Timeline(props: Props) {
 
   return (
     <section className="timeline" aria-label="Observation dates" data-tour="timeline">
+      <div className="timeline-head">
+        <h2>Observation timeline</h2>
+        <div className="segmented" role="group" aria-label="Timeline selection target">
+          <button type="button" aria-pressed={role === 'A'} onClick={() => setRole('A')}>
+            Set A
+          </button>
+          <button
+            type="button"
+            aria-pressed={role === 'B'}
+            disabled={!props.comparingDates}
+            title={
+              props.comparingDates
+                ? 'Choose the reference date'
+                : 'Change maps use the pipeline’s combined reference'
+            }
+            onClick={() => setRole('B')}
+          >
+            Set B
+          </button>
+        </div>
+      </div>
+      <p className="small dim">
+        Ruler: elapsed time · A: observation · B:{' '}
+        {referenceId ? 'dated reference' : 'combined typical sky'} · ◆: selected lead · ×:
+        comparison unavailable
+      </p>
       <div className="timeline-scroll">
         <div className="timeline-inner" style={{ '--n': n } as CSSProperties}>
           <div className="timeline-ruler" aria-hidden="true">
@@ -57,6 +100,7 @@ export const Timeline = memo(function Timeline(props: Props) {
             {observations.map((o) => (
               <span
                 key={o.observation_id}
+                data-reference={o.observation_id === referenceId || undefined}
                 className="ruler-visit"
                 data-on={o.observation_id === selectedId || undefined}
                 data-hit={highlight.has(o.observation_id) || undefined}
@@ -82,21 +126,38 @@ export const Timeline = memo(function Timeline(props: Props) {
               />
             ))}
           </svg>
-          <div className="timeline-dates" role="group" aria-label="Choose date A">
+          <div className="timeline-dates" role="group" aria-label={`Choose date ${role}`}>
             {observations.map((o, i) => {
               const d = differences.get(o.observation_id);
               const date = longDate(o.epoch.mjd_mid);
+              const check = props.comparingDates ? getCompatibility(o.observation_id, role) : null;
+              const unavailable = check?.status === 'incompatible' || check?.status === 'unknown';
+              const isA = o.observation_id === selectedId;
+              const isB = o.observation_id === referenceId;
               return (
                 <button
                   key={o.observation_id}
                   type="button"
                   className="epoch"
-                  aria-pressed={o.observation_id === selectedId}
+                  aria-pressed={role === 'A' ? isA : isB}
+                  data-a={isA || undefined}
+                  data-b={isB || undefined}
+                  data-unavailable={unavailable || undefined}
                   data-hit={highlight.has(o.observation_id) || undefined}
-                  onClick={() => onSelect(o.observation_id)}
-                  title={`${date} · ${o.observation_id}${d ? ` · difference ${d.status.replace('_', ' ')}` : ''}`}
+                  onClick={() => (role === 'A' ? onSelect : onReferenceSelect)(o.observation_id)}
+                  title={`${date} · ${check?.status ?? `change map: ${d?.status ?? 'not evaluated'}`}${check && 'reasons' in check ? `: ${check.reasons.join('; ')}` : ''} · ${o.observation_id}${d ? ` · difference ${d.status.replace('_', ' ')}` : ''}`}
                 >
-                  <span className="visually-hidden">Date {i + 1}, </span>
+                  <span className="epoch-tags" aria-hidden="true">
+                    {isA ? 'A ' : ''}
+                    {isB ? 'B ' : ''}
+                    {highlight.has(o.observation_id) ? '◆ ' : ''}
+                    {unavailable ? '×' : ''}
+                  </span>
+                  <span className="visually-hidden">
+                    Date {i + 1}, {isA ? 'observation A, ' : ''}
+                    {isB ? 'reference B, ' : ''}
+                    {unavailable ? `comparison ${check?.status}, ` : ''}
+                  </span>
                   <span className="epoch-day mono">{date.replace(/ \d{4}$/, '')}</span>
                   <span className="epoch-meta mono">
                     {date.slice(-4)} · {o.provenance.data_release ?? 'SIM'}
