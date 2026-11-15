@@ -47,6 +47,7 @@ const PAGES: Record<
   spacecraft: named(() => import('../features/spacecraft/SpacecraftPage.tsx'), 'SpacecraftPage'),
   spectrum: named(() => import('../features/spectrum/SpectrumPage.tsx'), 'SpectrumPage'),
   journal: named(() => import('../features/journal/JournalPage.tsx'), 'JournalPage'),
+  atlas: named(() => import('../features/atlas/AtlasPage.tsx'), 'AtlasPage'),
   flipbook: named(() => import('../features/flipbook/FlipbookPage.tsx'), 'FlipbookPage'),
   arcade: named(() => import('../features/arcade/ArcadePage.tsx'), 'ArcadePage'),
 };
@@ -74,7 +75,7 @@ const onNarrow = (f: () => void) => {
 /** `#/sky` names a page; `#nep-d2/c012` opens a field (and change) in the observatory. */
 function readHash() {
   const h = decodeURIComponent(location.hash.slice(1));
-  const page = h.startsWith('/') ? h.slice(1).split('/')[0] : '';
+  const page = h.startsWith('/') ? h.slice(1).split(/[/?]/)[0] : '';
   const section: Section = page && page in PAGES ? (page as Section) : 'observatory';
   const [field, cand] = section === 'observatory' ? h.split('/') : [];
   return { section, field: field || null, cand: cand || null };

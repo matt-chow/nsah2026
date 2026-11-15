@@ -24,6 +24,7 @@ step 'web check (types, lint, format, tests, build)' npm run check
 
 step 'api tests' uv run --no-project --with fastapi --with httpx --with pytest pytest -q "$root"/api/_test_sia.py
 step 'flipbook api self-checks' python3 "$root"/api/_test_spherex.py
+step 'atlas api tests' node --test "$root"/api/*.test.mjs
 
 echo '==> data size budget (25 MB total, 5 MB per file)'
 big=$(find "$root/data" -type f -size +5M)

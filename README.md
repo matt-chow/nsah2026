@@ -49,8 +49,14 @@ is an unconfirmed lead that needs an independent detection.
   - The simulated test field shows a SIMULATED banner and label everywhere it appears.
   - The intro's starfield is labelled illustrative.
 - **Search.** Enter an RA/Dec. If a prepared field covers it, PARALLAX pins it. Otherwise, on
-  Vercel, a serverless lookup (`api/sia.mjs`) asks IRSA how many SPHEREx exposures exist there,
+  Vercel, a serverless lookup (`api/index.py`) asks IRSA how many SPHEREx exposures exist there,
   then gives the exact pipeline command that would build that field.
+- **Sky atlas** (`#/atlas`). Pan and zoom the whole SPHEREx sky at any of its 102 wavelengths
+  from IRSA's DR1 all-sky cube. *Picture* uses IRSA's display tiles; *Measured values* reads the
+  numeric cube, so hovering gives surface brightness in MJy/sr; *Infrared colour* maps three
+  chosen wavelengths to R, G and B. Missing data is hatched, never zero. Below the map, the dated
+  exposures IRSA holds at that position can be listed and any one cut out, with its wavelength at
+  that pixel, units, variance, flags, PSF and calibration version. Every view is a shareable link.
 - **The Living Observatory.** Five lazy-loaded pages sit beside the observatory in the top
   navigation. None of them adds data or changes a measurement.
   - **Sky globe** (`#/sky`): a draggable, zoomable celestial sphere (canvas, inertia, keyboard)
@@ -99,7 +105,7 @@ uv run parallax index
 |---|---|
 | `science/` | Python pipeline (`parallax` CLI). It queries IRSA, makes cutouts, aligns them, runs difference imaging, classifies residuals and writes manifests. |
 | `web/` | React + TypeScript + Vite viewer (Canvas 2D, plain CSS) |
-| `api/` | One optional Vercel function: metadata-only IRSA exposure counts |
+| `api/` | Optional Vercel functions: IRSA exposure counts and lists, and allow-listed SPHEREx cutouts |
 | `data/` | Published manifests, display PNGs and science FITS (≤ 25 MB total) |
 | `docs/` | Architecture, [science methods](docs/SCIENCE.md), [data contract](docs/DATA_CONTRACT.md), development, risks, roadmap, [submission](docs/SUBMISSION.md) |
 
@@ -109,13 +115,14 @@ Live: <https://nsah2026.vercel.app> (with the IRSA lookup) and
 <https://matt-chow.github.io/nsah2026/> (static mirror, no lookup).
 
 The app is fully static. `web/dist` contains the app and `data/`. `vercel.json` builds it and
-deploys `api/sia.mjs` as the only function. On a host without functions (GitHub Pages), search
-still works for prepared fields and reports that the live lookup is unavailable.
+deploys the three functions in `api/`. On a host without functions (GitHub Pages), search
+still works for prepared fields, the sky atlas map still works (IRSA serves its tiles directly),
+and the exposure list and cutouts say they are unavailable and link to IRSA instead.
 
 ## Limitations
 
-- Coverage is limited to two prepared fields of about 15′ × 15′. The browser never downloads
-  archive images live.
+- Change detection covers two prepared fields of about 15′ × 15′. The sky atlas reads the
+  archive live, but it shows one combined image per wavelength, not a time series.
 - There is no PSF matching. Undersampled PSFs shift between epochs, so most residuals at
   bright stars are artifacts. The classifier marks them as artifacts, but it is heuristic.
 - Residuals are not cross-matched against catalogues (Gaia, AllWISE, JPL Horizons/MPC).

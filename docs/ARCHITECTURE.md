@@ -42,6 +42,8 @@ results; it never decides scientific compatibility.
 | Living Observatory | `web/src/features/{globe,spacecraft,spectrum,journal,arcade}` | lazy pages behind `#/sky`, `#/spacecraft`, `#/spectrum`, `#/journal`, `#/arcade`; they read the same manifests and index, write only to `localStorage` (journal, arcade progress) | change measurements, import observatory internals |
 | Shared UI | `web/src/components/` | `SkyCanvas` (pan/zoom, blink/overlay/split/difference, stretch, loupe, scale bar, markers), `Term` (glossary popovers via native `popover`), `ObservationDetails` | |
 | Live lookup | `api/index.py` (FastAPI) | optional Vercel FastAPI function: live exposure counts and newest release date from IRSA SIA2 | proxy images, keep state |
+| Live archive | `api/observations.mjs`, `api/cutout.mjs` (shared helpers in `api/_sia.mjs`) | optional Vercel functions: the SIA2 exposure list at a position (≤ 1000 rows); one IRSA cutout (≤ 0.1°) of an allow-listed SPHEREx L2 file, with the 4 MB PSF table dropped | fetch any URL outside `irsa.ipac.caltech.edu/ibe/data/spherex/{dr1,qr3}/level2/`, keep state |
+| Sky atlas | `web/src/features/atlas/` | lazy page `#/atlas`: all-sky pan/zoom over IRSA's SPHEREx HiPS cube (display tiles, or float32 cube planes by HTTP Range), wavelength slider, colour maps, RGB composites, the SIA2 list and a cutout inspector; state in the URL hash | invent coverage, treat cube layers as epochs |
 | Sky Flipbook | `data/flipbook/index.html` (three.js from jsDelivr, iframed by the `#/flipbook` tab) + `/api/spherex` in `api/index.py` (logic in `api/_spherex.py`) | plays every SPHEREx DR1 cutout of a position, reprojected north-up and background-subtracted server-side; standalone experiment, not manifest-backed | validate pairs via `assess_compatibility()`; needs the function deployed |
 | Web libs | `web/src/lib/` | `checkPair` (reads the pipeline verdict for an A/B pair; never recomputes it), readable dates, manifest/index parsing, TAN pixel↔sky for display, σ decoding, image cache | |
 
@@ -61,9 +63,17 @@ Ruff, pytest. PNG writing uses the stdlib (`zlib`), so there is no Pillow depend
 
 `npm run build` emits `web/dist/` containing the app and a copy of `data/`. Any static host
 works, and `base: './'` supports sub-path hosting. Production is Vercel (`vercel.json`): the same
-static build plus one optional function, `api/index.py` (FastAPI). IRSA sends no CORS headers, so the browser
-cannot query it directly. The function (FastAPI, stdlib + `fastapi` only, so no astropy in the bundle) returns exposure counts and newest dates only, caches at the edge for an hour, and stores nothing. The browser calls it on field load and on coordinate search. Its
-failure, or a host without functions, degrades to "live lookup not available". Disposable caches live in `.cache/` outside
+static build plus optional functions in `api/`: `api/index.py` (FastAPI, stdlib + `fastapi` only,
+so no astropy in the bundle) serves `/api/sia` and `/api/spherex` through a `vercel.json` rewrite,
+and the Node functions `api/observations.mjs` and `api/cutout.mjs` serve the sky atlas. IRSA's SIA2
+and cutout services send no CORS headers, so the browser cannot query them directly. The functions
+store nothing, accept only coordinates, a collection name and (for cutouts) an allow-listed IRSA
+SPHEREx Level 2 URL, and answer with what IRSA returned. Their failure, or a host without
+functions, degrades to an explicit "not available on this deployment" message plus a direct IRSA
+link. The sky atlas's map itself needs no function: IRSA serves the HiPS tiles with CORS, and the
+numeric cube is read from IRSA's public S3 copy (CORS open). `npm run dev` and `npm run preview`
+mount the Node functions locally (`web/vite.config.ts`); the Python function runs only on Vercel.
+Disposable caches live in `.cache/` outside
 `data/`, so they cannot be published by accident.
 
 ## Performance reasoning
@@ -82,6 +92,13 @@ failure, or a host without functions, degrades to "live lookup not available". D
   is in motion; reduced motion disables both. The scan demo's timer exists only while playing.
 - Blink (P1) will toggle between two already decoded images with a timer. Each tick does one
   `drawImage` and no allocation or fetch.
+- **Sky atlas.** Only the tiles under the view are fetched: 512 px display PNGs for the picture,
+  or one 1 MiB float32 plane per tile and wavelength, read by HTTP Range from the 320 MB order-5
+  cube files, for measured values. Numeric views are refused above 3° or 4 tiles (≤ 12 MiB for an
+  RGB composite). At most 4 requests run at once and the caches are bounded LRUs. Requests are
+  debounced (60 ms) and aborted when the view changes, and drags and wheel zooms preview by
+  transforming the last frame. The projection (gnomonic view → HEALPix NESTED tile pixel) is
+  inlined per pixel without allocation.
 - **Measuring:** bundle size comes from `vite build` output. Rendering is checked in the Chrome
   DevTools Performance panel (idle: no frames; blink: < 4 ms per tick on integrated graphics).
   Pipeline timing and memory use `time` plus `tracemalloc` in a script when needed.
@@ -92,6 +109,8 @@ failure, or a host without functions, degrades to "live lookup not available". D
 |---|---|---|
 | Precomputed static products | Live backend proxying IRSA | $0 hosting, no uptime risk, reproducible demo |
 | Metadata-only serverless lookup | Live cutouts + differencing per request | Differencing needs Astropy and minutes of downloads; counts are cheap and honest |
+| One allow-listed cutout per click | Generic CORS proxy | A proxy of arbitrary URLs is an open relay; the cutout function accepts one URL pattern and a size ≤ 0.1° |
+| Own Canvas 2D HiPS renderer | Aladin Lite | Aladin cannot read float32 cube planes or report MJy/sr per pixel, and is a large dependency |
 | Python validation is authoritative | Re-validating science in JS | One implementation of the science, tested with Astropy |
 | Pydantic models → JSON Schema | Hand-written JSON Schema | One source of truth plus drift tests |
 | Canvas 2D | WebGL / heavy viewers (Aladin, JS9) | Tiny cutouts don't need GPU; fewer dependencies |

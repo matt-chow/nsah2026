@@ -927,3 +927,342 @@
     height: 62vh;
   }
 }
+
+/* --- Sky atlas ---------------------------------------------------------------------------- */
+
+.atlas-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: end;
+  margin-bottom: 14px;
+  font-size: 0.875rem;
+}
+
+.atlas-goto,
+.atlas-look,
+.atlas-rgb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.atlas-rgb {
+  border: 1px solid var(--hair);
+  padding: 6px 10px 10px;
+}
+
+.atlas-rgb legend {
+  color: var(--paper-dim);
+  padding: 0 4px;
+}
+
+.atlas-wave {
+  display: grid;
+  gap: 4px;
+  flex: 1 1 320px;
+}
+
+.atlas-wave input[type='range'] {
+  width: 100%;
+  accent-color: var(--signal);
+}
+
+.form-error {
+  color: var(--alert);
+}
+
+.atlas-view {
+  display: grid;
+  gap: 8px;
+  max-width: 1100px;
+}
+
+.atlas-canvas {
+  position: relative;
+  min-height: 300px;
+  background: #000;
+  border: 1px solid var(--hair);
+  overflow: hidden;
+}
+
+.atlas-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.atlas-canvas canvas:active {
+  cursor: grabbing;
+}
+
+.atlas-canvas canvas:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: -2px;
+}
+
+.atlas-cross {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--paper), var(--paper)) center / 1px 100% no-repeat,
+    linear-gradient(var(--paper), var(--paper)) center / 100% 1px no-repeat;
+  opacity: 0.55;
+}
+
+.atlas-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 12px;
+  justify-items: center;
+  text-align: center;
+  padding: 16px;
+  background: rgba(16, 25, 35, 0.82);
+}
+
+.atlas-zoom {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.atlas-zoom button {
+  min-width: 36px;
+}
+
+.atlas-readout {
+  display: block;
+  min-height: 1.5em;
+  font-size: 0.8125rem;
+  color: var(--paper-dim);
+  overflow-wrap: anywhere;
+}
+
+.atlas-status {
+  font-size: 0.875rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.atlas-status.ok {
+  color: var(--paper-dim);
+}
+
+.atlas-status.warn {
+  color: var(--signal-hi);
+}
+
+.atlas-status.error {
+  color: var(--alert);
+  display: grid;
+}
+
+.atlas-legend {
+  display: grid;
+  gap: 6px;
+  max-width: 560px;
+  font-size: 0.8125rem;
+}
+
+.legend-kind {
+  font: 500 0.6875rem / 1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.legend-bar {
+  display: block;
+  height: 12px;
+  border: 1px solid var(--hair-2);
+}
+
+.legend-ticks {
+  display: flex;
+  justify-content: space-between;
+  color: var(--paper-dim);
+}
+
+.legend-note {
+  color: var(--paper-dim);
+  font-size: 0.8125rem;
+  max-width: 70ch;
+}
+
+.legend-missing {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* matches MISSING in render.ts: a hatch, never a black that reads as zero */
+.hatch-swatch {
+  width: 22px;
+  height: 12px;
+  border: 1px solid var(--hair-2);
+  background: repeating-linear-gradient(45deg, rgb(58 46 62) 0 3px, rgb(34 28 38) 3px 6px);
+}
+
+.legend-rgb-title {
+  font-weight: 600;
+}
+
+.legend-rgb {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.rgb-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.rgb-dot.R {
+  background: #ff4b4b;
+}
+
+.rgb-dot.G {
+  background: #4bdc6a;
+}
+
+.rgb-dot.B {
+  background: #4b8bff;
+}
+
+.clip-editor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.clip-editor input {
+  width: 7em;
+}
+
+.atlas-sources {
+  font-size: 0.8125rem;
+}
+
+.atlas-sources summary {
+  cursor: pointer;
+}
+
+.atlas-sections {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.atlas-sections > .panel {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.atlas-sections p {
+  max-width: 75ch;
+}
+
+.atlas-obs,
+.obs-search,
+.obs-filters,
+.obs-pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+}
+
+.atlas-obs {
+  display: grid;
+}
+
+.obs-table td,
+.obs-table th {
+  white-space: nowrap;
+}
+
+.obs-table tr[aria-current='true'] {
+  background: var(--rail-2);
+}
+
+.cutout-panel {
+  display: grid;
+  gap: 10px;
+  background: var(--rail-2);
+}
+
+.cutout-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  align-items: start;
+}
+
+.cutout-body figure {
+  display: grid;
+  gap: 6px;
+  max-width: 320px;
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.cutout-body canvas {
+  width: 100%;
+  max-width: 300px;
+  image-rendering: pixelated;
+  background: #000;
+  border: 1px solid var(--hair);
+}
+
+.cutout-body figcaption {
+  color: var(--paper-dim);
+}
+
+.cutout-facts {
+  flex: 1 1 300px;
+}
+
+.cutout-facts dd {
+  overflow-wrap: anywhere;
+}
+
+.flag-key::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 4px;
+}
+
+.flag-key.hard::before {
+  border: 2px solid #ff5a4f;
+}
+
+.flag-key.caution::before {
+  background: #f2a33a;
+}
+
+.atlas-fields {
+  display: grid;
+  gap: 8px;
+  padding-left: 1.2em;
+}
