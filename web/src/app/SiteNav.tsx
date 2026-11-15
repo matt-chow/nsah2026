@@ -3,14 +3,7 @@ import { Icon } from '../components/Icon.tsx';
 import { useJournal } from '../features/journal/store.ts';
 
 export type Section =
-  | 'observatory'
-  | 'sky'
-  | 'spacecraft'
-  | 'spectrum'
-  | 'journal'
-  | 'flipbook'
-  | 'arcade'
-  | 'atlas';
+  'observatory' | 'sky' | 'spacecraft' | 'spectrum' | 'journal' | 'flipbook' | 'arcade' | 'atlas';
 
 const LINKS: { id: Exclude<Section, 'observatory' | 'arcade'>; label: string }[] = [
   { id: 'sky', label: 'Sky Globe' },
