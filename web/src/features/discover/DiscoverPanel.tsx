@@ -119,9 +119,9 @@ export function buildStory(manifest: Manifest, observations: Observation[]): Cha
           </p>
           <p>
             Much of the flicker is <Term k="noise">noise</Term> or an imaging artifact. A brightness
-            change may blink in the same place; a moving object may appear at different positions.
-            A shift can also mean the images are slightly misaligned. Appearance alone cannot tell
-            us the cause.
+            change may blink in the same place; a moving object may appear at different positions. A
+            shift can also mean the images are slightly misaligned. Appearance alone cannot tell us
+            the cause.
           </p>
         </>
       ),

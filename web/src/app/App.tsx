@@ -65,9 +65,7 @@ const TABS: { id: Tab; label: string; hint: string }[] = [
 ];
 
 type Load<T> =
-  | { status: 'loading' }
-  | { status: 'error'; message: string }
-  | { status: 'ready'; value: T };
+  { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; value: T };
 const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 /** `#/sky` names a page; `#nep-d2/c012` opens a field (and change) in the observatory. */

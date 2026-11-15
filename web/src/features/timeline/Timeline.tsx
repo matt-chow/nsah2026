@@ -51,7 +51,7 @@ export const Timeline = memo(function Timeline(props: Props) {
     years.push({ y, mjd });
   }
   const months = [];
-  for (let d = new Date(isoDate(t0)); ; ) {
+  for (let d = new Date(isoDate(t0)); ;) {
     d = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1));
     const mjd = d.getTime() / 86400000 + 40587;
     if (mjd > t1) break;

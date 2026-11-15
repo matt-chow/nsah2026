@@ -11,6 +11,16 @@ is an unconfirmed lead that needs an independent detection.
 
 ## What it does
 
+- **Front door: watch the sky move.** The site opens on a flipbook of every SPHEREx exposure of
+  Barnard's Star in one detector band, played in time order, north-up around a ring at the
+  requested position. Chips switch to the challenge's five test targets (Barnard's Star,
+  Epsilon Indi B, WISE 0855, RW Aurigae, R Draconis); a box takes any RA/Dec in degrees or
+  sexagesimal. Each frame shows its date, release, detector, the wavelength at the ring (from the
+  exposure's own spectral WCS) and any contamination flags there, in plain language. The field of
+  view is 4–12′. Links are shareable: `?ra=269.4463&dec=4.7679&band=D1`. The five targets are
+  pre-baked into `data/targets/` (`scripts/bake_targets.py`) so they play on a static host;
+  other positions need the `/api/spherex` function. A 3D landscape view opens the same point in
+  `flipbook/index.html`. The earlier explorer pages are at `classic.html` ("Deep dive").
 - **Real data.** Two curated fields of SPHEREx Level 2 spectral images from IRSA, each with
   10 epochs from DR1 and QR3 over 12 to 17 months, selected so every epoch samples the same
   wavelength (±0.25%) on the same detector:

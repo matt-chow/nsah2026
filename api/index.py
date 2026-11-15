@@ -79,7 +79,7 @@ def sia(
 
 
 @app.get("/api/spherex")
-def spherex(ra: str = "", dec: str = "", url: str | None = None) -> JSONResponse:
+def spherex(ra: str = "", dec: str = "", url: str | None = None, size: str | None = None) -> JSONResponse:
     """Sky Flipbook: same contract as the original stdlib handler in _spherex.py."""
     def send(code: int, body: dict) -> JSONResponse:
         cache = "public, s-maxage=86400" if code == 200 else "no-store"
@@ -87,12 +87,13 @@ def spherex(ra: str = "", dec: str = "", url: str | None = None) -> JSONResponse
 
     try:
         r, d = _spherex.parse_angle(ra, True), _spherex.parse_angle(dec, False)
+        sz = _spherex.parse_size({"size": [size]} if size else {})
         if url:
             _spherex.check_url(url)
     except ValueError as e:
-        return send(400, {"error": f"need ra, dec (and optional SPHEREx url): {e}"})
+        return send(400, {"error": f"need ra, dec (and optional SPHEREx url, size): {e}"})
     try:
-        body = _spherex.cutout(url, r, d) if url else {"ra": r, "dec": d, "frames": _spherex.search(r, d)}
+        body = _spherex.cutout(url, r, d, sz) if url else {"ra": r, "dec": d, "frames": _spherex.search(r, d)}
     except Exception as e:  # IRSA down/busy or an unexpected file layout
         return send(502, {"error": f"IRSA request failed: {e}"})
     return send(200, body)

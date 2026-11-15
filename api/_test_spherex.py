@@ -88,4 +88,36 @@ fits = hdr([("SIMPLE", "T"), ("NAXIS", 0)]) + hdr([("XTENSION", "'IMAGE'"), ("EX
 fits += body.ljust(2880, b"\0") + b"PSF-EXTENSION-NOT-NEEDED"
 h, w, ht, data = sp.read_image(io.BytesIO(fits))
 assert (w, ht, h["MJD-AVG"]) == (2, 2, 60800.5) and data[:3] == (1, 2, 3) and math.isnan(data[3])
+
+# --- FLAGS after IMAGE: names within one pixel of the target, informational bits left out ---
+flg = struct.pack(">4i", 0, 1 << 25, 1 << 21, 0)
+fits2 = fits.replace(b"PSF-EXTENSION-NOT-NEEDED", b"") + hdr(
+    [("XTENSION", "'IMAGE'"), ("EXTNAME", "'FLAGS'"), ("BITPIX", 32), ("NAXIS", 2), ("NAXIS1", 2), ("NAXIS2", 2),
+     ("MSKN0021", "'SOURCE'"), ("MSKN0025", "'STREAK'")]) + flg.ljust(2880, b"\0") + b"PSF"
+h, w, ht, data, fh, flags = sp.read_image(io.BytesIO(fits2), flags=True)
+assert flags == (0, 1 << 25, 1 << 21, 0)
+assert sp.flags_at(fh, w, ht, flags, 0, 0) == ["STREAK"]  # 1 is SOURCE: information, not contamination
+assert sp.flags_at(fh, w, ht, flags, 5, 5) == []  # outside the image
+
+# --- WCS-WAVE lookup: a plane in raw detector pixels is recovered exactly by bilinear interpolation ---
+xs, ys = (1, 101, 201), (1, 51)
+vals = [v for y_ in ys for x_ in xs for v in (1.0 + 0.001 * x_ + 0.0001 * y_, 0.02)]
+row = struct.pack(">3i2i12f", *xs, *ys, *vals)
+tail = b"junk" * 300 + hdr([("XTENSION", "'BINTABLE'"), ("EXTNAME", "'WCS-WAVE'"), ("NAXIS1", len(row)),
+                            ("TFIELDS", 3), ("TTYPE1", "'X'"), ("TFORM1", "'3J'"), ("TTYPE2", "'Y'"),
+                            ("TFORM2", "'2J'"), ("TTYPE3", "'VALUES'"), ("TFORM3", "'12E'")]) + row
+table = sp.read_wave_table(tail)
+W_ = {"CTYPE1W": "WAVE-TAB", "CRVAL1W": 1, "CRVAL2W": 1, "CRPIX1W": -99.0, "CRPIX2W": -9.0}
+um, bw = sp.wavelength(W_, table, 30.0, 20.0)  # raw pixel (131, 31)
+assert abs(um - (1 + 0.131 + 0.0031)) < 1e-6 and abs(bw - 0.02) < 1e-7, (um, bw)
+assert sp.wavelength(W_, table, 500.0, 0.0) is None and sp.wavelength({}, table, 0, 0) is None
+
+# --- field of view bounds ---
+assert sp.parse_size({}) == sp.SIZE_ARCMIN and sp.grid_n(sp.SIZE_ARCMIN) == sp.N == 59
+for bad in ("1", "13", "nan"):
+    try:
+        sp.parse_size({"size": [bad]})
+        raise AssertionError(bad)
+    except ValueError:
+        pass
 print("ok")
