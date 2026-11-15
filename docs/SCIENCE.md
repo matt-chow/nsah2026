@@ -279,6 +279,20 @@ Limits of the atlas views:
 11. Globe bezel: north up and east left, because the sphere is seen from inside (sky view).
 12. Atlas cube values are taken as published by IRSA (MJy/sr, order-5 tiles). The cube carries no
     uncertainty plane, so measured-value readouts have no error bar; cutouts do (√VARIANCE).
+13. Flipbook wavelength at the target (`api/_spherex.py`): the cutout's 'W' WCS maps a cutout
+    pixel to the raw detector pixel (`CRVAL1W + x + 1 − CRPIX1W`, likewise y), which indexes the
+    WCS-WAVE lookup table (columns X, Y, VALUES as [y][x][λ, Δλ]) read from the full L2 file's
+    last 23,040 bytes by an HTTP Range request. Nearest table node, no interpolation; checked
+    against Astropy on one exposure and by a synthetic plane in `api/_test_spherex.py`. A
+    missing table or non-`WAVE-TAB` CTYPE reports the wavelength as unknown. **[verify]** the
+    table node spacing makes nearest-node error ≪ Δλ.
+14. Flipbook contamination flags: FLAGS bits set within one pixel of the target, named from the
+    file's MSKN cards; FULLSAMPLE and SOURCE are informational and not reported. Plain-language
+    descriptions in `web/src/prototype/live.ts` (`FLAG_ABOUT`) paraphrase the Explanatory
+    Supplement. **[verify]** each description against Table 10.
+15. Pre-baked targets (`data/targets/*.json`) are a snapshot of the archive listing on the
+    `baked` date, labelled as a saved copy in the player. Fast movers' positions are propagated to
+    late 2025, so earlier exposures can sit up to ~1 pixel off the ring.
 
 ## References
 

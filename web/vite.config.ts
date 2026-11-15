@@ -35,5 +35,10 @@ export default defineConfig({
   base: './',
   // data/ holds only validated, publishable products; disposable caches live in .cache/.
   publicDir: '../data',
-  build: { target: 'es2022', sourcemap: true },
+  // index.html is the observatory (src/prototype); classic.html keeps the earlier explorer pages.
+  build: {
+    target: 'es2022',
+    sourcemap: true,
+    rollupOptions: { input: ['index.html', 'classic.html'] },
+  },
 });

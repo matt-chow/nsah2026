@@ -61,3 +61,5 @@ phase. Times are per-team estimates of focused hours.
 | 2026-11-14 | Atlas renders against live IRSA (Chromium, local preview) | picture 1.4–2.6 s for 10 tiles; measured values 1.2 s, RGB 1.3–1.6 s (3 tiles × 3 layers) |
 | 2026-11-14 | Cutout without the EPSF table (0.05°, 29 × 29 px) | 4,049,280 → 95,040 bytes, 9 ms to strip |
 | 2026-11-13 | `data/` total (2 real fields × 10 epochs + fixture) | 6.88 MB |
+| 2026-11-15 | Front door = prototype (`index.html`), Inspect lazy; Vite gzip of the preloaded set | 91.1 kB gzip JS (index 15.6, shared 70.7, render 4.5, runtime 0.4); 5.8 kB gzip CSS; Flipbook chunk 5.5 kB |
+| 2026-11-15 | Five baked challenge targets, 6′ cutouts of one band each | 7.6 MB (1.17–1.89 MB per file); `data/` total 14.14 MB |
