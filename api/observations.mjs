@@ -1,6 +1,6 @@
 // Vercel function: the archived SPHEREx exposures covering one position, from IRSA SIA2 (which
 // sends no CORS headers). Metadata only, one collection per request, bounded to MAXREC rows.
-import { COLLECTIONS, parsePosition, splitCsv } from "./sia.mjs";
+import { COLLECTIONS, parsePosition, splitCsv } from "./_sia.mjs";
 
 const SIA_URL = "https://irsa.ipac.caltech.edu/SIA";
 export const MAXREC = 1000;

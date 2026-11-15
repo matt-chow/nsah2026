@@ -21,6 +21,7 @@ import { buildStory, DiscoverPanel, storyCandidate } from '../features/discover/
 import { BookmarkButton } from '../features/journal/BookmarkButton.tsx';
 import { CoordinateSearch } from '../features/sky-explorer/CoordinateSearch.tsx';
 import { Timeline } from '../features/timeline/Timeline.tsx';
+import { archiveLookup } from '../lib/archive.ts';
 import { checkPair, type PairCheck } from '../lib/compare.ts';
 import { loadImage } from '../lib/imageCache.ts';
 import { changeEntry, observationEntry } from '../lib/journal.ts';
@@ -47,6 +48,7 @@ const PAGES: Record<
   spectrum: named(() => import('../features/spectrum/SpectrumPage.tsx'), 'SpectrumPage'),
   journal: named(() => import('../features/journal/JournalPage.tsx'), 'JournalPage'),
   atlas: named(() => import('../features/atlas/AtlasPage.tsx'), 'AtlasPage'),
+  flipbook: named(() => import('../features/flipbook/FlipbookPage.tsx'), 'FlipbookPage'),
   arcade: named(() => import('../features/arcade/ArcadePage.tsx'), 'ArcadePage'),
 };
 
@@ -236,6 +238,30 @@ const MODES: { id: Mode; label: string; key: string }[] = [
   { id: 'difference', label: 'Highlight changes', key: 'D' },
 ];
 
+/** Page-load lookup: what IRSA lists at this field right now, beyond the pre-built epochs. */
+function useLiveArchive(manifest: Manifest) {
+  const [res, setRes] = useState({ id: '', text: '' });
+  const { ra_deg, dec_deg } = manifest.target;
+  const real = manifest.data_kind === 'real';
+  useEffect(() => {
+    if (!real) return;
+    const ctrl = new AbortController();
+    archiveLookup(ra_deg, dec_deg, ctrl.signal).then((c) => {
+      if (!c || ctrl.signal.aborted) return;
+      const n = c.reduce((s, x) => s + x.exposures, 0);
+      const more = c.some((x) => x.truncated) ? '+' : '';
+      const newest = c.reduce(
+        (m, x) => (x.latest_release && x.latest_release > m ? x.latest_release : m),
+        '',
+      );
+      const text = `live: IRSA lists ${n}${more} exposures here${newest ? `, newest released ${newest}` : ''}`;
+      setRes({ id: manifest.manifest_id, text });
+    });
+    return () => ctrl.abort();
+  }, [real, ra_deg, dec_deg, manifest.manifest_id]);
+  return res.id === manifest.manifest_id ? res.text : '';
+}
+
 interface WorkspaceProps {
   manifest: Manifest;
   fields: FieldSummary[];
@@ -256,6 +282,7 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
   );
   const chapters = useMemo(() => buildStory(manifest, observations), [manifest, observations]);
   const hasDiff = differences.size > 0;
+  const live = useLiveArchive(manifest);
   const first = observations[0] as Observation; // parseManifest guarantees one
   const wcs = useMemo(() => tanWcs(first.image.wcs), [first]);
 
@@ -557,6 +584,11 @@ function Workspace({ manifest, fields, onField, tab, onTab, inert }: WorkspacePr
             <span className="field-sub">
               {observations.length} dates · {manifest.dataset.data_release ?? 'simulated data'}
             </span>
+            {live && (
+              <span className="field-sub" aria-live="polite">
+                {live}
+              </span>
+            )}
           </h1>
           <div className="viewer-bar">
             <div className="segmented" role="group" aria-label="View" data-tour="modes">

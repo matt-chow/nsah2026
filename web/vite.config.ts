@@ -1,8 +1,8 @@
 import { defineConfig, type Plugin, type PreviewServer, type ViteDevServer } from 'vite';
 import react from '@vitejs/plugin-react';
 
-/** The three archive functions in ../api, served locally the way Vercel serves them. */
-const API = ['sia', 'observations', 'cutout'];
+/** The Node archive functions in ../api, served locally the way Vercel serves them (api/index.py is Vercel-only). */
+const API = ['observations', 'cutout'];
 function localApi(): Plugin {
   const mount = (server: ViteDevServer | PreviewServer) => {
     server.middlewares.use('/api', (req, res, next) => {

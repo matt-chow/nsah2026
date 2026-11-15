@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPHEREx Sky Flipbook</title>
+<style>
+  :root { --panel: #0b1020d9; --fg: #dfe4f2; --muted: #9aa3bd; --line: #2a3352; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #05070d; color: var(--fg); font: 14px/1.4 system-ui, sans-serif; }
+  #scene { position: fixed; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; }
+  .panel { position: fixed; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; backdrop-filter: blur(6px); }
+  #top { top: 12px; left: 12px; max-width: min(440px, calc(100% - 24px)); }
+  #bottom { bottom: 12px; left: 12px; right: 12px; max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.05rem; margin: 0 0 4px; }
+  p { margin: 0 0 8px; color: var(--muted); font-size: 13px; }
+  form, .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: end; margin-bottom: 8px; }
+  label { display: flex; flex-direction: column; font-size: 11px; color: var(--muted); gap: 2px; }
+  input, select, button { background: #10162a; color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; }
+  input { width: 130px; }
+  button { cursor: pointer; }
+  button:disabled, select:disabled, input:disabled { opacity: .5; cursor: default; }
+  .presets { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .presets button { font-size: 12px; padding: 3px 7px; }
+  #slider { width: 100%; }
+  .meta { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 12px; }
+  #status { min-height: 1.3em; margin: 4px 0 0; }
+  #hide { position: absolute; top: 8px; right: 8px; padding: 2px 7px; font-size: 12px; }
+  #top.collapsed > :not(#hide):not(h1) { display: none; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="scene" aria-label="3D landscape under a sky textured with the SPHEREx image. Drag to look around."></canvas>
+
+<div class="panel" id="top">
+  <button id="hide" aria-expanded="true">–</button>
+  <h1>SPHEREx Sky Flipbook</h1>
+  <p>Pick a patch of sky. Every SPHEREx image of it is aligned and painted overhead, in time order. Drag to look around; the target is marked in red in the southern sky.</p>
+  <div class="presets" id="presets" aria-label="Example targets"></div>
+  <form id="search">
+    <label>Right Ascension <input id="ra" required placeholder="08h55m10.8s / 133.795"></label>
+    <label>Declination <input id="dec" required placeholder="-7d14m42.5s / -7.245"></label>
+    <button>Find images</button>
+  </form>
+  <div class="row">
+    <label>Detector band <select id="band" disabled></select></label>
+  </div>
+</div>
+
+<div class="panel" id="bottom">
+  <div class="row">
+    <button id="play" disabled>▶ Play</button>
+    <button id="blink" disabled title="Alternate between the first and last image">Blink first ↔ last</button>
+    <button id="up" title="Point the view at the target">Look at target</button>
+  </div>
+  <input id="slider" type="range" min="0" max="0" value="0" disabled aria-label="Frame">
+  <div class="meta"><span id="date">—</span><span>6′ SPHEREx patch magnified to fill the sky · red marks = target</span></div>
+  <p id="status" role="status"></p>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { Water } from 'three/addons/objects/Water.js';
+
+const PRESETS = {
+  // [ra, dec, band]. Fast movers use SIMBAD positions propagated to late 2025 (SPHEREx DR1 epoch), so they sit
+  // on the target marker; brown dwarfs default to long-wavelength bands where they're bright.
+  "Barnard's Star": ['269.4463', '4.7679', 'D1'],
+  'Epsilon Indi B': ['331.0964', '-56.8006', 'D5'],
+  'WISE 0855': ['133.7600', '-7.2422', 'D6'],
+  'RW Aurigae': ['05h07m49.54s', '+30d24m05.1s', 'D1'],
+  'R Draconis': ['16h32m40.18s', '+66d45m18.0s', 'D1'],
+};
+const MAX_FRAMES = 40, CONCURRENCY = 6;
+const $ = id => document.getElementById(id);
+
+// ---------------- 3D scene ----------------
+const renderer = new THREE.WebGLRenderer({ canvas: $('scene'), antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene();
+const NIGHT = new THREE.Color(0x0a1022);
+scene.background = NIGHT;
+scene.fog = new THREE.Fog(NIGHT, 250, 900);
+const camera = new THREE.PerspectiveCamera(70, 1, 0.1, 4000);
+const controls = new OrbitControls(camera, renderer.domElement);
+Object.assign(controls, { enableZoom: false, enablePan: false, rotateSpeed: -0.35, enableDamping: true, minPolarAngle: 0.02 });
+
+scene.add(new THREE.HemisphereLight(0x8fa3d6, 0x1a2414, 0.9));
+const moon = new THREE.DirectionalLight(0xc8d4ff, 0.9);
+moon.position.set(-150, 220, 400);  // low in the south, so it glints on the lake
+scene.add(moon);
+
+// Terrain: a forested plateau ending in a cliff at z≈0, a lake to the south with islands, hills around the far shore.
+const noise = (x, z) => Math.sin(x * 0.05) * Math.cos(z * 0.043) * 4 + Math.sin(x * 0.13 + z * 0.07) * 1.6 + Math.sin(z * 0.21 - x * 0.17) * 0.7;
+const smooth = (a, b, t) => { t = Math.min(1, Math.max(0, (t - a) / (b - a))); return t * t * (3 - 2 * t); };
+const cliffZ = x => 7 * Math.sin(x / 40) + 4 * Math.sin(x / 17 + 2);
+const ISLANDS = [[-90, 170, 45, 16], [130, 240, 60, 22], [20, 330, 30, 10]];  // x, z, radius, height
+function height(x, z) {
+  const fall = smooth(cliffZ(x) - 2, cliffZ(x) + 12, z);  // 0 on the plateau, 1 in the lake
+  let h = (40 + noise(x, z)) * (1 - fall) - 10 * fall;
+  h += 45 * smooth(380, 520, z) + 40 * smooth(260, 420, Math.abs(x)) * smooth(-20, 120, z);  // far shore, bay sides
+  for (const [ix, iz, r, ih] of ISLANDS) h += (ih + 10) * (1 - smooth(r * 0.3, r, Math.hypot(x - ix, z - iz)));
+  return h + noise(z, x) * 0.6 * fall;
+}
+const SIZE = 1200, SEG = 300;
+const ground = new THREE.PlaneGeometry(SIZE, SIZE, SEG, SEG).rotateX(-Math.PI / 2).translate(0, 0, 250);
+const gp = ground.attributes.position, gcol = [];
+const rock = new THREE.Color(0x56504a), grass = new THREE.Color(0x24331d), sand = new THREE.Color(0x4a4334), c = new THREE.Color();
+for (let i = 0; i < gp.count; i++) {
+  const x = gp.getX(i), z = gp.getZ(i), y = height(x, z);
+  gp.setY(i, y);
+  const slope = Math.abs(height(x + 1, z) - y) + Math.abs(height(x, z + 1) - y);
+  c.copy(grass).lerp(sand, 1 - smooth(0.5, 3, y)).lerp(rock, smooth(0.8, 1.6, slope));
+  gcol.push(c.r, c.g, c.b);
+}
+ground.setAttribute('color', new THREE.Float32BufferAttribute(gcol, 3));
+ground.computeVertexNormals();
+scene.add(new THREE.Mesh(ground, new THREE.MeshLambertMaterial({ vertexColors: true })));
+
+// Lake: three.js reflective Water. Its ripple normal map is generated here from tileable sine waves (no download).
+const NM = 256, nmData = new Uint8Array(NM * NM * 4);
+const WAVES = [[3, 1, 0.9], [-2, 5, 0.5], [7, -3, 0.25], [-9, -8, 0.15], [13, 4, 0.1], [4, 17, 0.07]];  // kx, ky, amp
+for (let y = 0; y < NM; y++) for (let x = 0; x < NM; x++) {
+  let dx = 0, dy = 0;
+  WAVES.forEach(([kx, ky, a], i) => { const ph = 2 * Math.PI * (kx * x + ky * y) / NM + i; dx += a * kx * Math.cos(ph); dy += a * ky * Math.cos(ph); });
+  const n = new THREE.Vector3(-dx * 0.08, -dy * 0.08, 1).normalize();
+  nmData.set([(n.x * 0.5 + 0.5) * 255, (n.y * 0.5 + 0.5) * 255, (n.z * 0.5 + 0.5) * 255, 255], (y * NM + x) * 4);
+}
+const waterNormals = new THREE.DataTexture(nmData, NM, NM);
+waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+waterNormals.needsUpdate = true;
+const water = new Water(new THREE.PlaneGeometry(4000, 4000), {
+  textureWidth: 1024, textureHeight: 1024, waterNormals, sunDirection: moon.position.clone().normalize(),
+  sunColor: 0xb8c8ff, waterColor: 0x021018, distortionScale: 3.5, fog: true,
+});
+water.rotation.x = -Math.PI / 2;
+water.material.uniforms.size.value = 0.8;
+scene.add(water);
+
+// Forest: instanced conifers (canopy cone + trunk) on land that isn't too steep or wet.
+const TREES = 3500, VIEW = new THREE.Vector3(0, 0, cliffZ(0) - 5);  // viewpoint: 5 m back from the cliff edge
+const canopy = new THREE.InstancedMesh(new THREE.ConeGeometry(2.2, 9, 7).translate(0, 7, 0), new THREE.MeshLambertMaterial(), TREES);
+const trunk = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.25, 0.35, 3, 5).translate(0, 1.5, 0), new THREE.MeshLambertMaterial({ color: 0x2a1d14 }), TREES);
+const m = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0);
+let placed = 0;
+for (let tries = 0; placed < TREES && tries < TREES * 20; tries++) {
+  const x = (Math.random() - 0.5) * SIZE * 0.95, z = 250 + (Math.random() - 0.5) * SIZE * 0.95, y = height(x, z);
+  const slope = Math.abs(height(x + 1, z) - y) + Math.abs(height(x, z + 1) - y);
+  // keep the viewpoint and the lookout's sight line clear
+  if (y < 1.5 || slope > 1.3 || Math.hypot(x - VIEW.x, z - VIEW.z) < 16) continue;
+  const s = 0.7 + Math.random() * 0.9;
+  m.compose(new THREE.Vector3(x, y - 0.3, z), q.setFromAxisAngle(up, Math.random() * 6.3), new THREE.Vector3(s, s * (0.8 + Math.random() * 0.5), s));
+  canopy.setMatrixAt(placed, m); trunk.setMatrixAt(placed, m);
+  canopy.setColorAt(placed, c.setHSL(0.3 + Math.random() * 0.06, 0.35, 0.09 + Math.random() * 0.07));
+  placed++;
+}
+canopy.count = trunk.count = placed;
+scene.add(canopy, trunk);
+
+// Sky: the SPHEREx frame on a sky sphere, azimuthal-equidistant around the image centre (= target).
+// Unrotated, the target is at the zenith with north toward -z and east toward +x, as the real sky looks from below.
+// The sphere is then tilted toward the south (the direction you face), so the target sits SKY_ALT degrees up
+// and still reads north-up/east-left on screen. The frame canvas has a 1 px black border so the parts of the
+// sphere beyond the image (clamped to the edge) stay black.
+const R = 1500, PIX = 59, SKY_ALT = 40;
+const frameCanvas = document.createElement('canvas');
+frameCanvas.width = frameCanvas.height = PIX + 2;
+const fctx = frameCanvas.getContext('2d');
+fctx.fillStyle = '#000'; fctx.fillRect(0, 0, PIX + 2, PIX + 2);
+const skyTex = new THREE.CanvasTexture(frameCanvas);
+skyTex.colorSpace = THREE.SRGBColorSpace;
+const sky = new THREE.SphereGeometry(R, 128, 64);
+const sp = sky.attributes.position, suv = sky.attributes.uv, k = PIX / (PIX + 2);
+for (let i = 0; i < sp.count; i++) {
+  const x = sp.getX(i), y = sp.getY(i), z = sp.getZ(i), h = Math.hypot(x, z);
+  const r = 0.5 * Math.acos(Math.min(1, Math.max(-1, y / R))) / (Math.PI / 2);  // 0 at image centre, 0.5 at image edge
+  suv.setXY(i, h ? 0.5 - k * r * x / h : 0.5, h ? 0.5 - k * r * z / h : 0.5);
+}
+const skyGroup = new THREE.Group();
+skyGroup.rotation.x = THREE.MathUtils.degToRad(90 - SKY_ALT);
+skyGroup.add(new THREE.Mesh(sky, new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide, fog: false })));
+// Target marker: four ticks around the image centre.
+const fromCentre = (deg, az) => {
+  const t = THREE.MathUtils.degToRad(deg), a = THREE.MathUtils.degToRad(az);
+  return new THREE.Vector3(Math.sin(t) * Math.sin(a), Math.cos(t), -Math.sin(t) * Math.cos(a)).multiplyScalar(R * 0.98);
+};
+const ticks = [];
+for (const az of [0, 90, 180, 270]) ticks.push(fromCentre(5, az), fromCentre(13, az));
+skyGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(ticks), new THREE.LineBasicMaterial({ color: 0xff6b6b, fog: false })));
+scene.add(skyGroup);
+
+// Compass letters a little above the horizon (real directions; unaffected by the sky tilt).
+for (const [txt, az] of [['N', 0], ['E', 90], ['S', 180], ['W', 270]]) {
+  const cv = Object.assign(document.createElement('canvas'), { width: 64, height: 64 }), g = cv.getContext('2d');
+  g.fillStyle = '#9cc0ff'; g.font = 'bold 44px system-ui, sans-serif'; g.textAlign = 'center'; g.fillText(txt, 32, 48);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), fog: false }));
+  s.position.copy(fromCentre(82, az)).multiplyScalar(0.5).add(VIEW); s.scale.set(36, 36, 1);
+  scene.add(s);
+}
+
+// Viewpoint: on the cliff top, facing south over the lake.
+camera.position.set(VIEW.x, height(VIEW.x, VIEW.z) + 1.8, VIEW.z);
+function look(pitchDeg, yawDeg) {
+  const p = THREE.MathUtils.degToRad(pitchDeg), y = THREE.MathUtils.degToRad(yawDeg);
+  controls.target.copy(camera.position).add(new THREE.Vector3(Math.sin(y) * Math.cos(p), Math.sin(p), -Math.cos(y) * Math.cos(p)).multiplyScalar(0.1));
+  controls.update();
+}
+look(8, 180);
+$('up').onclick = () => look(SKY_ALT, 180);
+
+function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize); resize();
+renderer.setAnimationLoop(() => {
+  water.material.uniforms.time.value += 1 / 90;
+  controls.update();
+  renderer.render(scene, camera);
+});
+
+$('hide').onclick = () => {
+  const collapsed = $('top').classList.toggle('collapsed');
+  $('hide').textContent = collapsed ? '+' : '–';
+  $('hide').setAttribute('aria-expanded', String(!collapsed));
+};
+
+// ---------------- SPHEREx data ----------------
+let target = null, byBand = {}, shown = [], gen = 0, timer = null, wantBand = null;
+
+function go(ra, dec, band) { $('ra').value = ra; $('dec').value = dec; wantBand = band; $('search').requestSubmit(); }
+for (const [name, [ra, dec, band]] of Object.entries(PRESETS)) {
+  const b = document.createElement('button');
+  b.textContent = name;
+  b.onclick = () => go(ra, dec, band);
+  $('presets').append(b);
+}
+const status = t => $('status').textContent = t;
+const mjdToDate = mjd => new Date((mjd - 40587) * 864e5).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+
+async function getJSON(url) {
+  const r = await fetch(url);
+  const d = await r.json().catch(() => ({ error: `HTTP ${r.status}` }));
+  if (!r.ok) throw new Error(d.error);
+  return d;
+}
+
+$('search').onsubmit = async e => {
+  e.preventDefault();
+  stop(); gen++; shown = []; setControls(false);
+  status('Searching IRSA for SPHEREx images…');
+  try {
+    const d = await getJSON(`/api/spherex?ra=${encodeURIComponent($('ra').value)}&dec=${encodeURIComponent($('dec').value)}`);
+    target = d; byBand = {};
+    for (const f of d.frames) (byBand[f.band] ||= []).push(f);
+    const bands = Object.keys(byBand).sort();
+    if (!bands.length) return status('SPHEREx has no images covering this position yet.');
+    $('band').replaceChildren(...bands.map(b => {
+      const fs = byBand[b], lo = Math.min(...fs.map(f => f.um[0])), hi = Math.max(...fs.map(f => f.um[1]));
+      return new Option(`${b} · ${lo.toFixed(2)}–${hi.toFixed(2)} µm · ${fs.length} images`, b);
+    }));
+    if (bands.includes(wantBand)) $('band').value = wantBand;
+    $('band').disabled = false;
+    history.replaceState(null, '', `?ra=${encodeURIComponent($('ra').value)}&dec=${encodeURIComponent($('dec').value)}&band=${$('band').value}`);
+    loadBand();
+  } catch (err) { status('Search failed: ' + err.message); }
+};
+$('band').onchange = () => {
+  history.replaceState(null, '', location.search.replace(/band=\w+/, 'band=' + $('band').value));
+  loadBand();
+};
+
+async function loadBand() {
+  stop(); setControls(false);
+  const g = ++gen, all = byBand[$('band').value];
+  // Even sample in time order keeps request count bounded for heavily observed fields (e.g. near the ecliptic poles).
+  const list = all.length <= MAX_FRAMES ? all : Array.from({ length: MAX_FRAMES }, (_, i) => all[Math.round(i * (all.length - 1) / (MAX_FRAMES - 1))]);
+  const results = new Array(list.length);
+  let done = 0, failed = 0, next = 0;
+  status(`Loading ${list.length} images…`);
+  await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
+    while (next < list.length && g === gen) {
+      const k = next++, f = list[k];
+      try { results[k] = await getJSON(`/api/spherex?ra=${target.ra}&dec=${target.dec}&url=${encodeURIComponent(f.url)}`); }
+      catch { failed++; }
+      if (g === gen) status(`Loading images… ${++done}/${list.length}`);
+    }
+  }));
+  if (g !== gen) return;
+  const frames = results.map((r, k) => r && { ...r, mjd: list[k].mjd }).filter(Boolean);
+  if (!frames.length) return status('Could not load any images (IRSA may be busy). Try again.');
+  render(frames);
+  status(`${frames.length} images, ${mjdToDate(frames[0].mjd).slice(0, 10)} → ${mjdToDate(frames.at(-1).mjd).slice(0, 10)}` +
+         (all.length > list.length ? ` (sampled from ${all.length})` : '') + (failed ? ` · ${failed} failed to load` : ''));
+}
+
+// One shared brightness scale across all frames, so real brightness changes stay visible. The scale comes from the
+// per-pixel median image: cosmic-ray hits appear in one frame only, so they can't blow out the stretch.
+function render(frames) {
+  const med = frames[0].pix.map((_, i) => {
+    const v = frames.map(f => f.pix[i]).filter(x => x !== null).sort((a, b) => a - b);
+    return v.length ? v[v.length >> 1] : null;
+  });
+  const vals = med.filter(v => v !== null).sort((a, b) => a - b);
+  // Black point at the median: background noise goes dark so the magnified sky reads as night with stars.
+  const lo = vals[Math.floor(vals.length * 0.5)], hi = vals[Math.floor(vals.length * 0.997)];
+  shown = frames.map(f => {
+    const im = new ImageData(f.n, f.n);
+    f.pix.forEach((v, i) => {
+      const g = v === null ? 0 : Math.round(255 * Math.sqrt(Math.min(1, Math.max(0, (v - lo) / (hi - lo)))));
+      im.data.set(v === null ? [4, 6, 12, 255] : [g, g, Math.min(255, g + 10), 255], i * 4);
+    });
+    return { mjd: f.mjd, im };
+  });
+  $('slider').max = shown.length - 1;
+  setControls(true);
+  show(0);
+}
+
+function show(k) {
+  fctx.putImageData(shown[k].im, 1, 1);  // inside the black border
+  skyTex.needsUpdate = true;
+  $('slider').value = k;
+  $('date').textContent = `${mjdToDate(shown[k].mjd)} · ${k + 1}/${shown.length}`;
+}
+function setControls(on) { for (const id of ['play', 'blink', 'slider']) $(id).disabled = !on; }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = '▶ Play'; }
+function run(step, ms) { stop(); let k = +$('slider').value; timer = setInterval(() => show(k = step(k)), ms); }
+
+$('slider').oninput = () => { stop(); show(+$('slider').value); };
+$('play').onclick = () => {
+  if (timer) return stop();
+  run(k => (k + 1) % shown.length, 250);
+  $('play').textContent = '⏸ Pause';
+};
+$('blink').onclick = () => run(k => (k === 0 ? shown.length - 1 : 0), 500);
+
+const params = new URLSearchParams(location.search);  // shareable links: ?ra=..&dec=..&band=..
+if (params.get('ra') && params.get('dec')) go(params.get('ra'), params.get('dec'), params.get('band'));
+</script>
+</body>
+</html>

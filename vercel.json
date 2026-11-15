@@ -3,8 +3,9 @@
   "installCommand": "cd web && npm ci",
   "buildCommand": "cd web && npm run build",
   "outputDirectory": "web/dist",
+  "rewrites": [{ "source": "/api/:path(sia|spherex)", "destination": "/api/index" }],
   "functions": {
-    "api/sia.mjs": { "maxDuration": 30 },
+    "api/index.py": { "maxDuration": 30 },
     "api/observations.mjs": { "maxDuration": 30 },
     "api/cutout.mjs": { "maxDuration": 30 }
   }

@@ -1,7 +1,7 @@
 // Vercel function: a small cutout of one archived SPHEREx Level 2 image from IRSA's cutout
 // service (no CORS). Only IRSA SPHEREx Level 2 FITS URLs are accepted, never arbitrary URLs.
 // The EPSF table (~4 MB of PSF models) is dropped; every other HDU passes through byte for byte.
-import { parsePosition } from "./sia.mjs";
+import { parsePosition } from "./_sia.mjs";
 
 const BLOCK = 2880;
 const MAX_BYTES = 12 * 1024 * 1024; // a 0.1° cutout is ~4.3 MB with EPSF

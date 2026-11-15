@@ -49,7 +49,7 @@ is an unconfirmed lead that needs an independent detection.
   - The simulated test field shows a SIMULATED banner and label everywhere it appears.
   - The intro's starfield is labelled illustrative.
 - **Search.** Enter an RA/Dec. If a prepared field covers it, PARALLAX pins it. Otherwise, on
-  Vercel, a serverless lookup (`api/sia.mjs`) asks IRSA how many SPHEREx exposures exist there,
+  Vercel, a serverless lookup (`api/index.py`) asks IRSA how many SPHEREx exposures exist there,
   then gives the exact pipeline command that would build that field.
 - **Sky atlas** (`#/atlas`). Pan and zoom the whole SPHEREx sky at any of its 102 wavelengths
   from IRSA's DR1 all-sky cube. *Picture* uses IRSA's display tiles; *Measured values* reads the

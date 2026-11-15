@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useJournal } from '../features/journal/store.ts';
 
 export type Section =
-  'observatory' | 'sky' | 'spacecraft' | 'spectrum' | 'journal' | 'arcade' | 'atlas';
+  'observatory' | 'sky' | 'spacecraft' | 'spectrum' | 'journal' | 'flipbook' | 'arcade' | 'atlas';
 
 const LINKS: { id: Exclude<Section, 'observatory' | 'arcade'>; label: string }[] = [
   { id: 'sky', label: 'Sky globe' },
@@ -10,6 +10,7 @@ const LINKS: { id: Exclude<Section, 'observatory' | 'arcade'>; label: string }[]
   { id: 'spacecraft', label: 'Spacecraft' },
   { id: 'spectrum', label: 'Spectrum' },
   { id: 'journal', label: 'Journal' },
+  { id: 'flipbook', label: 'Sky Flipbook' },
 ];
 
 interface Props {
