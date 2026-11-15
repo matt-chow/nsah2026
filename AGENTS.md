@@ -49,8 +49,10 @@ Start with a **curated, preprocessed collection of real SPHEREx observations**. 
 archive searches are a later capability. Clearly communicate actual collection coverage; never
 imply that curated coverage is the whole survey or that an unobserved target does not exist.
 
-SPHEREx is the only astronomical dataset in scope. External documentation and infrastructure are
-not additional datasets. If object-name resolution needs an external catalogue or service, raise
+SPHEREx is the only astronomical dataset analysed. Gaia DR3, AllWISE and WISE imagery are
+allowed as labelled context overlays only (VizieR/CDS and Aladin Lite, free and keyless), never as
+SPHEREx data, measurement inputs or evidence for a claim; the app must work when they are down.
+External documentation and infrastructure are not additional datasets. If object-name resolution needs an external catalogue or service, raise
 it as a scope decision rather than adding it silently; curated target aliases can cover the
 initial collection.
 

@@ -282,10 +282,10 @@ Limits of the atlas views:
 13. Flipbook wavelength at the target (`api/_spherex.py`): the cutout's 'W' WCS maps a cutout
     pixel to the raw detector pixel (`CRVAL1W + x + 1 − CRPIX1W`, likewise y), which indexes the
     WCS-WAVE lookup table (columns X, Y, VALUES as [y][x][λ, Δλ]) read from the full L2 file's
-    last 23,040 bytes by an HTTP Range request. Nearest table node, no interpolation; checked
-    against Astropy on one exposure and by a synthetic plane in `api/_test_spherex.py`. A
-    missing table or non-`WAVE-TAB` CTYPE reports the wavelength as unknown. **[verify]** the
-    table node spacing makes nearest-node error ≪ Δλ.
+    last 23,040 bytes by an HTTP Range request. Bilinear interpolation between table nodes (as
+    Astropy's -TAB does); checked against Astropy on one exposure and by a synthetic plane in
+    `api/_test_spherex.py`. A missing table or non-`WAVE-TAB` CTYPE reports the wavelength as
+    unknown.
 14. Flipbook contamination flags: FLAGS bits set within one pixel of the target, named from the
     file's MSKN cards; FULLSAMPLE and SOURCE are informational and not reported. Plain-language
     descriptions in `web/src/prototype/live.ts` (`FLAG_ABOUT`) paraphrase the Explanatory
@@ -293,6 +293,32 @@ Limits of the atlas views:
 15. Pre-baked targets (`data/targets/*.json`) are a snapshot of the archive listing on the
     `baked` date, labelled as a saved copy in the player. Fast movers' positions are propagated to
     late 2025, so earlier exposures can sit up to ~1 pixel off the ring.
+16. Flipbook orientation: `api/_spherex.py` builds grids with row 0 north and column 0 east, and
+    the flipbook paints them as stored (north up, east left). Until 2026-11 the 2D player flipped
+    rows and showed the field mirrored north–south; the archive blink shares the fix. The 3D
+    flipbook page (`data/flipbook/`) has not been re-checked.
+17. Flipbook motion (`web/src/prototype/measure.ts`, display of a measurement, never a
+    detection): per exposure, background and noise from a 6–9 pixel annulus (median,
+    1.4826 × MAD), then a first-moment centroid within 2.5 pixels of the brightest pixel within 2
+    pixels of the centre, kept at SNR ≥ 5 with no missing pixels. Errors are background-limited
+    (no variance plane in the cutouts, no source photon noise, reprojection correlations ignored)
+    with 0.3″ added in quadrature for the undersampled, resampled PSF. Frames flagged OVERFLOW,
+    NONLINEAR, NONFUNC, MISSING_DATA, SUR_ERROR or BLOOM at the ring are left out. A weighted
+    straight line per axis gives the motion; errors are scaled by √χ²ᵣ when χ²ᵣ > 1. At least 4
+    exposures over 0.1 yr. ≥ 3σ reads "possible motion: unconfirmed". Known-answer injection
+    tests in `measure.test.ts`. Real-data check 2026-11-15, Epsilon Indi B, D5, 52 exposures:
+    +4.12 ± 1.02″/yr east, −2.26 ± 1.06″/yr north (literature ≈ +3.96, −2.54). Saturated
+    targets (Barnard's Star, R Draconis) leave too few usable frames. Parallax (up to ~1″ for
+    the nearest targets) is not modelled and adds scatter. The centroid can lock onto a
+    neighbour within ~2 pixels (seen at WISE 0855).
+18. Flipbook brightness and spectrum: aperture sum within 2 pixels minus the annulus median, in
+    mJy (MJy/sr × pixel solid angle), with no aperture correction, so values are relative, not
+    calibrated total fluxes. The spectrum takes up to 6 exposures per detector spread in time,
+    each at its own wavelength from assumption 13, so variability and parallax mix in.
+19. Gaia DR3 and AllWISE are context overlays only (VizieR/CDS, Aladin Lite), never SPHEREx data
+    or measurement inputs. Flipbook Gaia markers move J2016.0 positions linearly by proper motion
+    to each exposure's date and project them with a gnomonic approximation (a display helper);
+    stars without proper motion stay at J2016.0.
 
 ## References
 

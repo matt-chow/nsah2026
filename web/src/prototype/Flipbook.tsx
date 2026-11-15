@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { BANDS } from '../features/spectrum/channels.ts';
 import { formatDec, formatRa } from '../lib/sky.ts';
+import { gaiaStars, propagate, toGrid, type Star } from './catalog.ts';
+import { MeasurePanel, SpectrumPanel } from './FlipTools.tsx';
 import {
   coverage,
   DEFAULT_SIZE,
@@ -9,6 +11,7 @@ import {
   listExposures,
   LiveError,
   loadFrame,
+  makeDiffStretch,
   makeStretch,
   medianImage,
   monthOf,
@@ -20,17 +23,31 @@ import {
   type LiveFrame,
   type Timing,
 } from './live.ts';
+import { difference } from './measure.ts';
 import { parseCoords, TARGETS } from './places.ts';
 import { paletteTable, type Palette } from './SkyDome.tsx';
 import type { ArchiveCompare, FlipTarget } from './store.ts';
 
+const SkyPanel = lazy(() => import('./SkyPanel.tsx'));
+
 const WINDOW = 12; // frames fetched ahead of the one shown; nothing further is downloaded
+const ALL_CAP = 150; // "load all" stops here
 const CONCURRENCY = 4;
 const STRETCH_FROM = 6; // frames that set the shared stretch
 const SPEEDS = [2, 4, 8];
 
 type ListState =
   { kind: 'loading' } | { kind: 'ready'; listing: Listing } | { kind: 'error'; e: LiveError };
+type ViewMode = 'frames' | 'stack' | 'diff';
+type Tab = 'about' | 'measure' | 'spectrum' | 'compare' | 'sky';
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'about', label: 'About' },
+  { id: 'measure', label: 'Measure' },
+  { id: 'spectrum', label: 'Spectrum' },
+  { id: 'compare', label: 'Compare' },
+  { id: 'sky', label: 'Sky' },
+];
+type Stars = { key: string; stars: Star[] | null }; // null = the catalogue failed
 
 const date = (mjd: number) =>
   new Date((mjd - 40587) * 86400000).toLocaleDateString('en-GB', {
@@ -45,10 +62,12 @@ const range = (b: string) => {
 const release = (rel?: string) => (rel ? rel.replace(/^spherex_/, '').toUpperCase() : 'DR1');
 const sameSpot = (a: { ra: number; dec: number }, b: { ra: number; dec: number }) =>
   a.ra.toFixed(5) === b.ra.toFixed(5) && a.dec.toFixed(5) === b.dec.toFixed(5);
+const typing = (t: EventTarget | null) =>
+  t instanceof HTMLElement && !!t.closest('input, select, textarea, [role="radio"], [role="tab"]');
 
 /**
  * Every exposure the archive lists at one point, in one detector band, played in time order.
- * Display imagery only: frames are reprojected and background-subtracted by the API.
+ * The picture is display imagery; the Measure and Spectrum tabs work on the archive pixel values.
  */
 export function Flipbook(props: {
   target: FlipTarget;
@@ -73,8 +92,13 @@ export function Flipbook(props: {
   const [speed, setSpeed] = useState(4);
   const [timing, setTiming] = useState<Timing>('equal');
   const [zoom, setZoom] = useState(1);
+  const [mode, setMode] = useState<ViewMode>('frames');
+  const [tab, setTab] = useState<Tab>('about');
+  const [showStars, setShowStars] = useState(false);
+  const [stars, setStars] = useState<Stars | null>(null);
+  const [fetchAll, setFetchAll] = useState(false);
   const [markA, setMarkA] = useState<Listed | null>(null);
-  const [, setTick] = useState(0); // a frame arrived
+  const [tick, setTick] = useState(0); // a frame arrived
   const [failed, setFailed] = useState<ReadonlySet<string>>(() => new Set());
   const canvas = useRef<HTMLCanvasElement>(null);
   const [stretch, setStretch] = useState<{ key: string; fn: (x: number) => number } | null>(null);
@@ -105,6 +129,7 @@ export function Flipbook(props: {
     setIndex(0);
     setMarkA(null);
     setMonth('all');
+    setFetchAll(false);
   }
 
   const all = useMemo(
@@ -133,15 +158,16 @@ export function Flipbook(props: {
   const failKey = (url: string) => `${size}|${url}`;
   const isFailed = (url: string) => failed.has(failKey(url));
 
-  // fetch only a window ahead of the frame shown; leaving the window cancels the request
+  // fetch only a window ahead of the frame shown (or all, on request); leaving it cancels
   const want = useMemo(() => {
     const out: string[] = [];
-    for (let k = 0; k < Math.min(WINDOW, list.length); k++) {
+    const span = fetchAll ? Math.min(ALL_CAP, list.length) : Math.min(WINDOW, list.length);
+    for (let k = 0; k < span; k++) {
       const f = list[(i + k) % list.length];
       if (f) out.push(f.url);
     }
     return out;
-  }, [list, i]);
+  }, [list, i, fetchAll]);
   const inflight = useRef(new Map<string, AbortController>());
   useEffect(() => {
     const flying = inflight.current;
@@ -183,6 +209,12 @@ export function Flipbook(props: {
   const loaded = inBand.filter((f) => peek(f.url)).length;
   const failures = inBand.filter((f) => isFailed(f.url)).length;
   const frame: LiveFrame | undefined = cur && peek(cur.url);
+  // the frames of this list, parallel to it; recomputed when one arrives
+  const listFrames = useMemo(
+    () => list.map((f) => peekFrame(ra, dec, f.url, size)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `tick` marks a cache arrival
+    [list, ra, dec, size, tick],
+  );
 
   // one display stretch for the whole band, from the first few frames that arrive
   const stretchKey = `${pointKey}|${band}|${size}`;
@@ -196,18 +228,62 @@ export function Flipbook(props: {
   }
   const shared = stretch?.key === stretchKey ? stretch.fn : null;
 
+  // the median of every loaded exposure in the list: what stays put
+  const stackOf = listFrames.filter((f): f is LiveFrame => !!f);
+  const stack = useMemo(
+    () =>
+      mode !== 'frames' && stackOf.length >= 3 ? medianImage(stackOf.map((f) => f.pix)) : null,
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recomputed when the count changes
+    [mode, stackOf.length, list],
+  );
+  const shown = useMemo(
+    () =>
+      mode === 'stack' && stack
+        ? { n: frame?.n ?? stack.length ** 0.5, pix: stack }
+        : mode === 'diff' && stack && frame
+          ? { n: frame.n, pix: difference(frame.pix, stack) }
+          : mode === 'frames'
+            ? frame
+            : undefined,
+    [mode, stack, frame],
+  );
+
   useEffect(() => {
     const c = canvas.current;
-    if (!c || !frame || !props.active) return;
-    paintFrame(c, frame, shared ?? makeStretch(frame.pix), paletteTable(props.palette));
-  }, [frame, shared, props.palette, props.active]);
+    if (!c || !shown || !props.active) return;
+    if (mode === 'diff') paintFrame(c, shown, makeDiffStretch(shown.pix), 'diverging');
+    else paintFrame(c, shown, shared ?? makeStretch(shown.pix), paletteTable(props.palette));
+  }, [shown, mode, shared, props.palette, props.active]);
+
+  // Gaia DR3 markers, an overlay only: fetched once per point, moved to each exposure's date
+  const starKey = `${pointKey}|${size}`;
+  useEffect(() => {
+    if (!showStars || !props.active || stars?.key === starKey) return;
+    gaiaStars(ra, dec, size).then(
+      (s) => setStars({ key: starKey, stars: s }),
+      () => setStars({ key: starKey, stars: null }),
+    );
+  }, [showStars, props.active, starKey, stars?.key, ra, dec, size]);
+  const starList = stars?.key === starKey ? stars.stars : null;
+  const n = shown?.n ?? frame?.n ?? 0;
+  const epoch = mode === 'stack' ? null : (frame?.mjd ?? cur?.mjd ?? null);
+  const marks =
+    showStars && starList && n && epoch !== null
+      ? starList.flatMap((s) => {
+          const p = propagate(s, epoch);
+          const g = toGrid(p.ra, p.dec, ra, dec, n);
+          const fast = Math.hypot(s.pmra ?? 0, s.pmdec ?? 0) > 200; // mas/yr
+          return g.col > -1 && g.col < n && g.row > -1 && g.row < n ? [{ ...g, fast, s }] : [];
+        })
+      : [];
 
   // playback holds each frame, then moves on only once the next one has arrived or failed
   const mjds = useMemo(() => list.map((f) => f.mjd), [list]);
   const next = list[(i + 1) % list.length];
   const nextReady = !!next && (!!peek(next.url) || isFailed(next.url));
+  const animating = playing && mode !== 'stack';
   useEffect(() => {
-    if (!playing || !props.active || !nextReady || list.length < 2) return;
+    if (!animating || !props.active || !nextReady || list.length < 2) return;
     const t = setTimeout(
       () => {
         let k = (i + 1) % list.length;
@@ -217,13 +293,37 @@ export function Flipbook(props: {
       holdMs(mjds, i, timing, speed),
     );
     return () => clearTimeout(t);
-  }, [playing, props.active, nextReady, i, list, mjds, timing, speed, failed, size]);
+  }, [animating, props.active, nextReady, i, list, mjds, timing, speed, failed, size]);
   if (!props.active && playing) setPlaying(false);
 
   const step = (d: number) => {
     setPlaying(false);
     setIndex((i + d + list.length) % list.length);
   };
+
+  // Space plays or pauses, arrows step; never while typing or in a control with its own keys
+  const len = list.length;
+  useEffect(() => {
+    if (!props.active || len === 0) return;
+    const on = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || typing(e.target)) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        const d = e.key === 'ArrowLeft' ? -1 : 1;
+        setPlaying(false);
+        setIndex((k) => (Math.min(k, len - 1) + d + len) % len);
+      } else if (
+        e.key === ' ' &&
+        !(e.target instanceof HTMLElement && e.target.closest('button, a'))
+      ) {
+        e.preventDefault();
+        setPlaying((p) => !p);
+      }
+    };
+    window.addEventListener('keydown', on);
+    return () => window.removeEventListener('keydown', on);
+  }, [props.active, len]);
+
   const cov = frame ? coverage(frame) : null;
   const unsupported = typeof AbortSignal.any !== 'function';
   const named = TARGETS.find((t) => sameSpot(t, props.target));
@@ -262,6 +362,36 @@ export function Flipbook(props: {
       body: 'Choose another detector band; the counts show what the archive has.',
     };
 
+  const bandSelect = (
+    <label className="field band-pick">
+      <span>Detector</span>
+      <select
+        value={band}
+        onChange={(e) => (setTarget({ band: e.target.value }), setIndex(0), setMonth('all'))}
+      >
+        {BANDS.map((b) => {
+          const id = `D${b.detector}`;
+          return (
+            <option key={id} value={id}>
+              {id} · {range(id)}
+              {listing.kind === 'ready' ? ` · ${counts[id] ?? 0}` : ''}
+            </option>
+          );
+        })}
+      </select>
+    </label>
+  );
+
+  const starNote = !showStars
+    ? ''
+    : stars?.key !== starKey
+      ? 'Loading Gaia stars…'
+      : !starList
+        ? 'The Gaia catalogue service (VizieR) is not answering; markers are unavailable.'
+        : mode === 'stack'
+          ? 'Gaia markers are hidden on the stack, which has no single date.'
+          : `${marks.length} Gaia DR3 stars, moved to this exposure’s date${marks.some((m) => m.fast) ? '; fast movers have a ring' : ''}.`;
+
   return (
     <div className="flip" aria-labelledby="flip-h">
       <header className="flip-head">
@@ -286,100 +416,91 @@ export function Flipbook(props: {
               <h2>{state.title}</h2>
               <p>{state.body}</p>
               {state.retry && <button onClick={() => setAttempt((a) => a + 1)}>Try again</button>}
+              {inBand.length === 0 && all.length > 0 && bandSelect}
             </div>
           ) : (
             <>
+              <div className="flip-tools">
+                {bandSelect}
+                <div className="seg" role="radiogroup" aria-label="Picture">
+                  {(
+                    [
+                      ['frames', 'Each exposure'],
+                      ['stack', 'Stacked'],
+                      ['diff', 'Changes'],
+                    ] as const
+                  ).map(([id, label]) => (
+                    <button
+                      key={id}
+                      role="radio"
+                      aria-checked={mode === id}
+                      onClick={() => setMode(id)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  className="toggle"
+                  aria-pressed={showStars}
+                  onClick={() => setShowStars(!showStars)}
+                >
+                  Gaia stars
+                </button>
+              </div>
+
               <div className="flip-frame">
                 <canvas
                   ref={canvas}
                   role="img"
                   style={{ transform: `scale(${zoom})` }}
                   aria-label={
-                    cur
-                      ? `Exposure ${i + 1} of ${list.length}, ${date(cur.mjd)}, detector ${band}. The ring marks the position searched for.`
-                      : ''
+                    mode === 'stack'
+                      ? `Median of ${stackOf.length} ${band} exposures. The ring marks the position searched for.`
+                      : cur
+                        ? `${mode === 'diff' ? 'Change from the median in e' : 'E'}xposure ${i + 1} of ${list.length}, ${date(cur.mjd)}, detector ${band}. The ring marks the position searched for.`
+                        : ''
                   }
                 />
+                {marks.length > 0 && (
+                  <svg
+                    className="flip-marks"
+                    viewBox={`0 0 ${n} ${n}`}
+                    style={{ transform: `scale(${zoom})` }}
+                    aria-hidden
+                  >
+                    {marks.map((m, k) => (
+                      <g key={k} transform={`translate(${m.col + 0.5} ${m.row + 0.5})`}>
+                        <rect x={-0.9} y={-0.9} width={1.8} height={1.8} />
+                        {m.fast && <circle r={2.2} />}
+                      </g>
+                    ))}
+                  </svg>
+                )}
                 <span className="flip-aim" style={{ transform: `scale(${zoom})` }} aria-hidden />
-                {!frame && cur && (
+                {!shown && (
                   <p className="flip-wait" role="status">
-                    {isFailed(cur.url)
-                      ? 'This exposure failed to load; it is skipped in playback.'
-                      : 'Loading this exposure…'}
+                    {mode !== 'frames' && !stack
+                      ? 'Waiting for at least three exposures to stack…'
+                      : cur && isFailed(cur.url)
+                        ? 'This exposure failed to load; it is skipped in playback.'
+                        : 'Loading this exposure…'}
                   </p>
                 )}
-                <span className="flip-tag">Archive imagery · display only</span>
+                <span className="flip-tag">
+                  {mode === 'diff'
+                    ? 'Display only · amber brighter, blue fainter than usual'
+                    : mode === 'stack'
+                      ? `Display only · median of ${stackOf.length}`
+                      : 'Archive imagery · display only'}
+                </span>
+                <span className="flip-compass" aria-hidden>
+                  N ↑ E ←
+                </span>
               </div>
-              <div className="flip-caption">
-                <p>
-                  <strong>{cur ? date(cur.mjd) : ''}</strong>
-                  <span className="muted">
-                    {' '}
-                    · {release(cur?.rel)} · {frame?.det ? `detector ${frame.det}` : band}
-                    {frame?.um != null
-                      ? ` · ${frame.um.toFixed(3)} µm at the ring`
-                      : ` · ${range(band)}`}
-                    {cov !== null && cov < 0.98
-                      ? ` · partial: ${Math.round(cov * 100)}% of the square has data`
-                      : ''}
-                  </span>
-                </p>
-                {frame && <FlagLine flags={frame.flags} />}
-              </div>
-            </>
-          )}
-        </div>
 
-        <div className="flip-panel">
-          <section className="block" aria-labelledby="what-h">
-            <h2 id="what-h">What you are seeing</h2>
-            {named && <p>{named.about}</p>}
-            <p className="note">
-              Each square is one SPHEREx exposure of the same {size}′ patch of sky, lined up
-              north-up around the ring. Brighter means more infrared light; the colours are a
-              display palette, not the colours the eye would see. Anything that shifts between
-              exposures either moved on the sky or is a detector effect: the flag line under the
-              image says when an exposure is affected at the ring.
-            </p>
-          </section>
-
-          <section className="block" aria-labelledby="band-h">
-            <h2 id="band-h">Detector band</h2>
-            <label className="field">
-              <span className="sr-only">Detector band</span>
-              <select
-                value={band}
-                onChange={(e) => (
-                  setTarget({ band: e.target.value }),
-                  setIndex(0),
-                  setMonth('all')
-                )}
-              >
-                {BANDS.map((b) => {
-                  const id = `D${b.detector}`;
-                  return (
-                    <option key={id} value={id}>
-                      {id} · {range(id)}
-                      {listing.kind === 'ready' ? ` · ${counts[id] ?? 0} exposures` : ''}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
-            <p className="note">
-              One detector band is not one wavelength: SPHEREx’s filters change colour across each
-              detector, so two {band} exposures can see this point at different wavelengths. The
-              caption gives the wavelength at the ring for each exposure, from its own calibration.
-            </p>
-          </section>
-
-          {!state && (
-            <>
-              <section className="block" aria-labelledby="pb-h">
-                <h2 id="pb-h">
-                  Exposure {i + 1} of {list.length}
-                </h2>
-                <div className="play-row">
+              {mode !== 'stack' && (
+                <div className="transport">
                   <button
                     className="icon-btn"
                     onClick={() => step(-1)}
@@ -397,168 +518,344 @@ export function Flipbook(props: {
                   <button className="icon-btn" onClick={() => step(1)} aria-label="Next exposure">
                     ›
                   </button>
-                </div>
-                <label className="slider">
-                  <span className="sr-only">Timeline</span>
-                  <input
-                    type="range"
-                    min={0}
-                    max={Math.max(0, list.length - 1)}
-                    value={i}
-                    aria-valuetext={cur ? `Exposure ${i + 1}, ${date(cur.mjd)}` : ''}
-                    onChange={(e) => (setPlaying(false), setIndex(Number(e.target.value)))}
-                  />
-                  <span className="ends muted">
-                    <span>{list[0] ? date(list[0].mjd) : ''}</span>
-                    <span>{list.at(-1) ? date((list.at(-1) as Listed).mjd) : ''}</span>
-                  </span>
-                </label>
-                <div className="seg" role="radiogroup" aria-label="Speed">
-                  {SPEEDS.map((s) => (
-                    <button
-                      key={s}
-                      role="radio"
-                      aria-checked={speed === s}
-                      onClick={() => setSpeed(s)}
-                    >
-                      {s} per second
-                    </button>
-                  ))}
-                </div>
-                <div className="seg" role="radiogroup" aria-label="Timing">
-                  {(['equal', 'elapsed'] as const).map((t) => (
-                    <button
-                      key={t}
-                      role="radio"
-                      aria-checked={timing === t}
-                      onClick={() => setTiming(t)}
-                    >
-                      {t === 'equal' ? 'Equal steps' : 'Real gaps'}
-                    </button>
-                  ))}
-                </div>
-                <p className="note">
-                  {timing === 'equal'
-                    ? 'Every exposure gets the same time on screen, however far apart they were taken.'
-                    : 'Longer pauses where months passed between exposures (at most four steps), quick ones for exposures taken close together. Still not to scale.'}
-                </p>
-                <div className="row">
-                  <label className="field">
-                    <span>Field of view</span>
-                    <select
-                      value={size}
-                      onChange={(e) => (setTarget({ size: Number(e.target.value) }), setZoom(1))}
-                    >
-                      {SIZES.map((s) => (
-                        <option key={s} value={s}>
-                          {s}′ square ({Math.round((s * 60) / 6.15)} pixels across)
-                        </option>
-                      ))}
-                    </select>
+                  <label className="scrub">
+                    <span className="sr-only">Timeline</span>
+                    <input
+                      type="range"
+                      min={0}
+                      max={Math.max(0, list.length - 1)}
+                      value={i}
+                      aria-valuetext={cur ? `Exposure ${i + 1}, ${date(cur.mjd)}` : ''}
+                      onChange={(e) => (setPlaying(false), setIndex(Number(e.target.value)))}
+                    />
                   </label>
-                  <button aria-pressed={zoom > 1} onClick={() => setZoom(zoom > 1 ? 1 : 2)}>
-                    {zoom > 1 ? 'Fit' : 'Zoom 2×'}
-                  </button>
+                  <span className="count data">
+                    {i + 1}/{list.length}
+                  </span>
                 </div>
-                <p className="note">
-                  Framing is locked: every exposure is reprojected to the same {size}′ north-up
-                  square around this point (one SPHEREx pixel is 6.15″), so anything that moves
-                  really moved on the sky or is a detector effect.
-                  {baked && size !== DEFAULT_SIZE
-                    ? ' The saved copy holds 6′ squares; other sizes load from the live archive.'
-                    : ''}
-                </p>
-              </section>
+              )}
 
-              <section className="block" aria-labelledby="flt-h">
-                <h2 id="flt-h">Filter</h2>
-                <label className="field">
-                  <span>Month</span>
-                  <select value={month} onChange={(e) => (setMonth(e.target.value), setIndex(0))}>
-                    <option value="all">All {inBand.length} exposures</option>
-                    {months.map((m) => (
-                      <option key={m} value={m}>
-                        {m} · {inBand.filter((f) => monthOf(f.mjd) === m).length}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <p className="note" aria-live="polite">
-                  The {baked ? `listing saved on ${baked}` : 'archive'} has {all.length} exposures
-                  here in all bands, {inBand.length} in {band}. Loaded {loaded}
-                  {failures ? `, ${failures} failed` : ''}; only the next {WINDOW} are fetched.
-                </p>
-              </section>
-
-              <section className="block" aria-labelledby="cmp-h">
-                <h2 id="cmp-h">Compare two exposures</h2>
-                {markA && cur && markA.url !== cur.url ? (
-                  <>
-                    <p>
-                      A is {date(markA.mjd)}; B would be this one, {date(cur.mjd)}.
-                    </p>
-                    <div className="row">
-                      <button
-                        className="primary"
-                        onClick={() =>
-                          props.onCompare({
-                            kind: 'archive',
-                            ra,
-                            dec,
-                            band,
-                            a: { url: markA.url, mjd: markA.mjd, um: markA.um },
-                            b: { url: cur.url, mjd: cur.mjd, um: cur.um },
-                            mode: 'blink',
-                            zoom: 1,
-                          })
-                        }
-                      >
-                        Compare these two
-                      </button>
-                      <button className="quiet" onClick={() => setMarkA(null)}>
-                        Clear A
-                      </button>
-                    </div>
-                  </>
+              <div className="flip-caption">
+                {mode === 'stack' ? (
+                  <p>
+                    <strong>
+                      {stackOf.length} {band} exposures stacked
+                    </strong>
+                    <span className="muted">
+                      {' '}
+                      · {list[0] ? date(list[0].mjd) : ''} to{' '}
+                      {list.at(-1) ? date((list.at(-1) as Listed).mjd) : ''}
+                    </span>
+                  </p>
                 ) : (
-                  <>
-                    <p className="note">
-                      Mark this exposure as A, step to another, then compare them side by side.
-                    </p>
-                    <button
-                      disabled={!cur}
-                      onClick={() => {
-                        if (!cur) return;
-                        setMarkA(cur);
-                        props.announce(`Marked ${date(cur.mjd)} as A.`);
-                      }}
-                    >
-                      {markA ? 'A is this exposure' : 'Mark as A'}
-                    </button>
-                  </>
+                  <p>
+                    <strong>{cur ? date(cur.mjd) : ''}</strong>
+                    <span className="muted">
+                      {' '}
+                      · {release(cur?.rel)} · {frame?.det ? `detector ${frame.det}` : band}
+                      {frame?.um != null
+                        ? ` · ${frame.um.toFixed(3)} µm at the ring`
+                        : ` · ${range(band)}`}
+                      {cov !== null && cov < 0.98
+                        ? ` · partial: ${Math.round(cov * 100)}% of the square has data`
+                        : ''}
+                    </span>
+                  </p>
                 )}
-              </section>
-
-              <section className="block" aria-labelledby="d3-h">
-                <h2 id="d3-h">3D landscape</h2>
-                <p className="note">
-                  The same exposures drawn as a landscape, brightness as height. It opens as a
-                  separate page.
-                </p>
-                <a
-                  className="button"
-                  href={`flipbook/index.html?${new URLSearchParams({ ra: String(ra), dec: String(dec), band })}`}
-                >
-                  Open in 3D
-                </a>
-              </section>
+                {frame && mode !== 'stack' && <FlagLine flags={frame.flags} />}
+                {starNote && (
+                  <p className="muted" aria-live="polite">
+                    {starNote}
+                  </p>
+                )}
+              </div>
             </>
           )}
+        </div>
+
+        <div className="flip-panel">
+          <div className="tabs" role="tablist" aria-label="Tools">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                role="tab"
+                id={`ft-${t.id}`}
+                aria-selected={tab === t.id}
+                aria-controls="ft-panel"
+                tabIndex={tab === t.id ? 0 : -1}
+                onClick={() => setTab(t.id)}
+                onKeyDown={(e) => {
+                  const k = TABS.findIndex((x) => x.id === tab);
+                  const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+                  if (!d) return;
+                  const nt = TABS[(k + d + TABS.length) % TABS.length] as (typeof TABS)[number];
+                  setTab(nt.id);
+                  document.getElementById(`ft-${nt.id}`)?.focus();
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <div id="ft-panel" role="tabpanel" aria-labelledby={`ft-${tab}`} className="tab-body">
+            {tab === 'about' && (
+              <>
+                <section className="block" aria-labelledby="what-h">
+                  <h2 id="what-h">What you are seeing</h2>
+                  {named && <p>{named.about}</p>}
+                  <p className="note">
+                    Each square is one SPHEREx exposure of the same {size}′ patch of sky, north up
+                    and east left, centred on the ring. Brighter means more infrared light; the
+                    colours are a display palette, not what the eye would see. Anything that shifts
+                    between exposures either moved on the sky or is a detector effect: the flag line
+                    under the picture says when an exposure is affected at the ring.
+                  </p>
+                </section>
+                <section className="block next" aria-labelledby="next-h">
+                  <h2 id="next-h">Try next</h2>
+                  <ul className="next-list">
+                    <li>
+                      <button className="link" onClick={() => setMode('diff')}>
+                        Show only what changes
+                      </button>
+                      <span className="note"> Each exposure minus the median of all of them.</span>
+                    </li>
+                    <li>
+                      <button className="link" onClick={() => setTab('measure')}>
+                        Measure whether it moves
+                      </button>
+                      <span className="note"> A speed across the sky, with its uncertainty.</span>
+                    </li>
+                    <li>
+                      <button className="link" onClick={() => setTab('spectrum')}>
+                        See its spectrum
+                      </button>
+                      <span className="note"> Brightness at 0.75–5 µm from all six detectors.</span>
+                    </li>
+                    <li>
+                      <button className="link" onClick={() => setShowStars(true)}>
+                        Mark the known stars
+                      </button>
+                      <span className="note">
+                        {' '}
+                        Gaia’s catalogue, moved to each exposure’s date.
+                      </span>
+                    </li>
+                  </ul>
+                  <p className="note">
+                    Keys: Space plays or pauses, ← and → step through the exposures.
+                  </p>
+                </section>
+                <section className="block" aria-labelledby="band-h">
+                  <h2 id="band-h">Why the detector matters</h2>
+                  <p className="note">
+                    SPHEREx has six detectors, D1 (0.75 µm) to D6 (5 µm). One detector is not one
+                    wavelength: its filter changes colour across it, so two {band} exposures can see
+                    this point at different wavelengths. The caption gives the wavelength at the
+                    ring for each exposure, from its own calibration.
+                  </p>
+                </section>
+                {!state && (
+                  <details className="block">
+                    <summary>Playback and framing</summary>
+                    <div className="seg" role="radiogroup" aria-label="Speed">
+                      {SPEEDS.map((s) => (
+                        <button
+                          key={s}
+                          role="radio"
+                          aria-checked={speed === s}
+                          onClick={() => setSpeed(s)}
+                        >
+                          {s} per second
+                        </button>
+                      ))}
+                    </div>
+                    <div className="seg" role="radiogroup" aria-label="Timing">
+                      {(['equal', 'elapsed'] as const).map((t) => (
+                        <button
+                          key={t}
+                          role="radio"
+                          aria-checked={timing === t}
+                          onClick={() => setTiming(t)}
+                        >
+                          {t === 'equal' ? 'Equal steps' : 'Real gaps'}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="note">
+                      {timing === 'equal'
+                        ? 'Every exposure gets the same time on screen, however far apart they were taken.'
+                        : 'Longer pauses where months passed between exposures (at most four steps), quick ones for exposures taken close together. Still not to scale.'}
+                    </p>
+                    <div className="row">
+                      <label className="field">
+                        <span>Field of view</span>
+                        <select
+                          value={size}
+                          onChange={(e) => (
+                            setTarget({ size: Number(e.target.value) }),
+                            setZoom(1)
+                          )}
+                        >
+                          {SIZES.map((s) => (
+                            <option key={s} value={s}>
+                              {s}′ square ({Math.round((s * 60) / 6.15)} pixels across)
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <button aria-pressed={zoom > 1} onClick={() => setZoom(zoom > 1 ? 1 : 2)}>
+                        {zoom > 1 ? 'Fit' : 'Zoom 2×'}
+                      </button>
+                    </div>
+                    <label className="field">
+                      <span>Month</span>
+                      <select
+                        value={month}
+                        onChange={(e) => (setMonth(e.target.value), setIndex(0))}
+                      >
+                        <option value="all">All {inBand.length} exposures</option>
+                        {months.map((m) => (
+                          <option key={m} value={m}>
+                            {m} · {inBand.filter((f) => monthOf(f.mjd) === m).length}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <p className="note" aria-live="polite">
+                      The {baked ? `listing saved on ${baked}` : 'archive'} has {all.length}{' '}
+                      exposures here in all detectors, {inBand.length} in {band}. Loaded {loaded}
+                      {failures ? `, ${failures} failed` : ''}
+                      {fetchAll ? '' : `; only the next ${WINDOW} are fetched`}. Framing is locked:
+                      every exposure is reprojected to the same {size}′ square (one SPHEREx pixel is
+                      6.15″).
+                      {baked && size !== DEFAULT_SIZE
+                        ? ' The saved copy holds 6′ squares; other sizes load from the live archive.'
+                        : ''}
+                    </p>
+                  </details>
+                )}
+              </>
+            )}
+
+            {tab === 'measure' &&
+              (state ? (
+                <p className="note">Measurements need exposures; none are showing.</p>
+              ) : (
+                <MeasurePanel
+                  ra={ra}
+                  dec={dec}
+                  band={band}
+                  list={list}
+                  frames={listFrames}
+                  allLoaded={fetchAll || loaded + failures >= inBand.length}
+                  onLoadAll={() => setFetchAll(true)}
+                />
+              ))}
+
+            {tab === 'spectrum' &&
+              (all.length ? (
+                <SpectrumPanel ra={ra} dec={dec} all={all} />
+              ) : (
+                <p className="note">A spectrum needs the archive listing for this point.</p>
+              ))}
+
+            {tab === 'compare' && (
+              <>
+                <section className="block" aria-labelledby="mode-h">
+                  <h2 id="mode-h">Stacked and Changes</h2>
+                  <p className="note">
+                    <strong>Stacked</strong> shows the median of every loaded exposure: what stays
+                    put, with less noise. <strong>Changes</strong> shows each exposure minus that
+                    median: amber where it is brighter than usual, blue where fainter. A moving star
+                    leaves an amber–blue pair; a star that varies turns amber or blue in place. Both
+                    are display only. The exposures see slightly different wavelengths and blur, so
+                    bright stars always leave some residue: that alone is not a change.
+                  </p>
+                  <div className="row">
+                    <button onClick={() => setMode('stack')}>Show stacked</button>
+                    <button onClick={() => setMode('diff')}>Show changes</button>
+                  </div>
+                </section>
+                {!state && (
+                  <section className="block" aria-labelledby="cmp-h">
+                    <h2 id="cmp-h">Blink two exposures</h2>
+                    {markA && cur && markA.url !== cur.url ? (
+                      <>
+                        <p>
+                          A is {date(markA.mjd)}; B would be this one, {date(cur.mjd)}.
+                        </p>
+                        <div className="row">
+                          <button
+                            className="primary"
+                            onClick={() =>
+                              props.onCompare({
+                                kind: 'archive',
+                                ra,
+                                dec,
+                                band,
+                                a: { url: markA.url, mjd: markA.mjd, um: markA.um },
+                                b: { url: cur.url, mjd: cur.mjd, um: cur.um },
+                                mode: 'blink',
+                                zoom: 1,
+                              })
+                            }
+                          >
+                            Compare these two
+                          </button>
+                          <button className="quiet" onClick={() => setMarkA(null)}>
+                            Clear A
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className="note">
+                          Mark this exposure as A, step to another, then blink them or view them
+                          side by side.
+                        </p>
+                        <button
+                          disabled={!cur}
+                          onClick={() => {
+                            if (!cur) return;
+                            setMarkA(cur);
+                            props.announce(`Marked ${date(cur.mjd)} as A.`);
+                          }}
+                        >
+                          {markA ? 'A is this exposure' : 'Mark as A'}
+                        </button>
+                      </>
+                    )}
+                  </section>
+                )}
+                <section className="block" aria-labelledby="d3-h">
+                  <h2 id="d3-h">3D landscape</h2>
+                  <p className="note">
+                    The same exposures drawn as a landscape, brightness as height. It opens as a
+                    separate page.
+                  </p>
+                  <a
+                    className="button"
+                    href={`flipbook/index.html?${new URLSearchParams({ ra: String(ra), dec: String(dec), band })}`}
+                  >
+                    Open in 3D
+                  </a>
+                </section>
+              </>
+            )}
+
+            {tab === 'sky' && (
+              <Suspense fallback={<p role="status">Loading the sky map…</p>}>
+                <SkyPanel ra={ra} dec={dec} sizeArcmin={size} />
+              </Suspense>
+            )}
+          </div>
 
           <p className="note">
             NASA/IPAC IRSA SPHEREx Level 2 images, reprojected for display (bilinear, median
-            background removed). Not measurements; brightness here is not comparable to the
-            validated numbers in prepared fields.
+            background removed). The picture is not a measurement; the Measure and Spectrum tabs
+            work on the archive pixel values and give their uncertainties.
           </p>
         </div>
       </div>

@@ -3,6 +3,7 @@
 // Display-grade imagery only: bilinear resampling and a median background removed.
 // The five challenge targets also have a pre-baked copy in data/targets/ (scripts/bake_targets.py).
 
+import { divergingRgb } from '../lib/sky.ts';
 import { TARGETS } from './places.ts';
 
 export interface Listed {
@@ -185,12 +186,28 @@ export function makeStretch(median: Float32Array): (x: number) => number {
   };
 }
 
-/** Paint a grid north-up (row 0 of `pix` is south) through a 256-entry palette; no data hatched. */
+/**
+ * One symmetric stretch for a difference image: 0 → 128, ±(99.5th percentile of |value|) → 1 or
+ * 255, linear (divergingRgb adds its own square-root emphasis). NaN → 0.
+ */
+export function makeDiffStretch(img: Float32Array): (x: number) => number {
+  const v = img
+    .filter((x) => !Number.isNaN(x))
+    .map(Math.abs)
+    .sort();
+  const span = q(v, 0.995) || 1;
+  return (x) => (Number.isNaN(x) ? 0 : 128 + Math.round(127 * Math.max(-1, Math.min(1, x / span))));
+}
+
+/**
+ * Paint a grid as the API builds it (row 0 north, column 0 east), so north is up and east left,
+ * through a 256-entry palette or the diverging difference scale; no data hatched.
+ */
 export function paintFrame(
   c: HTMLCanvasElement,
-  f: LiveFrame,
+  f: { n: number; pix: Float32Array },
   stretch: (x: number) => number,
-  map: Uint8Array,
+  map: Uint8Array | 'diverging',
 ) {
   const { n, pix } = f;
   c.width = n;
@@ -200,9 +217,10 @@ export function paintFrame(
   const img = ctx.createImageData(n, n);
   for (let row = 0; row < n; row++)
     for (let col = 0; col < n; col++) {
-      const s = stretch(pix[(n - 1 - row) * n + col] as number);
+      const s = stretch(pix[row * n + col] as number);
       const o = (row * n + col) * 4;
       if (s === 0) img.data.set((row + col) & 1 ? [44, 42, 40] : [24, 23, 22], o);
+      else if (map === 'diverging') img.data.set(divergingRgb(s), o);
       else {
         const k = Math.round(((s - 1) * 255) / 254) * 3;
         img.data.set([map[k] ?? 0, map[k + 1] ?? 0, map[k + 2] ?? 0], o);
