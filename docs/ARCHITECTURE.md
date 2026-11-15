@@ -44,7 +44,7 @@ results; it never decides scientific compatibility.
 | Live lookup | `api/index.py` (FastAPI) | optional Vercel FastAPI function: live exposure counts and newest release date from IRSA SIA2 | proxy images, keep state |
 | Live archive | `api/observations.mjs`, `api/cutout.mjs` (shared helpers in `api/_sia.mjs`) | optional Vercel functions: the SIA2 exposure list at a position (≤ 1000 rows); one IRSA cutout (≤ 0.1°) of an allow-listed SPHEREx L2 file, with the 4 MB PSF table dropped | fetch any URL outside `irsa.ipac.caltech.edu/ibe/data/spherex/{dr1,qr3}/level2/`, keep state |
 | Sky atlas | `web/src/features/atlas/` | lazy page `#/atlas`: all-sky pan/zoom over IRSA's SPHEREx HiPS cube (display tiles, or float32 cube planes by HTTP Range), wavelength slider, colour maps, RGB composites, the SIA2 list and a cutout inspector; state in the URL hash | invent coverage, treat cube layers as epochs |
-| Sky Flipbook | `data/flipbook/index.html` (three.js from jsDelivr, iframed by the `#/flipbook` tab) + `/api/spherex` in `api/index.py` (logic in `api/_spherex.py`) | plays every SPHEREx DR1 cutout of a position, reprojected north-up and background-subtracted server-side; standalone experiment, not manifest-backed | validate pairs via `assess_compatibility()`; needs the function deployed |
+| Sky Flipbook | `data/flipbook/index.html` (three.js from jsDelivr, iframed by the `#/flipbook` tab) + `/api/spherex` in `api/index.py` (logic in `api/_spherex.py`) | plays every SPHEREx DR1 cutout of a position, reprojected north-up and background-subtracted server-side, inset at true scale on the coloured DR1 all-sky HiPS atlas (`data/flipbook/atlas.js`, a static coadd backdrop with no time axis); standalone experiment, not manifest-backed | validate pairs via `assess_compatibility()`; needs the function deployed |
 | Web libs | `web/src/lib/` | `checkPair` (reads the pipeline verdict for an A/B pair; never recomputes it), readable dates, manifest/index parsing, TAN pixel↔sky for display, σ decoding, image cache | |
 
 Python modules are flat files rather than subpackages; split a module only when it outgrows one
@@ -72,7 +72,8 @@ SPHEREx Level 2 URL, and answer with what IRSA returned. Their failure, or a hos
 functions, degrades to an explicit "not available on this deployment" message plus a direct IRSA
 link. The sky atlas's map itself needs no function: IRSA serves the HiPS tiles with CORS, and the
 numeric cube is read from IRSA's public S3 copy (CORS open). `npm run dev` and `npm run preview`
-mount the Node functions locally (`web/vite.config.ts`); the Python function runs only on Vercel.
+mount the Node functions locally (`web/vite.config.ts`); the Python function runs only on Vercel,
+so local dev proxies `/api/sia` and `/api/spherex` to https://nsah2026.vercel.app.
 Disposable caches live in `.cache/` outside
 `data/`, so they cannot be published by accident.
 

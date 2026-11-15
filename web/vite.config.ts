@@ -22,8 +22,15 @@ function localApi(): Plugin {
   return { name: 'parallax-local-api', configureServer: mount, configurePreviewServer: mount };
 }
 
+// api/index.py (Python) can't run inside Vite, so local dev forwards its two routes to the deployed function.
+const pythonApi = {
+  '^/api/(sia|spherex)': { target: 'https://nsah2026.vercel.app', changeOrigin: true },
+};
+
 export default defineConfig({
   plugins: [react(), localApi()],
+  server: { proxy: pythonApi },
+  preview: { proxy: pythonApi },
   // Relative base so dist/ works from any static host path (e.g. GitHub Pages project URL).
   base: './',
   // data/ holds only validated, publishable products; disposable caches live in .cache/.

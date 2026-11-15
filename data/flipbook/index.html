@@ -50,7 +50,15 @@
   </form>
   <div class="row">
     <label>Detector band <select id="band" disabled></select></label>
+    <label>Colours <select id="cmap">
+      <option value="inferno">Inferno</option><option value="viridis">Viridis</option><option value="grey">Grey</option>
+    </select></label>
+    <label>Sky overhead <select id="field">
+      <option value="0.1">6′ (patch only)</option><option value="0.5" selected>0.5°</option><option value="1">1°</option>
+    </select></label>
   </div>
+  <p id="legend">Backdrop: the SPHEREx all-sky atlas (a coadd of every DR1 exposure, so it does not change with time).
+    Centre square: the individual exposures, in time order. Both are display stretches, not measurements.</p>
 </div>
 
 <div class="panel" id="bottom">
@@ -60,7 +68,7 @@
     <button id="up" title="Point the view at the target">Look at target</button>
   </div>
   <input id="slider" type="range" min="0" max="0" value="0" disabled aria-label="Frame">
-  <div class="meta"><span id="date">—</span><span>6′ SPHEREx patch magnified to fill the sky · red marks = target</span></div>
+  <div class="meta"><span id="date">—</span><span id="scale">red marks = target</span></div>
   <p id="status" role="status"></p>
 </div>
 
@@ -68,6 +76,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Water } from 'three/addons/objects/Water.js';
+import { backdrop, hatch, lut, wavelengths } from './atlas.js';
 
 const PRESETS = {
   // [ra, dec, band]. Fast movers use SIMBAD positions propagated to late 2025 (SPHEREx DR1 epoch), so they sit
@@ -78,7 +87,8 @@ const PRESETS = {
   'RW Aurigae': ['05h07m49.54s', '+30d24m05.1s', 'D1'],
   'R Draconis': ['16h32m40.18s', '+66d45m18.0s', 'D1'],
 };
-const MAX_FRAMES = 40, CONCURRENCY = 6;
+// 12 parallel cutouts: measured 5.6 s for a cold 39-frame band vs 8.4 s at 6 (2026-11-14, production).
+const MAX_FRAMES = 40, CONCURRENCY = 12;
 const $ = id => document.getElementById(id);
 
 // ---------------- 3D scene ----------------
@@ -164,24 +174,25 @@ for (let tries = 0; placed < TREES && tries < TREES * 20; tries++) {
 canopy.count = trunk.count = placed;
 scene.add(canopy, trunk);
 
-// Sky: the SPHEREx frame on a sky sphere, azimuthal-equidistant around the image centre (= target).
-// Unrotated, the target is at the zenith with north toward -z and east toward +x, as the real sky looks from below.
-// The sphere is then tilted toward the south (the direction you face), so the target sits SKY_ALT degrees up
-// and still reads north-up/east-left on screen. The frame canvas has a 1 px black border so the parts of the
-// sphere beyond the image (clamped to the edge) stay black.
-const R = 1500, PIX = 59, SKY_ALT = 40;
+// Sky: one canvas (atlas backdrop + the current exposure inset at the centre) on a sky sphere, azimuthal-equidistant
+// around the target. The canvas centre is the zenith and its edge the nadir, so the overhead hemisphere shows a
+// disc `field` degrees across (canvas radius = field). Unrotated, north is toward -z and east toward +x, as the
+// real sky looks from below. The sphere is then tilted toward the south (the direction you face), so the target
+// sits SKY_ALT degrees up and still reads north-up/east-left on screen.
+const R = 1500, SKY_ALT = 40, SKY_PX = 1024, PIX_ARCSEC = 6.15;  // flipbook cutouts: 6.15″ pixels (api/_spherex.py)
 const frameCanvas = document.createElement('canvas');
-frameCanvas.width = frameCanvas.height = PIX + 2;
+frameCanvas.width = frameCanvas.height = SKY_PX;
 const fctx = frameCanvas.getContext('2d');
-fctx.fillStyle = '#000'; fctx.fillRect(0, 0, PIX + 2, PIX + 2);
+fctx.fillStyle = '#05070d'; fctx.fillRect(0, 0, SKY_PX, SKY_PX);
+fctx.imageSmoothingEnabled = false;  // show exposure pixels as pixels
 const skyTex = new THREE.CanvasTexture(frameCanvas);
 skyTex.colorSpace = THREE.SRGBColorSpace;
 const sky = new THREE.SphereGeometry(R, 128, 64);
-const sp = sky.attributes.position, suv = sky.attributes.uv, k = PIX / (PIX + 2);
+const sp = sky.attributes.position, suv = sky.attributes.uv;
 for (let i = 0; i < sp.count; i++) {
   const x = sp.getX(i), y = sp.getY(i), z = sp.getZ(i), h = Math.hypot(x, z);
-  const r = 0.5 * Math.acos(Math.min(1, Math.max(-1, y / R))) / (Math.PI / 2);  // 0 at image centre, 0.5 at image edge
-  suv.setXY(i, h ? 0.5 - k * r * x / h : 0.5, h ? 0.5 - k * r * z / h : 0.5);
+  const r = 0.5 * Math.acos(Math.min(1, Math.max(-1, y / R))) / Math.PI;  // 0 at the zenith, 0.25 at the horizon
+  suv.setXY(i, h ? 0.5 - r * x / h : 0.5, h ? 0.5 - r * z / h : 0.5);
 }
 const skyGroup = new THREE.Group();
 skyGroup.rotation.x = THREE.MathUtils.degToRad(90 - SKY_ALT);
@@ -230,7 +241,7 @@ $('hide').onclick = () => {
 };
 
 // ---------------- SPHEREx data ----------------
-let target = null, byBand = {}, shown = [], gen = 0, timer = null, wantBand = null;
+let target = null, byBand = {}, shown = [], raw = [], gen = 0, timer = null, wantBand = null;
 
 function go(ra, dec, band) { $('ra').value = ra; $('dec').value = dec; wantBand = band; $('search').requestSubmit(); }
 for (const [name, [ra, dec, band]] of Object.entries(PRESETS)) {
@@ -242,10 +253,14 @@ for (const [name, [ra, dec, band]] of Object.entries(PRESETS)) {
 const status = t => $('status').textContent = t;
 const mjdToDate = mjd => new Date((mjd - 40587) * 864e5).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
 
+// A host without the /api/spherex function (GitHub Pages, a plain static server) answers with an HTML page,
+// sometimes with status 200, so a non-JSON body means "not available here", never an empty result.
 async function getJSON(url) {
   const r = await fetch(url);
-  const d = await r.json().catch(() => ({ error: `HTTP ${r.status}` }));
-  if (!r.ok) throw new Error(d.error);
+  const d = await r.json().catch(() => null);
+  if (!d) throw new Error(`the live archive lookup is not available on this deployment (HTTP ${r.status}). ` +
+                          'It runs on https://nsah2026.vercel.app/#/flipbook and in npm run dev.');
+  if (!r.ok || d.error) throw new Error(d.error ?? `HTTP ${r.status}`);
   return d;
 }
 
@@ -255,6 +270,7 @@ $('search').onsubmit = async e => {
   status('Searching IRSA for SPHEREx images…');
   try {
     const d = await getJSON(`/api/spherex?ra=${encodeURIComponent($('ra').value)}&dec=${encodeURIComponent($('dec').value)}`);
+    if (!Array.isArray(d.frames)) throw new Error('unexpected response from the archive lookup');
     target = d; byBand = {};
     for (const f of d.frames) (byBand[f.band] ||= []).push(f);
     const bands = Object.keys(byBand).sort();
@@ -275,23 +291,29 @@ $('band').onchange = () => {
 };
 
 async function loadBand() {
-  stop(); setControls(false);
+  stop(); setControls(false); raw = []; shown = []; $('slider').value = 0;
+  drawBackdrop();
   const g = ++gen, all = byBand[$('band').value];
   // Even sample in time order keeps request count bounded for heavily observed fields (e.g. near the ecliptic poles).
   const list = all.length <= MAX_FRAMES ? all : Array.from({ length: MAX_FRAMES }, (_, i) => all[Math.round(i * (all.length - 1) / (MAX_FRAMES - 1))]);
   const results = new Array(list.length);
-  let done = 0, failed = 0, next = 0;
+  let done = 0, failed = 0, next = 0, painted = 0;
+  const loaded = () => results.map((r, k) => r && { ...r, mjd: list[k].mjd }).filter(Boolean);
   status(`Loading ${list.length} images…`);
   await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
     while (next < list.length && g === gen) {
       const k = next++, f = list[k];
       try { results[k] = await getJSON(`/api/spherex?ra=${target.ra}&dec=${target.dec}&url=${encodeURIComponent(f.url)}`); }
       catch { failed++; }
-      if (g === gen) status(`Loading images… ${++done}/${list.length}`);
+      if (g !== gen) break;
+      status(`Loading images… ${++done}/${list.length} (brightness scale settles once all are in)`);
+      // Show what has arrived instead of waiting for the slowest cutout; re-rendering is cheap, so throttle lightly.
+      const now = loaded();
+      if (now.length && performance.now() - painted > 400) { painted = performance.now(); render(now); }
     }
   }));
   if (g !== gen) return;
-  const frames = results.map((r, k) => r && { ...r, mjd: list[k].mjd }).filter(Boolean);
+  const frames = loaded();
   if (!frames.length) return status('Could not load any images (IRSA may be busy). Try again.');
   render(frames);
   status(`${frames.length} images, ${mjdToDate(frames[0].mjd).slice(0, 10)} → ${mjdToDate(frames.at(-1).mjd).slice(0, 10)}` +
@@ -301,6 +323,8 @@ async function loadBand() {
 // One shared brightness scale across all frames, so real brightness changes stay visible. The scale comes from the
 // per-pixel median image: cosmic-ray hits appear in one frame only, so they can't blow out the stretch.
 function render(frames) {
+  raw = frames;
+  const map = lut($('cmap').value);
   const med = frames[0].pix.map((_, i) => {
     const v = frames.map(f => f.pix[i]).filter(x => x !== null).sort((a, b) => a - b);
     return v.length ? v[v.length >> 1] : null;
@@ -308,25 +332,63 @@ function render(frames) {
   const vals = med.filter(v => v !== null).sort((a, b) => a - b);
   // Black point at the median: background noise goes dark so the magnified sky reads as night with stars.
   const lo = vals[Math.floor(vals.length * 0.5)], hi = vals[Math.floor(vals.length * 0.997)];
+  // Each exposure is coloured once into its own small canvas, so playback only blits pre-made images.
   shown = frames.map(f => {
     const im = new ImageData(f.n, f.n);
     f.pix.forEach((v, i) => {
       const g = v === null ? 0 : Math.round(255 * Math.sqrt(Math.min(1, Math.max(0, (v - lo) / (hi - lo)))));
-      im.data.set(v === null ? [4, 6, 12, 255] : [g, g, Math.min(255, g + 10), 255], i * 4);
+      im.data.set(v === null ? [...hatch(i, f.n), 255] : [map[g * 3], map[g * 3 + 1], map[g * 3 + 2], 255], i * 4);
     });
-    return { mjd: f.mjd, im };
+    const cv = Object.assign(document.createElement('canvas'), { width: f.n, height: f.n });
+    cv.getContext('2d').putImageData(im, 0, 0);
+    return { mjd: f.mjd, cv, n: f.n };
   });
   $('slider').max = shown.length - 1;
   setControls(true);
-  show(0);
+  show(Math.min(+$('slider').value, shown.length - 1));
+}
+
+// The atlas layer for the selected band: its middle channel (frame = 17·(band−1) + 8). SPHEREx filters vary across
+// the detector, so an exposure's own wavelength at the target can differ from this layer's.
+let back = null, backGen = 0;
+async function drawBackdrop() {
+  if (!target) return;
+  const g = ++backGen, band = +$('band').value.replace(/\D/g, ''), frame = 17 * (band - 1) + 8, field = +$('field').value;
+  back = null; paint();
+  try {
+    const [im, um] = await Promise.all([backdrop(SKY_PX, target.ra, target.dec, field, frame, lut($('cmap').value)), wavelengths()]);
+    if (g !== backGen) return;
+    back = Object.assign(document.createElement('canvas'), { width: SKY_PX, height: SKY_PX });
+    back.getContext('2d').putImageData(im, 0, 0);
+    $('legend').textContent = `Backdrop: SPHEREx DR1 all-sky atlas at ${um[frame]?.toFixed(2) ?? '?'} µm (middle of band D${band}; ` +
+      'a coadd of every exposure, so it does not change with time). Centre square: the individual exposures in time order. ' +
+      'Both are display stretches, not measurements.';
+    paint();
+  } catch (err) { if (g === backGen) $('legend').textContent = `Atlas backdrop unavailable (${err.message}); showing exposures only.`; }
+}
+
+function paint() {
+  fctx.fillStyle = '#05070d'; fctx.fillRect(0, 0, SKY_PX, SKY_PX);
+  if (back) fctx.drawImage(back, 0, 0);
+  const f = shown[+$('slider').value];
+  if (f) {  // the exposure at its true angular size: n pixels × 6.15″ over a canvas whose radius is `field` degrees
+    const s = (f.n * PIX_ARCSEC / 3600) / (2 * +$('field').value) * SKY_PX;
+    fctx.drawImage(f.cv, (SKY_PX - s) / 2, (SKY_PX - s) / 2, s, s);
+  }
+  skyTex.needsUpdate = true;
 }
 
 function show(k) {
-  fctx.putImageData(shown[k].im, 1, 1);  // inside the black border
-  skyTex.needsUpdate = true;
   $('slider').value = k;
+  paint();
   $('date').textContent = `${mjdToDate(shown[k].mjd)} · ${k + 1}/${shown.length}`;
 }
+$('cmap').onchange = () => { drawBackdrop(); if (raw.length) render(raw); };
+$('field').onchange = () => {
+  $('scale').textContent = `${$('field').selectedOptions[0].text} of sky overhead · red marks = target`;
+  drawBackdrop();
+};
+$('field').onchange();
 function setControls(on) { for (const id of ['play', 'blink', 'slider']) $(id).disabled = !on; }
 function stop() { clearInterval(timer); timer = null; $('play').textContent = '▶ Play'; }
 function run(step, ms) { stop(); let k = +$('slider').value; timer = setInterval(() => show(k = step(k)), ms); }
