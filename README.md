@@ -21,6 +21,14 @@ is an unconfirmed lead that needs an independent detection.
   pre-baked into `data/targets/` (`scripts/bake_targets.py`) so they play on a static host;
   other positions need the `/api/spherex` function. A 3D landscape view opens the same point in
   `flipbook/index.html`. The earlier explorer pages are at `classic.html` ("Deep dive").
+- **Flipbook tools.** Playback sits under the picture (Space plays, ← → step). The picture
+  switches between each exposure, a median stack, and changes (each exposure minus the stack,
+  amber brighter, blue fainter). Gaia DR3 stars can be marked at each exposure's date (context
+  only). Tabs: *Measure* fits a motion with uncertainties from per-exposure centroids and plots a
+  light curve; *Spectrum* measures the point in up to six exposures per detector at each one's
+  own wavelength (needs the API); *Compare* blinks two exposures; *Sky* opens Aladin Lite with
+  SPHEREx or WISE imagery and Gaia/AllWISE markers. Each result exports as JSON with its method
+  and provenance. Methods and limits: `docs/SCIENCE.md`, assumptions 16–19.
 - **Real data.** Two curated fields of SPHEREx Level 2 spectral images from IRSA, each with
   10 epochs from DR1 and QR3 over 12 to 17 months, selected so every epoch samples the same
   wavelength (±0.25%) on the same detector:
