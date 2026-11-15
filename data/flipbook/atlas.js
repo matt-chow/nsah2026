@@ -26,6 +26,16 @@ export function lut(name) {
 }
 /** Missing data: the atlas's two-tone hatch, so it can't be mistaken for a measured zero (black). */
 export const hatch = (i, w) => ((((i % w) + Math.floor(i / w)) >> 2) & 1 ? [34, 28, 38] : [58, 46, 62]);
+/** Packed levels (0 = no data, else display level + 1) into RGBA through a lookup table; no data is hatched. */
+export function colour(levels, map, rgba, w) {
+  for (let i = 0; i < levels.length; i++) {
+    const b = levels[i], h = b ? null : hatch(i, w);
+    rgba[i * 4] = b ? map[(b - 1) * 3] : h[0];
+    rgba[i * 4 + 1] = b ? map[(b - 1) * 3 + 1] : h[1];
+    rgba[i * 4 + 2] = b ? map[(b - 1) * 3 + 2] : h[2];
+    rgba[i * 4 + 3] = 255;
+  }
+}
 
 // HEALPix NESTED ang2pix split into face and (ix, iy) (Górski et al. 2005).
 function xyf(z, tt, sth, out) {
@@ -80,10 +90,10 @@ function tile(npix, frame) {
 }
 
 /**
- * The atlas layer `frame` as a size×size ImageData centred on (ra, dec), north up and east left, in the
- * azimuthal-equidistant projection the flipbook's sky sphere uses: the canvas edge is `radiusDeg` from the centre.
+ * The atlas layer `frame` as size×size packed display levels (see colour) centred on (ra, dec), north up and east
+ * left, azimuthal-equidistant: the middle of each canvas edge is `radiusDeg` from the centre.
  */
-export async function backdrop(size, ra, dec, radiusDeg, frame, map) {
+export async function backdrop(size, ra, dec, radiusDeg, frame) {
   const n = size * size, slot = new Int32Array(n), off = new Int32Array(n), ids = [], o = new Int32Array(3);
   const sd0 = Math.sin(dec * DEG), cd0 = Math.cos(dec * DEG), scale = (2 * radiusDeg * DEG) / size;
   for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
@@ -99,13 +109,7 @@ export async function backdrop(size, ra, dec, radiusDeg, frame, map) {
     off[x + y * size] = (o[1] % W) * W + (o[2] % W);  // PNG tile row = ix, column = iy (see healpix.ts tileOffset)
   }
   const data = await Promise.all(ids.map(id => tile(id, frame)));
-  const im = new ImageData(size, size), px = im.data;
-  for (let i = 0; i < n; i++) {
-    const b = data[slot[i]]?.[off[i]] ?? 0, h = b ? null : hatch(i, size);
-    px[i * 4] = b ? map[(b - 1) * 3] : h[0];
-    px[i * 4 + 1] = b ? map[(b - 1) * 3 + 1] : h[1];
-    px[i * 4 + 2] = b ? map[(b - 1) * 3 + 2] : h[2];
-    px[i * 4 + 3] = 255;
-  }
-  return im;
+  const levels = new Uint8Array(n);
+  for (let i = 0; i < n; i++) levels[i] = data[slot[i]]?.[off[i]] ?? 0;
+  return levels;
 }
