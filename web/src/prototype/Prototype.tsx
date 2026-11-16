@@ -3,7 +3,7 @@ import { frameNear, loadProperties, type CubeInfo } from '../features/atlas/hips
 import { loadIndex, loadManifest } from '../lib/manifest.ts';
 import { formatDec, formatRa } from '../lib/sky.ts';
 import type { FieldSummary, Manifest } from '../types/manifest.ts';
-import { Dock, Locator } from './Dock.tsx';
+import { Dock, Locator, PlanetariumWindow } from './Dock.tsx';
 import { useEscape } from './escape.ts';
 import type { Challenge, Rect } from './Inspect.tsx';
 import {
@@ -17,6 +17,7 @@ import {
   type Target,
 } from './places.ts';
 import { clampView, easeInOut, flight, separation, toScreen, type View } from './projection.ts';
+import { DEFAULT_SIZE, SIZES } from './live.ts';
 import { parseRoute, routeHash, type Route } from './route.ts';
 import { PALETTES, SkyDome, type DomeStatus, type Palette } from './SkyDome.tsx';
 import { play, setSound } from './sound.ts';
@@ -33,6 +34,7 @@ import {
   type CuratedCompare,
   type FlipTarget,
   type Note,
+  type Pin,
   type Session,
 } from './store.ts';
 
@@ -46,8 +48,8 @@ const ArchiveCompare = lazy(() =>
 
 type Panel = 'search' | 'light' | null;
 const LABEL: Record<Route, string> = {
-  welcome: 'Return to sky',
-  sky: 'Return to sky',
+  welcome: 'Return to Sky',
+  sky: 'Return to Sky',
   flipbook: 'Back to Flipbook',
   analysis: 'Back to analysis',
   spacecraft: 'Back to Spacecraft',
@@ -88,14 +90,18 @@ const query = new URLSearchParams(typeof location === 'undefined' ? '' : locatio
 const qRa = parseAngle(query.get('ra') ?? '', true);
 const qDec = parseAngle(query.get('dec') ?? '', false);
 const qBand = query.get('band') ?? '';
+const qSize = Number(query.get('fov'));
 const landing = TARGETS[0] as Target;
 const linkedFlip: FlipTarget | null =
   qRa !== null && qDec !== null
     ? {
         ra: qRa,
         dec: qDec,
-        label: 'Linked coordinates',
+        label:
+          TARGETS.find((t) => Math.abs(t.ra - qRa) < 1e-3 && Math.abs(t.dec - qDec) < 1e-3)?.name ??
+          'Linked coordinates',
         band: /^D[1-6]$/.test(qBand) ? qBand : 'D1',
+        ...(SIZES.includes(qSize) ? { size: qSize } : {}),
       }
     : null;
 const firstRoute: Route =
@@ -127,6 +133,9 @@ export function Prototype() {
   const [from, setFrom] = useState<Rect | null>(null);
   const [compare, setCompare] = useState<Compare | null>(resume?.compare ?? null);
   const [reopened, setReopened] = useState<CuratedCompare | null>(null);
+  const [pins, setPins] = useState<Pin[]>(resume?.pins ?? []);
+  // whatever had focus when the Deep Dive opened gets it back on the way out
+  const entryFocus = useRef<HTMLElement | null>(null);
   const [flip, setFlip] = useState<FlipTarget | null>(firstFlip ?? resume?.flip ?? null);
   const [mounted, setMounted] = useState<Set<Route>>(() => new Set([firstRoute]));
   const [dockOpen, setDockOpen] = useState(
@@ -174,6 +183,7 @@ export function Prototype() {
   const go = useCallback((r: Route, replace = false) => {
     const cur = navRef.current;
     if (r === cur.route) return;
+    if (r === 'analysis') entryFocus.current = document.activeElement as HTMLElement | null;
     const st = { route: r, from: replace ? cur.from : cur.route };
     if (replace) history.replaceState(st, '', routeHash(r));
     else history.pushState(st, '', routeHash(r));
@@ -181,17 +191,17 @@ export function Prototype() {
     setMounted((s) => (s.has(r) ? s : new Set(s).add(r)));
     setPanel(null);
   }, []);
-  // the Flipbook's point is shareable as ?ra=&dec=&band=; other views drop it (it would win on reload)
+  // the Flipbook's point is shareable as ?ra=&dec=&band=&fov= (the Flipbook adds its own view
+  // params); other views drop them all (they would win on reload)
   useEffect(() => {
     const u = new URL(location.href);
-    u.search =
-      route === 'flipbook' && flip
-        ? new URLSearchParams({
-            ra: flip.ra.toFixed(5),
-            dec: flip.dec.toFixed(5),
-            band: flip.band,
-          }).toString()
-        : '';
+    if (route === 'flipbook' && flip) {
+      u.searchParams.set('ra', flip.ra.toFixed(5));
+      u.searchParams.set('dec', flip.dec.toFixed(5));
+      u.searchParams.set('band', flip.band);
+      if (flip.size && flip.size !== DEFAULT_SIZE) u.searchParams.set('fov', String(flip.size));
+      else u.searchParams.delete('fov');
+    } else u.search = '';
     if (u.href !== location.href) history.replaceState(history.state, '', u);
   }, [route, flip]);
   /** Contextual back: to the view this one was opened from, through history when it matches. */
@@ -250,6 +260,41 @@ export function Prototype() {
     return () => ac.abort();
   }, [manifestId, manifests]);
   const manifest = manifestId ? manifests[manifestId] : undefined;
+  // a pinned spot from another field needs that field's manifest for the side-by-side view
+  const pinFields = [
+    ...new Set(pins.flatMap((p) => (p.kind === 'candidate' ? [p.manifestId] : []))),
+  ].filter((id) => id !== manifestId && !manifests[id]);
+  const pinKey = pinFields.join(',');
+  useEffect(() => {
+    if (!pinKey) return;
+    const ac = new AbortController();
+    for (const id of pinKey.split(','))
+      loadManifest(`manifests/${id}.json`, ac.signal).then(
+        (m) => setManifests((s) => ({ ...s, [id]: m })),
+        () => !ac.signal.aborted && setManifests((s) => ({ ...s, [id]: 'error' })),
+      );
+    return () => ac.abort();
+  }, [pinKey]);
+  // back on the view it came from, focus returns to the control that opened the Deep Dive
+  const lastRoute = useRef(route);
+  useEffect(() => {
+    if (lastRoute.current === 'analysis' && route !== 'analysis') {
+      const el = entryFocus.current;
+      requestAnimationFrame(() => {
+        // the place card remounts while the Deep Dive is open: find its button again by label
+        const again =
+          el?.isConnected || el?.tagName !== 'BUTTON'
+            ? el
+            : [...document.querySelectorAll<HTMLElement>('.proto button')].find(
+                (b) => b.offsetParent !== null && b.textContent === el.textContent,
+              );
+        if (again?.isConnected && again.offsetParent !== null) again.focus({ preventScroll: true });
+        // the opener is gone (the Flipbook's compare button, say): land on the current view in the dock
+        else document.querySelector<HTMLElement>('.dock [aria-current="page"]')?.focus();
+      });
+    }
+    lastRoute.current = route;
+  }, [route]);
 
   // session: saved quietly whenever the camera settles or the selection changes
   const session = (): Session => ({
@@ -261,6 +306,7 @@ export function Prototype() {
     epoch: 0,
     compare,
     flip,
+    pins,
   });
   const sessionRef = useRef(session);
   useEffect(() => {
@@ -270,7 +316,7 @@ export function Prototype() {
     if (route === 'welcome' || moving) return;
     const t = setTimeout(() => writeSession(sessionRef.current()), 400);
     return () => clearTimeout(t);
-  }, [route, moving, view, frame, palette, place, compare, flip]);
+  }, [route, moving, view, frame, palette, place, compare, flip, pins]);
 
   const announce = useCallback((s: string) => {
     setAnnouncement('');
@@ -390,6 +436,8 @@ export function Prototype() {
       setArrived(true);
       setReopened(c);
     } else setReopened(null);
+    if (c.palette && PALETTES.some((p) => p.id === c.palette)) setPalette(c.palette as Palette);
+    if (c.pins) setPins(c.pins);
     setCompare(c);
     setFrom(null);
     go('analysis');
@@ -477,6 +525,37 @@ export function Prototype() {
     go('flipbook');
   }
 
+  /**
+   * The dock's Deep Dive: the investigation already open, else the prepared field in view
+   * (on the sky, or under the Flipbook's target), else a page that says what can be opened.
+   */
+  const [wantDeep, setWantDeep] = useState<Place | null>(null);
+  function openDeepDive() {
+    const near = (ra: number, dec: number) =>
+      PLACES.find((p) => p.field && separation({ ra, dec, fov: 1 }, placeView(p)) < 0.3);
+    const p =
+      route === 'flipbook' && flip ? near(flip.ra, flip.dec) : place?.field ? place : undefined;
+    if (compare && (!p || (compare.kind === 'curated' && compare.placeId === p.id)))
+      return go('analysis');
+    if (p) {
+      setPlace(p);
+      setArrived(true);
+      setFrom(null);
+      setReopened(null);
+      setWantDeep(p);
+    } else setCompare(null);
+    go('analysis');
+  }
+  // once the field's manifest arrives (loaded by the effect above), open it; adjusting state
+  // during render avoids an extra effect pass
+  const wantM = wantDeep?.field ? manifests[wantDeep.field.manifest] : undefined;
+  if (wantDeep && wantM && wantM !== 'error') {
+    setWantDeep(null);
+    setCompare((c) =>
+      c?.kind === 'curated' && c.placeId === wantDeep.id ? c : freshCompare(wantDeep, wantM),
+    );
+  }
+
   function requestInspect(p: Place, ch: Challenge = null) {
     const target = framed(p);
     setChallenge(ch);
@@ -508,11 +587,6 @@ export function Prototype() {
   const placeCard = route === 'sky' && !!place && arrived && !panel;
   useEscape(placeCard, () => setPlace(null));
 
-  // analysis needs something to analyse; an empty one (e.g. a stale link) falls back to the sky
-  useEffect(() => {
-    if (route === 'analysis' && !compare) go('sky', true);
-  }, [route, compare, go]);
-
   if (route === 'welcome')
     return <Welcome saved={saved} supported={supported} reduced={reduced} onStart={start} />;
 
@@ -526,7 +600,14 @@ export function Prototype() {
     compare?.kind === 'curated' ? PLACES.find((p) => p.id === compare.placeId) : undefined;
   const saveCheck =
     reopened && manifest && manifest !== 'error' ? checkSaved(reopened, manifest) : null;
-  const backLabel = LABEL[nav.from && nav.from !== 'welcome' ? nav.from : 'sky'];
+  const origin: Route = nav.from && nav.from !== 'welcome' ? nav.from : 'sky';
+  const backLabel = LABEL[origin];
+  const originLabel = origin === 'sky' ? null : LABEL[origin];
+  const pin = (p: Pin) => {
+    setPins((ps) => (ps.some((x) => x.id === p.id) ? ps : [...ps, p].slice(-8)));
+    announce(`Pinned ${p.label}.`);
+  };
+  const unpin = (id: string) => setPins((ps) => ps.filter((x) => x.id !== id));
 
   return (
     <div
@@ -539,7 +620,7 @@ export function Prototype() {
           Parallax
         </button>
         <p className="where" aria-live="polite">
-          {where}
+          {route === 'flipbook' && flip ? flip.label : where}
         </p>
         <nav className="tools" aria-label="Tools">
           {route === 'sky' && (
@@ -991,6 +1072,18 @@ export function Prototype() {
               palette={palette}
               reduced={reduced}
               onTarget={setFlip}
+              planetarium={
+                <PlanetariumWindow
+                  target={flip ?? flipHere()}
+                  frame={frame}
+                  palette={palette}
+                  onOpen={(t) => {
+                    setPlace(null);
+                    go('sky');
+                    fly({ ra: t.ra, dec: t.dec, fov: 20 });
+                  }}
+                />
+              }
               onCompare={(c) => {
                 setCompare(c);
                 setReopened(null);
@@ -1018,7 +1111,7 @@ export function Prototype() {
         </div>
       )}
 
-      {route !== 'sky' && route !== 'analysis' && (
+      {route !== 'sky' && route !== 'analysis' && route !== 'flipbook' && (
         <Locator
           view={view}
           frame={frame}
@@ -1066,13 +1159,18 @@ export function Prototype() {
                 onChallenge={setChallenge}
                 announce={announce}
                 onSave={save}
-                returnLabel={backLabel}
-                onReturn={(then) => {
+                manifests={manifests}
+                pins={pins}
+                onPin={pin}
+                onUnpin={unpin}
+                originLabel={originLabel}
+                onReturn={(to) => {
                   setChallenge(null);
-                  if (then === 'wavelengths') {
+                  if (to === 'wavelengths') {
                     go('sky');
                     setPanel('light');
-                  } else leave();
+                  } else if (to === 'sky' && origin !== 'sky') go('sky');
+                  else leave();
                 }}
               />
             </Suspense>
@@ -1086,18 +1184,68 @@ export function Prototype() {
           </div>
         ))}
 
+      {route === 'analysis' && !compare && (
+        <div className="inspect inspect-loading ws-empty" role="region" aria-labelledby="dd-h">
+          {wantDeep ? (
+            <p role="status">
+              {wantDeep.field && manifests[wantDeep.field.manifest] === 'error'
+                ? `The prepared data for ${wantDeep.name} could not be loaded.`
+                : `Loading the prepared data for ${wantDeep.name}…`}
+            </p>
+          ) : (
+            <>
+              <h1 id="dd-h" tabIndex={-1}>
+                Nothing open in the Deep Dive
+              </h1>
+              <p>
+                {nav.from === 'flipbook'
+                  ? 'The Flipbook’s target has no prepared SPHEREx data, so there is nothing here to measure. You can still browse it: in the Flipbook, mark two exposures and choose Compare these two.'
+                  : 'The Deep Dive opens a prepared field, where SPHEREx visits have been aligned and measured, or a pair of live archive exposures from the Flipbook to browse.'}
+              </p>
+              <p className="note">
+                Prepared fields: {PLACES.filter((p) => p.field).length}. They are a small sample,
+                not the whole survey; anywhere else is browsing only.
+              </p>
+              <div className="row">
+                {PLACES.filter((p) => p.field).map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => (setPlace(p), setArrived(true), setWantDeep(p))}
+                  >
+                    Open {p.name}
+                  </button>
+                ))}
+                {nav.from === 'flipbook' && (
+                  <button className="primary" onClick={leave}>
+                    Back to Flipbook
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+          <button className="quiet" onClick={() => (origin === 'sky' ? leave() : go('sky'))}>
+            Return to Sky
+          </button>
+        </div>
+      )}
+
       {route === 'analysis' && compare?.kind === 'archive' && (
         <Suspense fallback={<p role="status">Loading the comparison…</p>}>
           <ArchiveCompare
+            manifests={manifests}
+            pins={pins}
+            onPin={pin}
+            onUnpin={unpin}
+            originLabel={originLabel}
+            onSky={() => (origin === 'sky' ? leave() : go('sky'))}
             state={compare}
             onState={(p: Partial<ArchiveState>) =>
               setCompare((c) => (c?.kind === 'archive' ? { ...c, ...p } : c))
             }
             palette={palette}
             reduced={reduced}
-            returnLabel={backLabel}
             onReturn={leave}
-            onSave={(t, d) => save('comparison', t, d, compare)}
+            onSave={(t, d) => save('comparison', t, d, { ...compare, palette, pins })}
           />
         </Suspense>
       )}
@@ -1106,7 +1254,9 @@ export function Prototype() {
         route={route}
         open={dockOpen}
         onOpen={setDockOpen}
-        onGo={(r) => (r === 'flipbook' ? openFlipbook() : go(r))}
+        onGo={(r) =>
+          r === 'flipbook' ? openFlipbook() : r === 'analysis' ? openDeepDive() : go(r)
+        }
         notes={notes.length}
       />
       <p className="sr-only" aria-live="polite">

@@ -19,12 +19,18 @@ const HOSTS = [
   'https://vizier.cfa.harvard.edu',
 ];
 
-/** VizieR asu-tsv: '#' comments, a header row, a units row, a dashes row, then data rows. */
-export function parseTsv(text: string): Star[] {
+/**
+ * VizieR asu-tsv: '#' comments, a header row, a units row, a dashes row, then data rows. Gaia
+ * columns by default; AllWISE passes its own position and magnitude columns (no proper motion).
+ */
+export function parseTsv(
+  text: string,
+  cols: [string, string, string] = ['RA_ICRS', 'DE_ICRS', 'Gmag'],
+): Star[] {
   const rows = text.split(/\r?\n/).filter((l) => l.trim() && !l.startsWith('#'));
   const head = rows[0]?.split('\t').map((h) => h.trim()) ?? [];
   const col = (name: string) => head.indexOf(name);
-  const [ira, idec, ipa, ipd, ig] = ['RA_ICRS', 'DE_ICRS', 'pmRA', 'pmDE', 'Gmag'].map(col);
+  const [ira, idec, ipa, ipd, ig] = [cols[0], cols[1], 'pmRA', 'pmDE', cols[2]].map(col);
   if (ira === undefined || idec === undefined || ira < 0 || idec < 0) return [];
   const num = (cells: string[], k: number | undefined) => {
     const s = k === undefined || k < 0 ? '' : (cells[k] ?? '').trim();
@@ -69,20 +75,11 @@ export function toGrid(ra: number, dec: number, ra0: number, dec0: number, n: nu
 
 const cache = new Map<string, Promise<Star[]>>();
 
-/** Gaia DR3 stars in a square `sizeArcmin` across, brightest first, at most MAX_STARS. */
-export function gaiaStars(ra: number, dec: number, sizeArcmin: number): Promise<Star[]> {
-  const k = `${ra.toFixed(5)},${dec.toFixed(5)},${sizeArcmin}`;
+/** One VizieR box query, the first host that answers, cached per query. */
+function vizier(q: URLSearchParams, cols?: [string, string, string]): Promise<Star[]> {
+  const k = q.toString();
   let p = cache.get(k);
   if (!p) {
-    const q = new URLSearchParams({
-      '-source': 'I/355/gaiadr3',
-      '-c': `${ra.toFixed(6)} ${dec >= 0 ? '+' : ''}${dec.toFixed(6)}`,
-      // a margin for stars that move into the field over the decade since J2016
-      '-c.bm': `${sizeArcmin + 1}x${sizeArcmin + 1}`,
-      '-out': 'RA_ICRS,DE_ICRS,pmRA,pmDE,Gmag',
-      '-sort': 'Gmag',
-      '-out.max': String(MAX_STARS),
-    });
     p = (async () => {
       for (const host of HOSTS) {
         try {
@@ -91,15 +88,46 @@ export function gaiaStars(ra: number, dec: number, sizeArcmin: number): Promise<
           });
           const text = r.ok ? await r.text() : '';
           // VizieR reports database errors inside a 200 answer
-          if (r.ok && !text.includes('QUERY_STATUS=ERROR')) return parseTsv(text);
+          if (r.ok && !text.includes('QUERY_STATUS=ERROR')) return parseTsv(text, cols);
         } catch {
           // try the next host
         }
       }
-      throw new Error('The Gaia catalogue service (VizieR) is not answering.');
+      throw new Error('The catalogue service (VizieR) is not answering.');
     })();
     cache.set(k, p);
     p.catch(() => cache.delete(k));
   }
   return p;
 }
+
+const centre = (ra: number, dec: number) =>
+  `${ra.toFixed(6)} ${dec >= 0 ? '+' : ''}${dec.toFixed(6)}`;
+
+/** Gaia DR3 stars in a square `sizeArcmin` across, brightest first, at most MAX_STARS. */
+export const gaiaStars = (ra: number, dec: number, sizeArcmin: number) =>
+  vizier(
+    new URLSearchParams({
+      '-source': 'I/355/gaiadr3',
+      '-c': centre(ra, dec),
+      // a margin for stars that move into the field over the decade since J2016
+      '-c.bm': `${sizeArcmin + 1}x${sizeArcmin + 1}`,
+      '-out': 'RA_ICRS,DE_ICRS,pmRA,pmDE,Gmag',
+      '-sort': 'Gmag',
+      '-out.max': String(MAX_STARS),
+    }),
+  );
+
+/** AllWISE sources in the same kind of square, brightest in W1 first (pmra/pmdec stay null). */
+export const allwiseSources = (ra: number, dec: number, sizeArcmin: number) =>
+  vizier(
+    new URLSearchParams({
+      '-source': 'II/328/allwise',
+      '-c': centre(ra, dec),
+      '-c.bm': `${sizeArcmin}x${sizeArcmin}`,
+      '-out': 'RAJ2000,DEJ2000,W1mag',
+      '-sort': 'W1mag',
+      '-out.max': String(MAX_STARS),
+    }),
+    ['RAJ2000', 'DEJ2000', 'W1mag'],
+  );

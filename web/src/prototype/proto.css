@@ -26,6 +26,38 @@
 *::after {
   box-sizing: border-box;
 }
+
+/* Scrollbars: a slim ivory pill floating on no track, amber while grabbed. WebKit/Blink get the
+   pseudo-elements; Firefox (no ::-webkit-scrollbar) the standard pair, which Chrome would let win. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 22%, transparent) padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  border-width: 2px;
+  background-color: color-mix(in srgb, var(--ink) 45%, transparent);
+}
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--amber);
+}
+::-webkit-scrollbar-button {
+  display: none;
+}
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--ink) 30%, transparent) transparent;
+  }
+}
 html,
 body {
   margin: 0;
@@ -1182,7 +1214,7 @@ input[type='range'] {
 .flip-body,
 .craft-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
+  grid-template-columns: minmax(0, 1fr) 410px;
   min-height: 0;
 }
 .flip-stage,
@@ -1239,6 +1271,12 @@ input[type='range'] {
   text-align: center;
   display: grid;
   gap: 2px;
+}
+/* a fixed slot for the date and up to ~3 flag lines, so the frame and play bar never shift */
+.flip-caption:not(.note) {
+  height: 7em;
+  align-content: start;
+  overflow-y: auto;
 }
 .flip-flags {
   font-size: 13px;
@@ -1895,6 +1933,9 @@ details.block[open] {
   .flip-caption {
     font-size: 13px;
   }
+  .flip-caption:not(.note) {
+    height: 11em; /* the flags wrap to ~5 lines at phone width */
+  }
   .aladin {
     height: 300px;
   }
@@ -1902,5 +1943,607 @@ details.block[open] {
 @media (prefers-reduced-motion: reduce) {
   .flip-marks {
     transition: none;
+  }
+}
+
+/* the 3D sky view: the data/flipbook three.js page, embedded */
+.flip-3d {
+  justify-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--raise-1);
+}
+
+/* the planetarium window atop the flipbook's tools: a wide view of the whole-sky map */
+.flip-panel .planet-window {
+  position: relative;
+  display: block;
+  height: 200px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  text-align: left;
+  background: var(--ground);
+  box-shadow: 0 0 0 1px var(--raise-3);
+  transition: box-shadow 200ms var(--ease-out);
+}
+.flip-panel .planet-window:hover,
+.flip-panel .planet-window:focus-visible {
+  box-shadow: 0 0 0 2px var(--amber);
+}
+.planet-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  gap: 2px;
+  padding: 32px 16px 12px;
+  font-size: 13px;
+  background: linear-gradient(transparent, #0a0908e6 55%);
+}
+.planet-text strong {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+}
+.planet-go {
+  color: var(--amber);
+  font-weight: 600;
+}
+.flip-panel .tabs [role='tab'] {
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-panel .planet-window {
+    transition: none;
+  }
+}
+
+/* ---------- Deep Dive workspace ----------
+   One shell for prepared fields and live archive pairs: a bar, the viewer, a context panel and a
+   collapsible lower panel. Transient panels (guide, pin tray) are not history entries. */
+.ws {
+  grid-template-columns: minmax(0, 1fr) 380px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'bar bar'
+    'stage ctx'
+    'lower ctx';
+}
+.ws-bar {
+  grid-area: bar;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 16px;
+  background: var(--ground);
+}
+.ws-way,
+.ws-acts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ws-return {
+  font-weight: 600;
+}
+.ws-what h1 {
+  font: 400 28px/1.05 var(--serif);
+  outline-offset: 4px;
+}
+.ws-what p {
+  font-size: 13px;
+  margin-top: 2px;
+}
+.ws > .stage {
+  grid-area: stage;
+  padding-top: 4px;
+}
+.ws-context {
+  grid-area: ctx;
+  gap: 24px;
+}
+.ws-lower {
+  grid-area: lower;
+  padding: 0 16px 12px;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.ws-lower-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  min-height: 44px;
+}
+.ws-lower-head h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
+.ws-lower-toggle {
+  color: var(--ink);
+  font-weight: 600;
+  padding-left: 0;
+}
+.ws-key {
+  font-size: 13px;
+  margin-left: auto;
+}
+.ws-lower-body {
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.ws-chart {
+  position: relative;
+  max-width: 380px; /* the chart draws at about its own 360 × 176 size, so the image keeps the height */
+}
+/* the key line above already says this; screen readers still get the caption */
+.ws-chart figcaption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.ws-viewbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 10px 16px;
+}
+.ws-viewbar .ab-pick {
+  flex: 1 1 320px;
+  max-width: 580px;
+}
+.ws-viewbar .ab-pick label {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+.ws-viewbar .ab-pick span,
+.ab-fixed p span {
+  font-weight: 700;
+  color: var(--ink);
+}
+.ab-fixed {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+}
+.ws-modes {
+  flex: 0 1 auto;
+}
+.ws-modes .cmp-controls {
+  justify-items: end;
+}
+.ws .overview {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 104px;
+  height: 104px;
+}
+.ws-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+}
+.ws-controls .play-row {
+  align-items: center;
+  flex: 1 1 380px;
+}
+.ws-controls .play {
+  flex: 0 0 auto;
+}
+.ws-controls .visit-title {
+  margin-left: 8px;
+  font-size: 22px !important;
+}
+.ws-controls .visit-title .muted {
+  font-size: 16px;
+}
+.ws .verdict {
+  font-size: 13px;
+}
+.ws-figures {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  font-size: 14px;
+}
+.ws-figures dt {
+  color: var(--ink-dim);
+}
+.ws-figures dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.ws-figures strong {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--amber);
+}
+.ws-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ws-head .muted {
+  font-size: 13px;
+}
+.ws-alt ul {
+  display: grid;
+  gap: 6px;
+  padding-left: 16px;
+  list-style: '– ';
+  font-size: 14px;
+}
+
+/* quality: the word carries the status; the mark only repeats it */
+.checks {
+  display: grid;
+  gap: 2px;
+}
+.checks li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  column-gap: 10px;
+  padding: 8px 0;
+}
+.check-mark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--raise-3);
+  color: var(--ink);
+}
+[data-status='caution'] .check-mark {
+  background: var(--amber);
+  color: var(--amber-ink);
+}
+[data-status='failed'] .check-mark {
+  background: var(--ink);
+  color: var(--ground);
+}
+[data-status='not-assessed'] .check-mark {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--raise-3);
+  color: var(--ink-dim);
+}
+.check-label {
+  font-size: 14px;
+}
+.check-status {
+  font-size: 13px;
+  font-weight: 600;
+}
+[data-status='not-assessed'] .check-status {
+  color: var(--ink-dim);
+  font-weight: 400;
+}
+.check-detail {
+  grid-column: 2 / -1;
+  font-size: 13px;
+  color: var(--ink-dim);
+}
+
+/* guide */
+.ws-guide {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--raise-2);
+}
+.ws-guide h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* table: one selection treatment, the amber rule shared with the chart and the image frame */
+.ws-table-wrap {
+  overflow-x: auto;
+}
+.ws-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.ws-table th,
+.ws-table td {
+  height: 42px;
+  padding: 0 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+.ws-table thead th {
+  height: 38px;
+  position: sticky;
+  top: 0;
+  background: var(--ground);
+  color: var(--ink-dim);
+  font-size: 13px;
+  font-weight: 400;
+}
+.ws-table .num {
+  text-align: right;
+}
+.ws-table tbody tr:nth-child(odd) {
+  background: var(--raise-1);
+}
+.ws-table tr[data-active] {
+  background: var(--raise-2);
+  box-shadow: inset 3px 0 0 var(--amber);
+}
+.ab-tag {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--raise-3);
+}
+tr[data-active] .ab-tag:first-of-type {
+  background: var(--amber);
+  color: var(--amber-ink);
+}
+
+/* timeline: real elapsed time under the chart */
+.ws-timeline {
+  /* under the plot area: EvidenceChart pads 52 left and 12 right of 360 */
+  margin: 4px 3.3% 0 14.4%;
+}
+.tl-track {
+  position: relative;
+  height: 14px;
+  border-bottom: 1px solid var(--raise-3);
+}
+.tl-tick {
+  position: absolute;
+  bottom: 0;
+  width: 2px;
+  height: 8px;
+  translate: -1px 0;
+  background: var(--ink-dim);
+}
+.tl-tick[data-b] {
+  height: 12px;
+  background: var(--ink);
+}
+.tl-tick[data-active] {
+  height: 14px;
+  width: 3px;
+  background: var(--amber);
+}
+.tl-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--ink-dim);
+  margin-top: 4px;
+}
+
+/* pin tray */
+.pin-tray {
+  position: relative;
+}
+.pin-pop {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 8;
+  width: min(340px, calc(100vw - 32px));
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--raise-2);
+  transform-origin: top right;
+  animation: pop-in 160ms var(--ease-out);
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+.pin-pop ul {
+  display: grid;
+  gap: 2px;
+}
+.pin-pop li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* two pins side by side */
+.pin-compare {
+  grid-area: 2 / 1 / 4 / 3;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 4px 16px 16px;
+  min-height: 0;
+  overflow-y: auto;
+}
+.pc-head {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+.pc-issues ul {
+  display: grid;
+  gap: 6px;
+}
+.pc-issues li {
+  display: flex;
+  gap: 10px;
+  align-items: start;
+  font-size: 14px;
+}
+.pc-issues .check-mark {
+  flex: none;
+  background: var(--amber);
+  color: var(--amber-ink);
+}
+.pc-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.pc-col {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--raise-1);
+}
+.pc-col h3 {
+  font: 400 24px/1.1 var(--serif);
+}
+.pc-image {
+  position: relative;
+  aspect-ratio: 1;
+  max-height: 46vh;
+  overflow: hidden;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+}
+.pc-zoom {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  transition: transform 200ms var(--ease-out);
+}
+.pc-zoom canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+.pc-mark {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.pc-fig strong {
+  font-size: 20px;
+  color: var(--amber);
+}
+.ws-empty {
+  grid-template: none; /* not the inspect layout: one centred column */
+  place-content: center;
+  justify-items: center;
+  padding: 24px 16px;
+  max-width: 560px;
+  margin-inline: auto;
+  text-align: center;
+}
+.ws-empty .row {
+  justify-content: center;
+}
+.ws-empty h1 {
+  font: 400 32px/1.1 var(--serif);
+}
+
+/* laptops: a narrower context panel */
+@media (max-width: 1180px) {
+  .ws {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+  .ws-bar {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .ws-acts {
+    grid-column: 1 / -1;
+    justify-content: end;
+  }
+}
+
+/* phones: one scrolling column; the viewer first, then the lower panel, then the context */
+@media (max-width: 760px) {
+  .ws {
+    display: block;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .ws-bar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px 16px;
+  }
+  .ws-what h1 {
+    font-size: 24px;
+  }
+  .ws-acts {
+    flex-wrap: wrap;
+    justify-content: start;
+  }
+  .ws > .stage {
+    height: 78svh;
+    min-height: 420px;
+    padding: 4px 16px 10px;
+  }
+  .ws-modes .cmp-controls {
+    justify-items: start;
+  }
+  .ws .overview {
+    width: 72px;
+    height: 72px;
+  }
+  .ws-controls .visit-title {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+  .ws-key {
+    margin-left: 0;
+  }
+  .ws-lower-body {
+    max-height: none;
+  }
+  .ws-context {
+    overflow: visible;
+  }
+  /* the tray sits at the left on phones; the dock owns the bottom edge */
+  .pin-pop {
+    left: 0;
+    right: auto;
+    transform-origin: top left;
+  }
+  .pc-cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-zoom,
+  .pin-pop {
+    transition: none;
+    animation: none;
   }
 }

@@ -63,4 +63,5 @@ phase. Times are per-team estimates of focused hours.
 | 2026-11-13 | `data/` total (2 real fields × 10 epochs + fixture) | 6.88 MB |
 | 2026-11-15 | Front door = prototype (`index.html`), Inspect lazy; Vite gzip of the preloaded set | 91.1 kB gzip JS (index 15.6, shared 70.7, render 4.5, runtime 0.4); 5.8 kB gzip CSS; Flipbook chunk 5.5 kB |
 | 2026-11-15 | Flipbook tools (stack/changes, Measure, Spectrum, Gaia, lazy Aladin Lite); Vite gzip of `dist/index.html`'s scripts | 90.3 kB gzip initial JS (index 15.4, shared 69.9, render 4.5); 6.4 kB gzip CSS; Flipbook chunk 13.8 kB, SkyPanel 1.4 kB + Aladin Lite ~2.4 MB from jsDelivr only when the Sky tab opens |
+| 2026-11-15 | Deep Dive workspace (prototype); Vite gzip of `dist/index.html`'s scripts | 94.4 kB gzip initial JS (index 18.9, shared 70.7, render 4.5, runtime 0.3); 7.8 kB gzip CSS; lazy Inspect 9.2 kB, Workspace 8.5 kB, ArchiveCompare 3.8 kB |
 | 2026-11-15 | Five baked challenge targets, 6′ cutouts of one band each | 7.6 MB (1.17–1.89 MB per file); `data/` total 14.14 MB |

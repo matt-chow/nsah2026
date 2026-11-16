@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FLAG_ABOUT, loadFrame, type Listed, type LiveFrame } from './live.ts';
-import { aperture, centroid, fitMotion, type Motion } from './measure.ts';
+import { aperture, centroid, fitMotion, wingCentroid, type Motion } from './measure.ts';
 
 // The flipbook's Measure and Spectrum tools. Both read the archive pixel values of the cutouts
 // (never the display stretch) and report background-limited 1σ errors; see measure.ts.
@@ -15,6 +15,10 @@ const fmt = (v: number, d = 1) => (Math.abs(v) < 0.05 && d === 1 ? '0.0' : v.toF
 // flags that mean the pixels at the target are not trustworthy for a measurement
 const BAD = new Set(['OVERFLOW', 'NONLINEAR', 'NONFUNC', 'MISSING_DATA', 'SUR_ERROR', 'BLOOM']);
 const isBad = (f: LiveFrame) => !!f.flags?.some((x) => BAD.has(x));
+// of those, the ones a saturated star sets: its core is blanked but its wings are still usable
+const SATURATION = new Set(['OVERFLOW', 'NONLINEAR', 'SUR_ERROR', 'BLOOM']);
+const isSaturated = (f: LiveFrame) =>
+  isBad(f) && !!f.flags?.every((x) => !BAD.has(x) || SATURATION.has(x));
 
 function download(name: string, data: unknown) {
   const url = URL.createObjectURL(
@@ -154,12 +158,30 @@ export function MeasurePanel(props: {
       }),
     [list, frames],
   );
-  const good = rows.filter((r) => r.c && !r.bad);
+  // A star that saturates most exposures is measured from its wings in every exposure, so one
+  // method (and one set of systematics) runs through the whole series.
+  const saturated = rows.filter((r) => isSaturated(r.f)).length;
+  const wings = saturated > rows.filter((r) => r.c && !r.bad).length;
+  const wingRows = useMemo(
+    () =>
+      wings
+        ? rows.map((r) => {
+            const w = !r.bad || isSaturated(r.f) ? wingCentroid(r.f.pix, r.f.n) : null;
+            // unit weights: fitMotion's empirical mode sets the errors from the scatter
+            return { ...r, c: w && { ...w, se: 1, sn: 1, snr: NaN }, bad: !w };
+          })
+        : null,
+    [rows, wings],
+  );
+  const used = wingRows ?? rows;
+  const good = used.filter((r) => r.c && !r.bad);
   const motion: Motion | null = fitMotion(
     good.map((r) => ({ mjd: r.f.mjd ?? r.l.mjd, c: r.c as NonNullable<typeof r.c> })),
+    { ra, dec, empirical: wings },
   );
-  const flagged = rows.filter((r) => r.bad).length;
-  const faint = rows.filter((r) => !r.bad && !r.c).length;
+  const plx = motion?.withParallax ?? null;
+  const flagged = used.filter((r) => r.bad).length;
+  const faint = used.filter((r) => !r.bad && !r.c).length;
   const sig = motion ? motion.total / motion.sTotal : 0;
   const lc = rows.filter((r) => r.ap);
   const t0 = list[0]?.mjd ?? 0;
@@ -174,9 +196,18 @@ export function MeasurePanel(props: {
         </p>
         <p className="note" aria-live="polite">
           {rows.length} of {list.length} {band} exposures loaded: {good.length} measurable
-          {flagged ? `, ${flagged} skipped as saturated or flagged at the ring` : ''}
+          {flagged
+            ? `, ${flagged} skipped as ${wings ? '' : 'saturated or '}flagged at the ring`
+            : ''}
           {faint ? `, ${faint} too faint or with gaps` : ''}.
         </p>
+        {wings && (
+          <p className="note">
+            This star saturates the detector: the archive blanks its brightest pixels. Its centre is
+            found instead from the unsaturated light around them, as the point the star looks the
+            same from on every side. The uncertainties come from how much those positions scatter.
+          </p>
+        )}
         {!props.allLoaded && (
           <button onClick={props.onLoadAll}>Load all {list.length} exposures</button>
         )}
@@ -199,10 +230,29 @@ export function MeasurePanel(props: {
               {sig >= 3
                 ? 'A measured shift, not a confirmed one. A neighbouring star blending in, the filter changing colour across the detector, or a flag the archive missed can all move the centre of light. Compare with the Gaia markers.'
                 : `Any motion is smaller than about ${fmt(3 * motion.sTotal, 1)}″ per year, or hidden by the scatter. One SPHEREx pixel is 6.15″, so slow movers need longer than this time span.`}
-              {motion.chi2r > 1
+              {motion.chi2r > 1 && !wings
                 ? ` The positions scatter ${fmt(Math.sqrt(motion.chi2r), 1)}× more than the pixel noise predicts, so the errors were scaled up by that much.`
                 : ''}
             </p>
+            {plx ? (
+              <p className="note">
+                <strong>With parallax.</strong> Fitting the yearly wobble from Earth’s orbit as
+                well: parallax{' '}
+                <span className="data">
+                  {fmt(plx.plx, 2)} ± {fmt(plx.sPlx, 2)}″
+                </span>
+                {plx.plx > 3 * plx.sPlx
+                  ? ` (${fmt(plx.plx / plx.sPlx, 1)}σ, which would put it about ${fmt(3.26 / plx.plx, 0)} light years away; unconfirmed)`
+                  : ' (not detected: smaller than three times its uncertainty, which this scatter and time span allow)'}
+                , motion {fmt(plx.pmN, 2)} ± {fmt(plx.sN, 2)} north, {fmt(plx.pmE, 2)} ±{' '}
+                {fmt(plx.sE, 2)} east.
+              </p>
+            ) : (
+              <p className="note">
+                Parallax, the yearly wobble from Earth’s orbit, is not fitted: it needs exposures
+                spanning about a year (three visits) to tell apart from steady motion.
+              </p>
+            )}
             <Plot
               label={`Measured position of the centre of light in each of ${motion.used} exposures, east and north of the ring, in arcseconds, with the fitted straight-line motion.`}
               xLabel="east of ring (″) ← east"
@@ -211,8 +261,8 @@ export function MeasurePanel(props: {
               points={good.map((r) => ({
                 x: r.c?.e ?? 0,
                 y: r.c?.n ?? 0,
-                ex: r.c?.se ?? 0,
-                ey: r.c?.sn ?? 0,
+                ex: wings ? 0 : (r.c?.se ?? 0),
+                ey: wings ? 0 : (r.c?.sn ?? 0),
               }))}
               line={(() => {
                 const [a, b] = [motion.track[0], motion.track.at(-1)];
@@ -239,8 +289,8 @@ export function MeasurePanel(props: {
             {good.length < 4
               ? 'Not enough measurable exposures yet: a speed needs at least four positions.'
               : 'These exposures span too short a time (under about five weeks) to measure a speed.'}
-            {flagged && !good.length
-              ? ' This star saturates the detector here, so its centre cannot be measured; try a fainter target or another band.'
+            {flagged && !good.length && !wings
+              ? ' Every exposure is flagged at the ring here; try another band.'
               : ''}
           </p>
         )}
@@ -277,9 +327,14 @@ export function MeasurePanel(props: {
               ...provenance(ra, dec),
               band,
               method: {
-                centroid:
-                  'brightest pixel within 2 px of the ring, then background-subtracted first moments within 2.5 px; SNR ≥ 5; 0.3″ floor added in quadrature',
-                motion: 'weighted least-squares line per axis; errors × √χ²ᵣ when χ²ᵣ > 1',
+                centroid: wings
+                  ? 'saturated star: point of maximum point symmetry of the unsaturated pixels within 4 px (bilinear reflection, NaN core ignored), searched within 2 px of the ring; no per-exposure error'
+                  : 'brightest pixel within 2 px of the ring, then background-subtracted first moments within 2.5 px; SNR ≥ 5; 0.3″ floor added in quadrature',
+                motion: wings
+                  ? 'unweighted least-squares line per axis; errors from the scatter (× √χ²ᵣ)'
+                  : 'weighted least-squares line per axis; errors × √χ²ᵣ when χ²ᵣ > 1',
+                parallax:
+                  'joint 5-parameter fit (offsets, proper motion, parallax), low-precision Earth ephemeris; only when exposures span ≥ 0.9 yr',
                 brightness: 'aperture r = 2 px minus annulus median, no aperture correction',
                 excluded_flags: [...BAD],
               },
@@ -294,7 +349,16 @@ export function MeasurePanel(props: {
                 significance_sigma: sig,
                 status: sig >= 3 ? 'possible motion (unconfirmed)' : 'not detected',
               },
-              exposures: rows.map((r) => ({
+              with_parallax_arcsec: plx && {
+                parallax: plx.plx,
+                parallax_err: plx.sPlx,
+                east_per_year: plx.pmE,
+                north_per_year: plx.pmN,
+                east_err: plx.sE,
+                north_err: plx.sN,
+                chi2_reduced: plx.chi2r,
+              },
+              exposures: used.map((r) => ({
                 url: r.l.url,
                 mjd: r.f.mjd ?? r.l.mjd,
                 release: r.l.rel ?? null,
@@ -304,7 +368,7 @@ export function MeasurePanel(props: {
                 excluded: r.bad,
                 offset_east_arcsec: r.c?.e ?? null,
                 offset_north_arcsec: r.c?.n ?? null,
-                offset_err_arcsec: r.c ? [r.c.se, r.c.sn] : null,
+                offset_err_arcsec: r.c && !wings ? [r.c.se, r.c.sn] : null,
                 brightness_mjy: r.ap?.mjy ?? null,
                 brightness_err_mjy: r.ap?.err ?? null,
               })),

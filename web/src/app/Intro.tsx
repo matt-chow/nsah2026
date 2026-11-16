@@ -92,6 +92,9 @@ export function Intro({ fields, leaving, onEnter }: Props) {
           <button type="button" onClick={() => onEnter('explore')}>
             Explore on my own
           </button>
+          <a className="intro-back" href="./#/">
+            <span aria-hidden="true">←</span> Back to the main app
+          </a>
         </div>
         <ol className="intro-path">
           <li>Pick a patch of sky</li>

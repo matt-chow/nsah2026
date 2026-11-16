@@ -26,6 +26,10 @@ TARGETS = [
     ("r-dra", "R Draconis", 248.16742, 66.755, "D1"),
 ]
 
+# ~30 kB per cutout; keeps each file under the 5 MB data budget. R Draconis, near the North
+# Ecliptic Pole, has ~600 D1 visits; the rest are not baked and load live when played.
+MAX_CUTOUTS = 120
+
 
 def retry(fn, *a):
     for attempt in range(5):
@@ -42,6 +46,8 @@ def bake(tid, name, ra, dec, band):
     frames = retry(sp.search, ra, dec)
     cut = {}
     pick = [f for f in frames if f["band"] == band]
+    if len(pick) > MAX_CUTOUTS:  # evenly through time, first and last kept, so the time span stays
+        pick = [pick[round(k * (len(pick) - 1) / (MAX_CUTOUTS - 1))] for k in range(MAX_CUTOUTS)]
     for k, f in enumerate(pick):
         print(f"{tid} {band} {k + 1}/{len(pick)}", flush=True)
         try:
@@ -49,7 +55,7 @@ def bake(tid, name, ra, dec, band):
         except Exception as e:
             print(f"  skipped: {e}", flush=True)  # the player loads it live, or shows it as failed
     out = {"id": tid, "name": name, "ra": ra, "dec": dec, "band": band, "size_arcmin": sp.SIZE_ARCMIN,
-           "collections": list(sp.COLLECTIONS), "baked": datetime.date.today().isoformat(),
+           "collections": sorted({f["rel"] for f in frames}, key=sp.release_rank), "baked": datetime.date.today().isoformat(),
            "frames": frames, "cutouts": cut}
     path = ROOT / "data" / "targets" / f"{tid}.json"
     path.parent.mkdir(exist_ok=True)

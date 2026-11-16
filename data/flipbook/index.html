@@ -33,6 +33,14 @@
   #retry { font-size: 12px; padding: 2px 7px; margin-left: 6px; }
   #hide { position: absolute; top: 8px; right: 8px; padding: 2px 7px; font-size: 12px; }
   #top.collapsed > :not(#hide):not(h1) { display: none; }
+  /* inside the app's Flipbook (?embed=1) the app picks the target and band */
+  body.embed #top { display: none; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track, ::-webkit-scrollbar-corner { background: transparent; }
+  ::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 999px; background: #ffffff38 padding-box; }
+  ::-webkit-scrollbar-thumb:hover { border-width: 2px; background-color: #ffffff70; }
+  ::-webkit-scrollbar-button { display: none; }
+  @supports not selector(::-webkit-scrollbar) { * { scrollbar-width: thin; scrollbar-color: #ffffff48 transparent; } }
 </style>
 <script type="importmap">
 { "imports": {
@@ -354,9 +362,14 @@ $('hide').onclick = () => {
   $('hide').setAttribute('aria-expanded', String(!collapsed));
 };
 
+// shareable links: ?ra=..&dec=..&band=.. (the app adds embed=1 and t=<saved target id>)
+const params = new URLSearchParams(location.search);
+if (params.get('embed')) document.body.classList.add('embed');
+
 // ---------------- SPHEREx data ----------------
 // One job (L) per target + band: every exposure in time order, loaded CONCURRENCY at a time from the frame being
 // shown onward, cancelled as a whole by its AbortController when the target or band changes.
+let saved = null;  // the app's saved copy of a challenge target (?t=id), used before the live archive
 let target = null, byBand = {}, L = null, searchGen = 0, timer = null, blinking = false, wantBand = null;
 let map = lut($('cmap').value), atlasLevels = null;
 
@@ -381,6 +394,19 @@ async function getJSON(url, signal) {
   return d;
 }
 
+// data/targets/<id>.json (scripts/bake_targets.py): the listing plus one band's cutouts, as the API answers them
+async function savedCopy(ra, dec) {
+  const id = params.get('t');
+  saved = null;
+  if (!/^[a-z0-9-]+$/.test(id ?? '') || +ra !== +params.get('ra') || +dec !== +params.get('dec')) return null;
+  try {
+    const r = await fetch(`../targets/${id}.json`);
+    const d = r.ok ? await r.json() : null;
+    if (Array.isArray(d?.frames)) saved = d;
+  } catch { /* fall through to the live archive */ }
+  return saved;
+}
+
 $('search').onsubmit = async e => {
   e.preventDefault();
   const g = ++searchGen;
@@ -389,7 +415,8 @@ $('search').onsubmit = async e => {
   if (matchMedia('(max-width: 600px)').matches && !$('top').classList.contains('collapsed')) $('hide').click();
   status('Searching IRSA for SPHEREx images…');
   try {
-    const d = await getJSON(`/api/spherex?ra=${encodeURIComponent($('ra').value)}&dec=${encodeURIComponent($('dec').value)}`);
+    const d = (await savedCopy($('ra').value, $('dec').value)) ??
+      await getJSON(`/api/spherex?ra=${encodeURIComponent($('ra').value)}&dec=${encodeURIComponent($('dec').value)}`);
     if (g !== searchGen) return;
     if (!Array.isArray(d.frames)) throw new Error('unexpected response from the archive lookup');
     target = d; byBand = {};
@@ -475,7 +502,8 @@ async function worker(job) {
     f.state = 'loading';
     if (i === job.want) job.want = -1;
     try {
-      const d = await getJSON(`/api/spherex?ra=${target.ra}&dec=${target.dec}&url=${encodeURIComponent(f.url)}`, job.ac.signal);
+      const d = (saved === target && saved.cutouts?.[f.url]) ||
+        await getJSON(`/api/spherex?ra=${target.ra}&dec=${target.dec}&url=${encodeURIComponent(f.url)}`, job.ac.signal);
       if (!Number.isInteger(d.n) || !Array.isArray(d.pix) || d.pix.length !== d.n * d.n || (job.n && d.n !== job.n)) {
         throw new Error('unexpected cutout');
       }
@@ -608,7 +636,6 @@ $('blink').onclick = () => {
 };
 $('speed').onchange = () => { if (timer && !blinking) run(); };
 
-const params = new URLSearchParams(location.search);  // shareable links: ?ra=..&dec=..&band=..
 if (params.get('ra') && params.get('dec')) go(params.get('ra'), params.get('dec'), params.get('band'));
 </script>
 </body>

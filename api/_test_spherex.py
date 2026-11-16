@@ -17,6 +17,19 @@ for bad, is_ra in (("400", True), ("-91", False), ("abc", True), ("1 2 3 4", Fal
     except ValueError:
         pass
 
+# --- release handling: every SPHEREx collection, one exposure once, preferred release wins ---
+def row(coll, obs, band="D1", sub="science", typ="image", t="61000"):
+    return {"obs_collection": coll, "obs_id": obs, "energy_bandpassname": f"SPHEREx-{band}",
+            "dataproduct_subtype": sub, "dataproduct_type": typ, "access_url": f"https://x/{coll}/{obs}.fits",
+            "t_min": t, "em_min": "7.5e-07", "em_max": "1.1e-06"}
+fr = sp.pick_frames([row("spherex_qr3", "a", t="61300"), row("spherex_dr1", "a", t="61300"),
+                     row("spherex_qr3", "b", t="61200"), row("spherex_dr1", "b", band="D2", t="61200"),
+                     row("spherex_dr1_cube", "c", typ="cube"), row("spherex_dr1", "d", sub="calibration")])
+assert [(f["rel"], f["band"]) for f in fr] == [("spherex_dr1", "D2"), ("spherex_qr3", "D1"), ("spherex_dr1", "D1")], fr
+assert fr[2]["url"].endswith("spherex_dr1/a.fits") and fr[0]["um"] == [0.75, 1.1]
+assert sorted(["spherex_qr3", "spherex_dr2", "spherex_dr1", "spherex_qr10"], key=sp.release_rank) == \
+    ["spherex_dr2", "spherex_dr1", "spherex_qr10", "spherex_qr3"]
+
 # --- SSRF guard ---
 sp.check_url("https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/x/y.fits")
 for bad in ("http://irsa.ipac.caltech.edu/ibe/data/spherex/a.fits", "https://evil.com/ibe/data/spherex/a.fits",

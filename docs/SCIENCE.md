@@ -18,7 +18,10 @@ them before relying on them in code or in claims.
   regardless of size because the EPSF table is not cut.
 - Releases (verified 2026-11 via SIA2): collections `spherex_dr1`, `spherex_dr1_deep`
   (Data Release 1, `l2b-v27-2026-196`) and `spherex_qr3`, `spherex_qr3_deep` (Quick Release 3,
-  `l2b-v27-2026-224`). PARALLAX queries all four and records the release per observation.
+  `l2b-v27-2026-224`). PARALLAX queries all four and records the release per observation. The
+  flipbook (`api/_spherex.py`) asks SIA2 by `FACILITY=SPHEREx`, so a new collection appears without
+  a code change; an exposure listed by two releases is taken once, from a full data release before
+  a quick release and the newest number first (`release_rank`). Cube rows are skipped.
 
 ## Method as built (pipeline v0.1)
 
@@ -306,19 +309,46 @@ Limits of the atlas views:
     NONLINEAR, NONFUNC, MISSING_DATA, SUR_ERROR or BLOOM at the ring are left out. A weighted
     straight line per axis gives the motion; errors are scaled by √χ²ᵣ when χ²ᵣ > 1. At least 4
     exposures over 0.1 yr. ≥ 3σ reads "possible motion: unconfirmed". Known-answer injection
-    tests in `measure.test.ts`. Real-data check 2026-11-15, Epsilon Indi B, D5, 52 exposures:
-    +4.12 ± 1.02″/yr east, −2.26 ± 1.06″/yr north (literature ≈ +3.96, −2.54). Saturated
-    targets (Barnard's Star, R Draconis) leave too few usable frames. Parallax (up to ~1″ for
-    the nearest targets) is not modelled and adds scatter. The centroid can lock onto a
-    neighbour within ~2 pixels (seen at WISE 0855).
+    tests in `measure.test.ts`. The centroid can lock onto a neighbour within ~2 pixels (seen at
+    WISE 0855).
+    *Saturated stars:* when most exposures are flagged only for saturation (OVERFLOW, NONLINEAR,
+    SUR_ERROR, BLOOM), every exposure is measured instead from the wings: the point of maximum
+    point symmetry of the unsaturated pixels within 4 px (bilinear reflection, NaN core
+    ignored), searched within ±2 px. These have no per-exposure error, so the fit is unweighted
+    and errors always come from the scatter (√χ²ᵣ). Known-answer test on a blanked-core Gaussian.
+    *Parallax:* a joint five-parameter weighted fit (offsets, proper motion, parallax), with
+    parallax factors from a low-precision Sun ephemeris (Astronomical Almanac, ~0.01°; Earth =
+    −Sun), only with ≥ 8 exposures spanning ≥ 0.9 yr: over half a year parallax and motion are
+    nearly degenerate (DR1-only R Draconis gave a spurious −5.7 ± 1.9″). A distance is shown only
+    above 3σ, labelled unconfirmed. Tested by injection (factors at the June solstice and the
+    ecliptic pole; motion and parallax recovered over 1.5 yr).
+    Real-data checks 2026-11-15 (DR1 + QR3, saved copies): Epsilon Indi B, D5, 74 exposures over
+    1.44 yr: +3.96 ± 0.40″/yr east, −2.87 ± 0.45″/yr north (literature ≈ +3.96, −2.54);
+    parallax −0.04 ± 0.32″ (true ≈ 0.27″, not detected). Barnard's Star (wings), D1, 60
+    exposures over 1.02 yr: −1.51 ± 0.45 east, +9.72 ± 0.35 north (literature −0.80, +10.36);
+    parallax 0.38 ± 0.18″ (true 0.547″; 2σ, reported as not detected). RW Aurigae: 0.21 ± 0.20,
+    −0.01 ± 0.20 (no motion expected at this precision). R Draconis (wings), D1, 118 exposures
+    over 1.31 yr: −1.64 ± 0.65 east, +0.02 ± 0.81 north, parallax 0.13 ± 0.73″; below 3σ, and
+    the 2.5σ east value is a reminder that wing centroids of a variable, saturated star carry
+    systematics the scatter does not fully capture. Its saved copy holds 120 of ~600 D1 visits
+    spread evenly in time (`MAX_CUTOUTS` in `scripts/bake_targets.py`, for the 5 MB file
+    budget); the rest load live.
 18. Flipbook brightness and spectrum: aperture sum within 2 pixels minus the annulus median, in
     mJy (MJy/sr × pixel solid angle), with no aperture correction, so values are relative, not
     calibrated total fluxes. The spectrum takes up to 6 exposures per detector spread in time,
     each at its own wavelength from assumption 13, so variability and parallax mix in.
-19. Gaia DR3 and AllWISE are context overlays only (VizieR/CDS, Aladin Lite), never SPHEREx data
+19. Gaia DR3 and AllWISE are context overlays only (VizieR, Aladin Lite), never SPHEREx data
     or measurement inputs. Flipbook Gaia markers move J2016.0 positions linearly by proper motion
     to each exposure's date and project them with a gnomonic approximation (a display helper);
-    stars without proper motion stay at J2016.0.
+    stars without proper motion stay at J2016.0. The Sky tab draws both catalogues from the same
+    VizieR queries (`catalog.ts`, falling back to the CfA mirror when CDS is down, as it was on
+    2026-11-15) and shows AllWISE colour imagery from IRSA's HiPS mirror (the alasky copy answered
+    404). Its SPHEREx layer is the IRSA DR1 HiPS cube at the middle channel of the Flipbook's
+    detector band; Aladin's default frame was a blank dichroic channel.
+20. Flipbook wavelength window: each detector band split into quarters; an exposure is kept when
+    the wavelength at the ring from its own spectral WCS (assumption 13) falls inside. That value
+    is only known once an exposure loads, so a window fetches the whole band (up to the fetch cap)
+    and the list grows as exposures arrive.
 
 ## References
 

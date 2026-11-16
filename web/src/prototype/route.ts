@@ -12,8 +12,10 @@ export function parseRoute(hash: string): Route {
 export const routeHash = (r: Route) => (r === 'welcome' ? '#/' : `#/${r}`);
 
 export const DESTINATIONS: { id: Route; label: string }[] = [
-  { id: 'sky', label: 'Sky' },
+  { id: 'welcome', label: 'Home' },
+  { id: 'sky', label: 'Planetarium' },
   { id: 'flipbook', label: 'Flipbook' },
+  { id: 'analysis', label: 'Deep Dive' },
   { id: 'spacecraft', label: 'Spacecraft' },
   { id: 'notebook', label: 'Notebook' },
 ];

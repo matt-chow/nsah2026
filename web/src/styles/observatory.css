@@ -1,18 +1,19 @@
-/* Observatory design system: quiet chrome, a dominant image, evidence on demand. */
+/* Observatory design system: quiet chrome, a dominant image, evidence on demand.
+   Palette matches the main app (warm black, ivory, sodium amber for A and selection; teal for B). */
 :root {
-  --ink: #0e1318;
-  --rail: #151c22;
-  --rail-2: #202a32;
-  --hair: #2a353e;
-  --hair-2: #46545e;
-  --paper: #eeeae2;
-  --paper-dim: #afb8bd;
-  --signal: #94c2b8;
-  --signal-hi: #b1d7ce;
-  --signal-ink: #112923;
+  --ink: #0a0908;
+  --rail: #151311;
+  --rail-2: #1f1c19;
+  --hair: #2a2622;
+  --hair-2: #4a433b;
+  --paper: #ece4d3;
+  --paper-dim: #a69d8c;
+  --signal: #f0a840;
+  --signal-hi: #f5bd66;
+  --signal-ink: #1a1004;
   --cyan: #94c2b8;
   --ok: #a4c9a2;
-  --alert: #f1b478;
+  --alert: #ef7a6a;
   --bevel: none;
   --ease-out: ease;
   font-size: 15px;
@@ -455,7 +456,7 @@ summary {
   border-color: var(--signal);
 }
 .ruler-visit[data-reference] {
-  border: 2px solid #e8bb82;
+  border: 2px solid var(--cyan);
   width: 11px;
   height: 11px;
   bottom: -6px;
@@ -473,14 +474,14 @@ summary {
   border-color: var(--signal);
 }
 .epoch[data-b] {
-  box-shadow: inset 0 -2px #e8bb82;
+  box-shadow: inset 0 -2px var(--cyan);
 }
 .epoch[data-unavailable] {
   border-style: dashed;
   color: var(--alert);
 }
 .epoch[aria-pressed='true'] {
-  background: #253e39;
+  background: #2e2414;
   color: var(--paper);
   border-color: var(--signal);
 }
@@ -642,7 +643,7 @@ summary {
 }
 .cand-list button[aria-pressed='true'] {
   border-color: var(--signal);
-  background: #1d302d;
+  background: #261f13;
   box-shadow: none;
 }
 .summary {

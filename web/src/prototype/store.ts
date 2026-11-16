@@ -20,7 +20,22 @@ export interface CuratedCompare {
   pan: { x: number; y: number };
   /** Filled in when saved: what produced the numbers at that moment. */
   versions?: Versions;
+  /** Filled in when saved: display colours and the pin tray, so the investigation reopens whole. */
+  palette?: string;
+  pins?: Pin[];
 }
+
+/** A pinned flagged spot or archive region, for a side-by-side comparison of two. */
+export type Pin =
+  | {
+      kind: 'candidate';
+      id: string;
+      label: string;
+      placeId: string;
+      manifestId: string;
+      candidate: string;
+    }
+  | { kind: 'archive'; id: string; label: string; compare: ArchiveCompare };
 
 export interface ArchiveFrame {
   url: string;
@@ -38,6 +53,8 @@ export interface ArchiveCompare {
   b: ArchiveFrame;
   mode: CompareMode;
   zoom: number;
+  palette?: string;
+  pins?: Pin[];
 }
 
 export type Compare = CuratedCompare | ArchiveCompare;
@@ -65,6 +82,7 @@ export interface Session {
   epoch: number;
   compare?: Compare | null;
   flip?: FlipTarget | null;
+  pins?: Pin[];
 }
 
 export interface Note {
@@ -142,6 +160,13 @@ export function checkSaved(
   const changed: string[] = [];
   if (c.candidate && !m.candidates.some((x) => x.candidate_id === c.candidate))
     changed.push(`the flagged spot ${c.candidate} is no longer listed`);
+  for (const p of c.pins ?? [])
+    if (
+      p.kind === 'candidate' &&
+      p.manifestId === m.manifest_id &&
+      !m.candidates.some((x) => x.candidate_id === p.candidate)
+    )
+      changed.push(`the pinned spot ${p.candidate} is no longer listed`);
   const now = versionsOf(m, [c.a, c.b]);
   const was = c.versions;
   if (was) {

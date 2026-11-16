@@ -1,7 +1,16 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { GAIA_EPOCH_MJD, parseTsv, propagate, toGrid } from './catalog.ts';
-import { aperture, centroid, fitLine, fitMotion, MJY_PER_SUM, PIX_ARCSEC } from './measure.ts';
+import {
+  aperture,
+  centroid,
+  fitLine,
+  fitMotion,
+  MJY_PER_SUM,
+  parallaxFactors,
+  PIX_ARCSEC,
+  wingCentroid,
+} from './measure.ts';
 
 /** Deterministic noise (LCG + Box–Muller), so the known-answer tests never flake. */
 function noise(seed: number) {
@@ -100,4 +109,57 @@ test('Gaia rows parse, propagate and land on the grid', () => {
     21,
   );
   assert.ok(Math.abs(g.col - 8) < 1e-3 && Math.abs(g.row - 9) < 1e-3, JSON.stringify(g));
+});
+
+test('wing centroid finds a saturated star from its wings', () => {
+  const n = 31;
+  const c = (n - 1) / 2;
+  // a broad star 0.6 px east (column down) and 0.45 px south (row up), core blanked
+  const pix = new Float32Array(n * n);
+  for (let r = 0; r < n; r++)
+    for (let col = 0; col < n; col++) {
+      const d2 = (col - (c - 0.6)) ** 2 + (r - (c + 0.45)) ** 2;
+      pix[r * n + col] = d2 < 2.5 ** 2 ? NaN : 1e4 * Math.exp(-d2 / 8);
+    }
+  const w = wingCentroid(pix, n);
+  assert.ok(w);
+  assert.ok(Math.abs(w.e - 0.6 * PIX_ARCSEC) < 0.05 * PIX_ARCSEC, `e ${w.e}`);
+  assert.ok(Math.abs(w.n - -0.45 * PIX_ARCSEC) < 0.05 * PIX_ARCSEC, `n ${w.n}`);
+  assert.equal(wingCentroid(new Float32Array(n * n).fill(NaN), n), null);
+});
+
+test('parallax factors follow Earth around the Sun', () => {
+  // a star at RA 0, Dec 0 on the June solstice: Earth sits toward RA 270°, so the star shifts
+  // east by cos ε and north by sin ε
+  const june = 51544.5 + 172.0; // 2000 Jun 21
+  const f = parallaxFactors(0, 0, june);
+  assert.ok(Math.abs(f.e - Math.cos((23.44 * Math.PI) / 180)) < 0.02, `e ${f.e}`);
+  assert.ok(Math.abs(f.n - Math.sin((23.44 * Math.PI) / 180)) < 0.02, `n ${f.n}`);
+  // at the north ecliptic pole the parallax ellipse is a circle
+  for (const mjd of [60000, 60100, 60200, 60300]) {
+    const p = parallaxFactors(270, 66.5607, mjd);
+    assert.ok(Math.abs(Math.hypot(p.e, p.n) - 1) < 0.04, `|p| ${Math.hypot(p.e, p.n)}`);
+  }
+});
+
+test('the joint fit recovers injected motion and parallax, and waits for a year', () => {
+  const [ra, dec] = [269.45, 4.69];
+  const g = noise(3);
+  const pts = [];
+  // two visits a year, a few days each, over 1.5 years, like SPHEREx: 0.55″ parallax, 10″/yr north
+  for (const v of [0, 0.5, 1, 1.5])
+    for (let k = 0; k < 6; k++) {
+      const mjd = 61000 + v * 365.25 + k;
+      const f = parallaxFactors(ra, dec, mjd);
+      const t = (mjd - 61000) / 365.25;
+      const c = { e: -0.8 * t + 0.55 * f.e + 0.2 * g(), n: 10.4 * t + 0.55 * f.n + 0.2 * g() };
+      pts.push({ mjd, c: { ...c, se: 0.2, sn: 0.2, snr: 50 } });
+    }
+  const p = fitMotion(pts, { ra, dec })?.withParallax;
+  assert.ok(p);
+  assert.ok(Math.abs(p.plx - 0.55) < 3 * p.sPlx && p.sPlx < 0.2, `plx ${p.plx} ± ${p.sPlx}`);
+  assert.ok(Math.abs(p.pmN - 10.4) < 3 * p.sN, `pmN ${p.pmN}`);
+  assert.ok(Math.abs(p.pmE - -0.8) < 3 * p.sE, `pmE ${p.pmE}`);
+  // half a year cannot separate parallax from motion
+  assert.equal(fitMotion(pts.slice(0, 12), { ra, dec })?.withParallax, null);
 });

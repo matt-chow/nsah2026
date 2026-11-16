@@ -30,6 +30,11 @@ export const SiteNav = memo(function SiteNav({ section, fieldId, inert }: Props)
       <a className="wordmark" href={`#${fieldId}`}>
         PARALLAX
       </a>
+      <span className="nav-classic">Classic</span>
+      {/* the way back to the main app, kept outside the menu so phones see it too */}
+      <a className="nav-home" href="./#/">
+        <span aria-hidden="true">←</span> Main app
+      </a>
       <button
         className="nav-toggle"
         type="button"

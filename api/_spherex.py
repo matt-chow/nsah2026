@@ -1,7 +1,7 @@
 """SPHEREx time-series cutouts from NASA IRSA.
 
-GET /api/spherex?ra=..&dec=..             -> SPHEREx frames covering that point in every release in
-                                             COLLECTIONS, sorted by time
+GET /api/spherex?ra=..&dec=..             -> SPHEREx frames covering that point in every release
+                                             IRSA holds, sorted by time
 GET /api/spherex?ra=..&dec=..&url=<fits>[&size=arcmin]
                                           -> that frame cut out around ra/dec, reprojected north-up,
                                              background-subtracted, as a flat n*n pixel list, plus the
@@ -15,9 +15,9 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlencode, urlparse
 
 SIA = "https://irsa.ipac.caltech.edu/SIA"
-# A new data release is one more entry here (its IRSA SIA collection name). An exposure already
-# listed by an earlier entry (same obs_id and detector band) is not repeated from a later one.
-COLLECTIONS = ("spherex_dr1",)
+# One SIA query by FACILITY returns every SPHEREx collection at once (spherex_dr1, spherex_qr3, the
+# deep fields, ...), so a new IRSA release appears with no code change. An exposure listed by two
+# releases (same obs_id and detector band) is taken once, from the preferred one (release_rank).
 SIZE_ARCMIN = 6  # default field of view
 SIZE_RANGE = (2, 12)  # arcmin; bounds the cutout download and the pure-Python reprojection time
 PIX_ARCSEC = 6.15  # SPHEREx native pixel scale
@@ -33,11 +33,11 @@ def grid_n(size):
 N = grid_n(SIZE_ARCMIN)
 
 
-def fetch(url):
+def fetch(url, timeout=20):
     """IRSA intermittently answers 502/503 'Server busy'; retry those."""
     for attempt in range(3):
         try:
-            return urllib.request.urlopen(url, timeout=20)
+            return urllib.request.urlopen(url, timeout=timeout)
         except urllib.error.HTTPError as e:
             if e.code < 500 or attempt == 2:
                 raise
@@ -77,21 +77,30 @@ def check_url(url):
         raise ValueError("url must be an IRSA SPHEREx FITS file")
 
 
-def search(ra, dec):
+def release_rank(coll):
+    """Sort key, preferred first: full data releases (dr) before quick releases (qr), newest first."""
+    m = re.match(r"spherex_(dr|qr)(\d*)", coll)
+    return (m.group(1) != "dr", -int(m.group(2) or 0), coll) if m else (True, 0, coll)
+
+
+def pick_frames(rows):
+    """SIA rows -> one frame per exposure and detector, science images only, sorted by time."""
     frames, seen = [], set()
-    for coll in COLLECTIONS:
-        q = urlencode({"COLLECTION": coll, "POS": f"CIRCLE {ra} {dec} 0.001", "RESPONSEFORMAT": "csv"})
-        with fetch(f"{SIA}?{q}") as r:
-            rows = list(csv.DictReader(io.StringIO(r.read().decode())))
-        for x in rows:
-            k = (x["obs_id"], x["energy_bandpassname"])  # obs_id is shared by an exposure's 6 detectors
-            if x["dataproduct_subtype"] != "science" or k in seen:
-                continue
-            seen.add(k)
-            frames.append({"url": x["access_url"], "mjd": float(x["t_min"]), "rel": coll,
-                           "band": x["energy_bandpassname"].replace("SPHEREx-", ""),
-                           "um": [round(float(x["em_min"]) * 1e6, 2), round(float(x["em_max"]) * 1e6, 2)]})
+    for x in sorted(rows, key=lambda x: release_rank(x["obs_collection"])):
+        k = (x["obs_id"], x["energy_bandpassname"])  # obs_id is shared by an exposure's 6 detectors
+        if x["dataproduct_subtype"] != "science" or x["dataproduct_type"] != "image" or k in seen:
+            continue
+        seen.add(k)
+        frames.append({"url": x["access_url"], "mjd": float(x["t_min"]), "rel": x["obs_collection"],
+                       "band": x["energy_bandpassname"].replace("SPHEREx-", ""),
+                       "um": [round(float(x["em_min"]) * 1e6, 2), round(float(x["em_max"]) * 1e6, 2)]})
     return sorted(frames, key=lambda f: f["mjd"])
+
+
+def search(ra, dec):
+    q = urlencode({"FACILITY": "SPHEREx", "POS": f"CIRCLE {ra} {dec} 0.001", "RESPONSEFORMAT": "csv"})
+    with fetch(f"{SIA}?{q}", timeout=25) as r:  # IRSA can take ~20 s for this; the function allows 30
+        return pick_frames(csv.DictReader(io.StringIO(r.read().decode())))
 
 
 def read_header(stream):

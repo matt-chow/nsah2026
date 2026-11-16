@@ -17,10 +17,13 @@ is an unconfirmed lead that needs an independent detection.
   Epsilon Indi B, WISE 0855, RW Aurigae, R Draconis); a box takes any RA/Dec in degrees or
   sexagesimal. Each frame shows its date, release, detector, the wavelength at the ring (from the
   exposure's own spectral WCS) and any contamination flags there, in plain language. The field of
-  view is 4–12′. Links are shareable: `?ra=269.4463&dec=4.7679&band=D1`. The five targets are
+  view is 4–12′. Links are shareable and keep the view:
+  `?ra=269.4463&dec=4.7679&band=D1&fov=9&view=diff&frame=3&wl=0.84-0.93` (field of view, Stacked or
+  Changes, frame number when paused, wavelength window). Every SPHEREx release IRSA holds is listed. The five targets are
   pre-baked into `data/targets/` (`scripts/bake_targets.py`) so they play on a static host;
-  other positions need the `/api/spherex` function. A 3D landscape view opens the same point in
-  `flipbook/index.html`. The earlier explorer pages are at `classic.html` ("Deep dive").
+  other positions need the `/api/spherex` function. Its "3D sky" view plays the same exposures overhead in a
+  three.js landscape (`flipbook/index.html`, embedded; saved copy first, like the 2D player), and a
+  planetarium window beside the tools opens the whole-sky map at the target. The earlier explorer pages are at `classic.html` ("Deep dive").
 - **Flipbook tools.** Playback sits under the picture (Space plays, ← → step). The picture
   switches between each exposure, a median stack, and changes (each exposure minus the stack,
   amber brighter, blue fainter). Gaia DR3 stars can be marked at each exposure's date (context

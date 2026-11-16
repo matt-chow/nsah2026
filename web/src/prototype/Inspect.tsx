@@ -1,16 +1,30 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { archiveLookup, type ArchiveCount } from '../lib/archive.ts';
 import { checkPair } from '../lib/compare.ts';
-import { loadImage } from '../lib/imageCache.ts';
-import { divergingRgb, pixelToSky, tanWcs } from '../lib/sky.ts';
+import { pixelToSky, tanWcs } from '../lib/sky.ts';
 import { isoDate, longDate } from '../lib/time.ts';
 import type { Candidate, Manifest, Observation } from '../types/manifest.ts';
 import { BASE_MODES, CompareControls, CompareLayers, type ModeOption } from './Compare.tsx';
 import { EvidenceChart } from './EvidenceChart.tsx';
 import type { Place } from './places.ts';
 import { toScreen, type View } from './projection.ts';
-import { paletteTable, PALETTES, SkyDome, type Palette } from './SkyDome.tsx';
-import { versionsOf, type CuratedCompare } from './store.ts';
+import { PALETTES, SkyDome, type Palette } from './SkyDome.tsx';
+import { versionsOf, writeFlag, type CuratedCompare, type Pin } from './store.ts';
+import {
+  Guide,
+  ObservationTable,
+  paintImage,
+  PinCompare,
+  QualityList,
+  shortDate,
+  signed,
+  Timeline,
+  usePainted,
+  WorkspaceBar,
+  type GuideStep,
+  type PinProps,
+} from './Workspace.tsx';
+import { artifactSigns, qualityChecks } from './workspace.ts';
 
 export type Challenge = { kind: 'find' | 'judge'; candidate: string } | null;
 export interface Rect {
@@ -19,11 +33,13 @@ export interface Rect {
   w: number;
   h: number;
 }
-type Tab = 'compare' | 'evidence' | 'source';
+type Tab = 'evidence' | 'compare' | 'data';
+type Lower = 'chart' | 'table';
 
-interface Props {
+interface Props extends Omit<PinProps, 'onComparePins'> {
   place: Place;
   manifest: Manifest;
+  manifests: Record<string, Manifest | 'error'>;
   frame: number;
   palette: Palette;
   onPalette: (p: Palette) => void;
@@ -35,8 +51,9 @@ interface Props {
   reduced: boolean;
   challenge: Challenge;
   onChallenge: (c: Challenge) => void;
-  returnLabel: string;
-  onReturn: (then?: 'wavelengths') => void;
+  /** The view this was opened from, when it is not the sky. */
+  originLabel: string | null;
+  onReturn: (to: 'sky' | 'origin' | 'wavelengths') => void;
   onSave: (kind: 'visit' | 'comparison', title: string, detail: string, c?: CuratedCompare) => void;
   announce: (s: string) => void;
 }
@@ -63,70 +80,6 @@ const ALTERNATIVES = [
 ];
 
 const measure = (c: Candidate, name: string) => c.measurements.find((m) => m.name === name);
-const signed = (v: number) =>
-  `${v >= 0 ? '+' : '−'}${Math.abs(Math.round(v)).toLocaleString('en')}`;
-const shortDate = (mjd: number) =>
-  new Date((mjd - 40587) * 86400000).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
-
-/** Recolour a display PNG once per (url, palette); masked pixels get the hatch. */
-const painted = new Map<string, Promise<HTMLCanvasElement>>();
-function paintImage(url: string, palette: Palette | 'diverging') {
-  const key = `${url}|${palette}`;
-  let p = painted.get(key);
-  if (!p) {
-    p = loadImage(url).then((img) => {
-      const c = document.createElement('canvas');
-      c.width = img.naturalWidth;
-      c.height = img.naturalHeight;
-      const ctx = c.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
-      ctx.drawImage(img, 0, 0);
-      const d = ctx.getImageData(0, 0, c.width, c.height);
-      const px = d.data;
-      const map = palette === 'diverging' ? null : paletteTable(palette);
-      for (let i = 0; i < px.length; i += 4) {
-        const v = px[i] ?? 0;
-        let rgb: number[];
-        if (map) {
-          if ((px[i + 3] ?? 0) < 128) {
-            const j = i / 4;
-            rgb = ((j % c.width) + Math.floor(j / c.width)) & 2 ? [44, 42, 40] : [24, 23, 22];
-          } else rgb = [map[v * 3] ?? 0, map[v * 3 + 1] ?? 0, map[v * 3 + 2] ?? 0];
-        } else rgb = divergingRgb(v);
-        px[i] = rgb[0] ?? 0;
-        px[i + 1] = rgb[1] ?? 0;
-        px[i + 2] = rgb[2] ?? 0;
-        px[i + 3] = 255;
-      }
-      ctx.putImageData(d, 0, 0);
-      return c;
-    });
-    painted.set(key, p);
-    p.catch(() => painted.delete(key));
-  }
-  return p;
-}
-
-/** Load a painted image into state; the previous one stays until the next is ready. */
-function usePainted(url: string | undefined, palette: Palette | 'diverging') {
-  const [src, setSrc] = useState<{ url: string; c: HTMLCanvasElement } | null>(null);
-  const [failed, setFailed] = useState<string | null>(null);
-  useEffect(() => {
-    if (!url) return;
-    let live = true;
-    paintImage(url, palette).then(
-      (c) => live && (setSrc({ url, c }), setFailed(null)),
-      () => live && setFailed(url),
-    );
-    return () => {
-      live = false;
-    };
-  }, [url, palette]);
-  return { canvas: src?.c ?? null, failed: !!url && failed === url };
-}
 
 export function Inspect(props: Props) {
   const { manifest: m, place, palette, reduced, challenge, state, onState } = props;
@@ -143,7 +96,14 @@ export function Inspect(props: Props) {
   const wcs = o ? tanWcs(o.image.wcs) : null;
   const mode = state.mode;
   const zoom = state.zoom;
-  const [tab, setTab] = useState<Tab>(challenge ? 'evidence' : 'compare');
+  const [tab, setTab] = useState<Tab>('evidence');
+  const [lower, setLower] = useState<Lower>('chart');
+  // short laptop screens start with the image large; the chart is one click (or the guide) away
+  const [lowerOpen, setLowerOpen] = useState(
+    () => typeof matchMedia !== 'function' || matchMedia('(min-height: 820px)').matches,
+  );
+  const [guide, setGuide] = useState(false);
+  const [pinPair, setPinPair] = useState<[Pin, Pin] | null>(null);
   const [showB, setShowB] = useState(false);
   const [mix, setMix] = useState(0.5);
   const [playing, setPlaying] = useState(false);
@@ -173,11 +133,7 @@ export function Inspect(props: Props) {
   useLayoutEffect(() => {
     const el = frameEl.current;
     const from = props.from;
-    if (!el) return;
-    if (reduced || !from) {
-      el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
-      return;
-    }
+    if (!el || reduced || !from) return;
     const r = el.getBoundingClientRect();
     const s = from.w / r.width;
     el.animate(
@@ -187,22 +143,17 @@ export function Inspect(props: Props) {
       ],
       { duration: 480, easing: 'cubic-bezier(0.77, 0, 0.175, 1)' },
     );
-    shell.current?.querySelectorAll('.inspect-panel, .stage-chrome').forEach((p) =>
-      p.animate([{ opacity: 0 }, { opacity: 0 }, { opacity: 1 }], {
-        duration: 560,
-        easing: 'ease-out',
-      }),
-    );
     // mount only; `from` is the footprint at the moment of opening
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function close(then?: 'wavelengths') {
+  /** Back to the sky shrinks the stage into its footprint; any other exit is immediate. */
+  function close(to: 'sky' | 'origin' | 'wavelengths') {
     const el = frameEl.current;
     const from = props.from;
     if (closing) return;
     setClosing(true);
-    if (!el || reduced || !from) return props.onReturn(then);
+    if (!el || reduced || !from || to === 'origin') return props.onReturn(to);
     const r = el.getBoundingClientRect();
     const zoomed = el.querySelector('.stage-image') as HTMLElement | null;
     if (zoomed) zoomed.style.transform = 'none';
@@ -214,7 +165,7 @@ export function Inspect(props: Props) {
         },
       ],
       { duration: 380, easing: 'cubic-bezier(0.77, 0, 0.175, 1)', fill: 'forwards' },
-    ).onfinish = () => props.onReturn(then);
+    ).onfinish = () => props.onReturn(to);
     shell.current?.setAttribute('data-closing', '');
   }
 
@@ -227,7 +178,7 @@ export function Inspect(props: Props) {
     );
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [pinPair]);
 
   // the two layers; every visit is decoded ahead so stepping never waits on the network
   const diff = m.differences.find((d) => d.observation_id === o?.observation_id);
@@ -336,7 +287,15 @@ export function Inspect(props: Props) {
       zoom: z,
       pan: clampFrac({ x: (-(col - W / 2) * z) / W, y: (-(row - H / 2) * z) / H }, z),
     });
+    setTab('evidence');
     props.announce(`Showing ${KIND[c.kind].toLowerCase()} at its strongest visit.`);
+  }
+
+  /** One active date everywhere: image A, the chart, the timeline and the table. */
+  function chooseDate(i: number) {
+    setEpoch(i);
+    const ob = obs[i];
+    if (ob) props.announce(`Image A is now visit ${i + 1}, ${longDate(ob.epoch.mjd_mid)}.`);
   }
 
   const pair = state.b === 'typical' ? null : checkPair(m, state.a, state.b);
@@ -365,13 +324,12 @@ export function Inspect(props: Props) {
   const exposures = Array.isArray(archive) ? archive.reduce((s, a) => s + a.exposures, 0) : null;
   const truncated = Array.isArray(archive) && archive.some((a) => a.truncated);
   const band = o?.spectral;
-  const first = obs[0]?.epoch.mjd_mid ?? 0;
-  const last = obs.at(-1)?.epoch.mjd_mid ?? 0;
   const aLabel = o ? shortDate(o.epoch.mjd_mid) : '';
   const bLabel = bObs ? shortDate(bObs.epoch.mjd_mid) : 'typical';
+  const nTypical = m.template?.observation_ids.length ?? 0;
 
   // overview inset: field footprint and the zoomed window, on the real sky map
-  const OV = 152;
+  const OV = 120;
   const ovView: View = { ra: m.target.ra_deg, dec: m.target.dec_deg, fov: 0.9 };
   const corner = (x: number, y: number) => {
     if (!wcs) return null;
@@ -395,6 +353,9 @@ export function Inspect(props: Props) {
   const markers = showAll ? m.candidates : candidate && !hidden ? [candidate] : [];
   const flux = candidate && measure(candidate, 'aperture flux change');
   const refFlux = candidate && measure(candidate, 'reference flux');
+  const point = candidate?.light_curve.find((l) => l.observation_id === o?.observation_id);
+  const checks = qualityChecks(m, state.a, state.b, hidden || judging ? undefined : candidate);
+  const signs = candidate ? artifactSigns(candidate) : [];
   // a few dozen spots at most: sorting each render is cheaper than memo bookkeeping
   const ranked = m.candidates
     .filter((c) => c.candidate_id !== candidateId)
@@ -405,47 +366,142 @@ export function Inspect(props: Props) {
           (measure(a, 'peak significance')?.value ?? 0),
     );
   const comparing = mode === 'blink' || mode === 'split' || mode === 'fade';
+  const pinId = candidate ? `${m.manifest_id}/${candidate.candidate_id}` : null;
+  const pinned = !!pinId && props.pins.some((p) => p.id === pinId);
 
-  function saveComparison() {
+  function saveInvestigation() {
     const title = `${place.name}: ${aLabel} vs ${bLabel}`;
     const what = candidate ? `${KIND[candidate.kind]} (${candidate.candidate_id}). ` : '';
     props.onSave(
       'comparison',
       title,
-      `${what}${modes.find((x) => x.id === mode)?.label} · ${band?.wavelength_center_um.toFixed(2)} µm`,
-      { ...state, versions: versionsOf(m, [state.a, state.b]) },
+      `${what}${modes.find((x) => x.id === mode)?.label} · ${band?.wavelength_center_um.toFixed(2)} µm${props.pins.length ? ` · ${props.pins.length} pinned` : ''}`,
+      {
+        ...state,
+        candidate: candidateId ?? state.candidate,
+        palette,
+        pins: props.pins,
+        versions: versionsOf(m, [state.a, state.b]),
+      },
     );
   }
 
+  /** "Show me": take the visitor to the real control for each guide step. */
+  function show(s: GuideStep) {
+    const focus = (sel: string) =>
+      requestAnimationFrame(() => shell.current?.querySelector<HTMLElement>(sel)?.focus());
+    if (s === 'compare') {
+      if (!pairBlocked && mode === 'one') onState({ mode: 'blink' });
+      focus('.ws-modes [aria-checked="true"]');
+    } else if (s === 'quality') {
+      setTab('evidence');
+      focus('#q-h');
+    } else if (s === 'evidence') {
+      setLowerOpen(true);
+      setLower('chart');
+      focus('.ws-lower .hit[aria-pressed="true"], .ws-lower .hit');
+    } else focus('.ws-save');
+  }
+
   const tabs: { id: Tab; label: string }[] = [
-    { id: 'compare', label: 'Compare' },
     { id: 'evidence', label: 'Evidence' },
-    { id: 'source', label: 'Source' },
+    { id: 'compare', label: 'Compare' },
+    { id: 'data', label: 'Data' },
   ];
 
+  const bar = (
+    <WorkspaceBar
+      title={place.name}
+      detail={`Prepared field · real SPHEREx data · D${band?.detector} · ${band?.wavelength_center_um.toFixed(2)} µm · ${obs.length} visits`}
+      originLabel={props.originLabel}
+      onSky={() => close('sky')}
+      onOrigin={() => close('origin')}
+      guideOpen={guide}
+      onGuide={() => {
+        setGuide(!guide);
+        if (guide) writeFlag('guide-dismissed', true);
+      }}
+      onSave={saveInvestigation}
+      saveLabel="Save investigation"
+      pins={props.pins}
+      onPin={props.onPin}
+      onUnpin={props.onUnpin}
+      onComparePins={(ids) => {
+        const two = ids.map((id) => props.pins.find((p) => p.id === id));
+        if (two[0] && two[1]) setPinPair([two[0], two[1]]);
+      }}
+    />
+  );
+
+  // back to the tray that opened the comparison
+  const closePair = () => {
+    setPinPair(null);
+    requestAnimationFrame(() => document.querySelector<HTMLElement>('.pin-tray > button')?.focus());
+  };
+  if (pinPair)
+    return (
+      <div className="inspect ws" ref={shell} role="region" aria-label={`Deep Dive: ${place.name}`}>
+        {bar}
+        <PinCompare
+          pins={pinPair}
+          manifests={props.manifests}
+          palette={palette}
+          onClose={closePair}
+        />
+      </div>
+    );
+
   return (
-    <div className="inspect" ref={shell} role="region" aria-label={`Analysis: ${place.name}`}>
+    <div
+      className="inspect ws"
+      ref={shell}
+      role="region"
+      aria-label={`Deep Dive: ${place.name}`}
+      data-lower={lowerOpen ? '' : undefined}
+    >
+      {bar}
+
       <div className="stage">
-        <div className="stage-chrome stage-top">
-          <button className="overview" onClick={() => close()} aria-label={props.returnLabel}>
-            <SkyDome
-              view={ovView}
-              frame={props.frame}
-              palette={palette}
-              label={`Overview: the sky around ${place.name}`}
-              className="overview-dome"
-            >
-              <svg className="overview-marks" viewBox={`0 0 ${OV} ${OV}`} aria-hidden="true">
-                <polygon points={poly(-0.5, -0.5, W - 0.5, H - 0.5)} className="fp" />
-                {zoom > 1 && <polygon points={win} className="fp-window" />}
-              </svg>
-            </SkyDome>
-            <span className="overview-label">Overview</span>
-          </button>
-          <p className="stage-scale">
-            <span>Whole image 15′ across</span>
-            <span className="muted">about half the width of the full Moon</span>
-          </p>
+        <div className="ws-viewbar">
+          <div className="ab-pick">
+            <label>
+              <span>A</span>
+              <select value={state.a} onChange={(e) => onState({ a: e.target.value })}>
+                {obs.map((ob, i) => (
+                  <option key={ob.observation_id} value={ob.observation_id}>
+                    Visit {i + 1} · {shortDate(ob.epoch.mjd_mid)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>B</span>
+              <select value={state.b} onChange={(e) => onState({ b: e.target.value })}>
+                {m.template && (
+                  <option value="typical">Typical (median of {nTypical} visits)</option>
+                )}
+                {obs.map((ob, i) => (
+                  <option key={ob.observation_id} value={ob.observation_id}>
+                    Visit {i + 1} · {shortDate(ob.epoch.mjd_mid)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="ws-modes">
+            <CompareControls
+              modes={modes}
+              mode={mode}
+              onMode={(x) => onState({ mode: x })}
+              showB={showB}
+              onShowB={setShowB}
+              mix={mix}
+              onMix={setMix}
+              reduced={reduced}
+              aLabel={aLabel}
+              bLabel={bLabel}
+            />
+          </div>
         </div>
 
         <div
@@ -503,18 +559,61 @@ export function Inspect(props: Props) {
               ))}
             </svg>
           </div>
-          {comparing && (
-            <p className="ab-chips" aria-hidden="true">
-              <span data-on={mode !== 'blink' || !showB ? '' : undefined}>A · {aLabel}</span>
+          <p className="ab-chips" aria-hidden="true">
+            <span data-on={!comparing || mode !== 'blink' || !showB ? '' : undefined}>
+              A · {mode === 'change' ? `change on ${aLabel}` : aLabel}
+            </span>
+            {comparing && (
               <span data-on={mode !== 'blink' || showB ? '' : undefined}>B · {bLabel}</span>
-            </p>
-          )}
+            )}
+          </p>
+          <button
+            className="overview"
+            onClick={() => close('sky')}
+            aria-label="Overview: where this field sits on the sky. Return to Sky"
+          >
+            <SkyDome
+              view={ovView}
+              frame={props.frame}
+              palette={palette}
+              label={`Overview: the sky around ${place.name}`}
+              className="overview-dome"
+            >
+              <svg className="overview-marks" viewBox={`0 0 ${OV} ${OV}`} aria-hidden="true">
+                <polygon points={poly(-0.5, -0.5, W - 0.5, H - 0.5)} className="fp" />
+                {zoom > 1 && <polygon points={win} className="fp-window" />}
+              </svg>
+            </SkyDome>
+          </button>
           {(layerA.failed || (comparing && layerB.failed)) && (
             <p className="stage-error">This image could not be loaded.</p>
           )}
         </div>
 
-        <div className="stage-chrome stage-bottom">
+        <div className="ws-controls">
+          <div className="play-row" role="group" aria-label="Image A's date">
+            <button
+              className="icon-btn"
+              onClick={() => chooseDate((epoch - 1 + obs.length) % obs.length)}
+              aria-label="Previous visit"
+            >
+              ‹
+            </button>
+            <button className="play" onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>
+              {playing ? 'Pause' : 'Play visits'}
+            </button>
+            <button
+              className="icon-btn"
+              onClick={() => chooseDate((epoch + 1) % obs.length)}
+              aria-label="Next visit"
+            >
+              ›
+            </button>
+            <span className="visit-title">
+              Visit {epoch + 1} of {obs.length}
+              <span className="muted"> · {o ? longDate(o.epoch.mjd_mid) : ''}</span>
+            </span>
+          </div>
           <div className="scalebar" aria-hidden="true">
             <span style={{ width: `${(60 / scale) * perPx}px` }} />
             1′
@@ -544,20 +643,33 @@ export function Inspect(props: Props) {
             </button>
           </div>
         </div>
-        <p className="stage-note muted">
-          Each square is one SPHEREx pixel, {scale}″ wide. Nothing is sharpened or interpolated. A
-          and B always share the same framing.
+        <p className="verdict" data-ok={!pairBlocked ? '' : undefined}>
+          <span className="verdict-mark" aria-hidden="true">
+            {pairBlocked ? '!' : '✓'}
+          </span>
+          {state.b === 'typical'
+            ? `Checked pair: B is the typical image, built from these same aligned visits.`
+            : pair?.status === 'compatible'
+              ? 'Checked pair: same detector, wavelength, grid and calibration.'
+              : pair?.status === 'same'
+                ? 'A and B are the same visit.'
+                : `Not comparable: ${pair?.reasons.join('; ')}.`}{' '}
+          <span className="muted">
+            Colours, blink, split and fade change the display only, never the data.
+          </span>
         </p>
       </div>
 
-      <div className="inspect-panel">
-        <header className="panel-head">
-          <h2>{place.name}</h2>
-          <p className="muted">
-            Real SPHEREx data · detector {band?.detector} · {band?.wavelength_center_um.toFixed(2)}{' '}
-            µm · {obs.length} curated visits
-          </p>
-        </header>
+      <aside className="inspect-panel ws-context" aria-label="Investigation">
+        {guide && (
+          <Guide
+            onShow={show}
+            onClose={() => {
+              setGuide(false);
+              writeFlag('guide-dismissed', true);
+            }}
+          />
+        )}
 
         {props.notice.length > 0 && (
           <section className="block reopened" role="status">
@@ -617,7 +729,101 @@ export function Inspect(props: Props) {
           )
         )}
 
-        <div className="tabs" role="tablist" aria-label="Analysis">
+        {candidate && !hidden && !judging ? (
+          <section className="block evidence" aria-labelledby="ev-h">
+            {challenge?.kind === 'judge' && verdict && (
+              <p className="reveal" role="status">
+                {verdict === 'artifact'
+                  ? 'That matches the pipeline’s view. '
+                  : 'Reasonable, but the pipeline leans the other way. '}
+                It touches pixels flagged for persistence (an afterimage from an earlier bright
+                exposure) and appears on one visit only. Neither answer is confirmed.
+              </p>
+            )}
+            {challenge?.kind === 'find' && found === 'yes' && (
+              <p className="reveal" role="status">
+                Found it. This is a real flagged change, and still unconfirmed.
+              </p>
+            )}
+            <div className="ev-head">
+              <h3 id="ev-h">{KIND[candidate.kind]}</h3>
+              <span className="status">{STATUS[candidate.status]}</span>
+            </div>
+            <dl className="ws-figures">
+              <dt>Change on {aLabel}</dt>
+              <dd aria-live="polite">
+                {point?.delta_flux_ujy == null ? (
+                  <>
+                    <strong>—</strong>{' '}
+                    <span className="muted">
+                      {point
+                        ? 'masked: flagged pixels cover the spot'
+                        : 'not measured on this date'}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <strong>
+                      {signed(point.delta_flux_ujy)} ± {Math.round(point.uncertainty_ujy ?? 0)}
+                    </strong>{' '}
+                    µJy
+                  </>
+                )}
+              </dd>
+              <dt>Relative to</dt>
+              <dd>The typical image, the median of {nTypical} visits</dd>
+              {refFlux && (
+                <>
+                  <dt>Typical brightness</dt>
+                  <dd>
+                    {Math.round(refFlux.value)} ± {Math.round(refFlux.uncertainty ?? 0)} µJy
+                  </dd>
+                </>
+              )}
+              {flux && (
+                <>
+                  <dt>Largest change</dt>
+                  <dd>
+                    {signed(flux.value)} ± {Math.round(flux.uncertainty ?? 0)} µJy, visit {peak + 1}
+                  </dd>
+                </>
+              )}
+            </dl>
+            <p className="note">
+              ± is one standard deviation from the science file’s variance; µJy is microjansky, a
+              unit of brightness. Measured in a fixed aperture on the science images, never these
+              display pictures.
+            </p>
+            <div className="row">
+              {epoch !== peak || state.b !== 'typical' ? (
+                <button onClick={() => selectCandidate(candidate)}>Show the largest change</button>
+              ) : null}
+              <button
+                aria-pressed={pinned}
+                onClick={() =>
+                  pinned && pinId
+                    ? props.onUnpin(pinId)
+                    : pinId &&
+                      props.onPin({
+                        kind: 'candidate',
+                        id: pinId,
+                        label: `${place.name} · ${candidate.candidate_id.split('-').at(-1)}`,
+                        placeId: place.id,
+                        manifestId: m.manifest_id,
+                        candidate: candidate.candidate_id,
+                      })
+                }
+              >
+                {pinned ? 'Pinned' : 'Pin this spot'}
+              </button>
+            </div>
+          </section>
+        ) : (
+          !hidden &&
+          !judging && <p className="note">No flagged spot selected. Choose one under Compare.</p>
+        )}
+
+        <div className="tabs" role="tablist" aria-label="Investigation">
           {tabs.map((t) => (
             <button
               key={t.id}
@@ -641,209 +847,37 @@ export function Inspect(props: Props) {
           ))}
         </div>
 
-        {tab === 'compare' && (
-          <div className="tabpanel" id="tp-compare" role="tabpanel" aria-labelledby="tab-compare">
-            <section className="block" aria-labelledby="play-h">
-              <h3 id="play-h" className="visit-title">
-                A · visit {epoch + 1} of {obs.length}
-                <span className="muted"> · {o ? longDate(o.epoch.mjd_mid) : ''}</span>
-              </h3>
-              <div className="play-row">
-                <button
-                  className="icon-btn"
-                  onClick={() => setEpoch((epoch - 1 + obs.length) % obs.length)}
-                  aria-label="Previous visit"
-                >
-                  ‹
-                </button>
-                <button
-                  className="play"
-                  onClick={() => setPlaying((p) => !p)}
-                  aria-pressed={playing}
-                >
-                  {playing ? 'Pause' : 'Play visits'}
-                </button>
-                <button
-                  className="icon-btn"
-                  onClick={() => setEpoch((epoch + 1) % obs.length)}
-                  aria-label="Next visit"
-                >
-                  ›
-                </button>
-              </div>
-              <div
-                className="visits"
-                role="group"
-                aria-label="Visits in time order; choose image A"
-              >
-                {obs.map((ob, i) => {
-                  const gap = i > 0 && ob.epoch.mjd_mid - (obs[i - 1]?.epoch.mjd_mid ?? 0) > 60;
-                  const isB = ob.observation_id === state.b && comparing;
-                  return (
-                    <span key={ob.observation_id} className="visit-slot">
-                      {gap && <span className="visit-gap" aria-hidden="true" />}
-                      <button
-                        className="visit"
-                        data-b={isB ? '' : undefined}
-                        aria-current={i === epoch ? 'true' : undefined}
-                        aria-label={`Visit ${i + 1}, ${longDate(ob.epoch.mjd_mid)}${isB ? ', image B' : ''}`}
-                        onClick={() => setEpoch(i)}
-                      />
-                    </span>
-                  );
-                })}
-              </div>
-              <p className="note">
-                The {obs.length} curated visits at {band?.wavelength_center_um.toFixed(2)} µm, in
-                time order: {isoDate(first).slice(0, 7)} to {isoDate(last).slice(0, 7)}. A gap marks
-                months without a visit.
-              </p>
-            </section>
-
-            <section className="block" aria-labelledby="ab-h">
-              <h3 id="ab-h">Compare two dates</h3>
-              <div className="ab-pick">
-                <label>
-                  <span>A</span>
-                  <select value={state.a} onChange={(e) => onState({ a: e.target.value })}>
-                    {obs.map((ob, i) => (
-                      <option key={ob.observation_id} value={ob.observation_id}>
-                        Visit {i + 1} · {shortDate(ob.epoch.mjd_mid)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  <span>B</span>
-                  <select value={state.b} onChange={(e) => onState({ b: e.target.value })}>
-                    {m.template && <option value="typical">Typical (median of all visits)</option>}
-                    {obs.map((ob, i) => (
-                      <option key={ob.observation_id} value={ob.observation_id}>
-                        Visit {i + 1} · {shortDate(ob.epoch.mjd_mid)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <p className="verdict" data-ok={!pairBlocked ? '' : undefined}>
-                <span className="verdict-mark" aria-hidden="true">
-                  {pairBlocked ? '!' : '✓'}
-                </span>
-                {state.b === 'typical'
-                  ? 'Checked: the typical image is built from these same aligned visits.'
-                  : pair?.status === 'compatible'
-                    ? 'Checked: the pipeline found this pair compatible (same detector, wavelength, grid and calibration).'
-                    : pair?.status === 'same'
-                      ? 'A and B are the same visit.'
-                      : `Not comparable: ${pair?.reasons.join('; ')}.`}
-              </p>
-              <CompareControls
-                modes={modes}
-                mode={mode}
-                onMode={(x) => onState({ mode: x })}
-                showB={showB}
-                onShowB={setShowB}
-                mix={mix}
-                onMix={setMix}
-                reduced={reduced}
-                aLabel={aLabel}
-                bLabel={bLabel}
-              />
-            </section>
-
-            <section className="block" aria-labelledby="col-h">
-              <h3 id="col-h">Colours</h3>
-              <div className="seg" role="radiogroup" aria-label="Display colours">
-                {PALETTES.map((p) => (
-                  <button
-                    key={p.id}
-                    role="radio"
-                    aria-checked={palette === p.id}
-                    disabled={mode === 'change'}
-                    onClick={() => props.onPalette(p.id)}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-              <p className="note">
-                {mode === 'change'
-                  ? 'The change map keeps a fixed orange/blue scale so its signs stay readable.'
-                  : 'Display only: changes how brightness is coloured on screen, not the wavelength or the data.'}
-              </p>
-            </section>
-          </div>
-        )}
-
         {tab === 'evidence' && (
           <div className="tabpanel" id="tp-evidence" role="tabpanel" aria-labelledby="tab-evidence">
-            {candidate && !hidden && !judging ? (
-              <section className="block evidence" aria-labelledby="ev-h">
-                {challenge?.kind === 'judge' && verdict && (
-                  <p className="reveal" role="status">
-                    {verdict === 'artifact'
-                      ? 'That matches the pipeline’s view. '
-                      : 'Reasonable, but the pipeline leans the other way. '}
-                    It touches pixels flagged for persistence (an afterimage from an earlier bright
-                    exposure) and appears on one visit only. Neither answer is confirmed.
-                  </p>
+            <QualityList checks={checks} headingId="q-h" />
+            {candidate && !hidden && !judging && (
+              <section className="block ws-alt" aria-labelledby="alt-h">
+                <h3 id="alt-h">What else could cause this?</h3>
+                {signs.length > 0 && (
+                  <>
+                    <p className="note">Signs the pipeline found of a detector cause:</p>
+                    <ul>
+                      {signs.map((e) => (
+                        <li key={e}>{e}</li>
+                      ))}
+                    </ul>
+                  </>
                 )}
-                {challenge?.kind === 'find' && found === 'yes' && (
-                  <p className="reveal" role="status">
-                    Found it. This is a real flagged change, and still unconfirmed.
-                  </p>
-                )}
-                <div className="ev-head">
-                  <h3 id="ev-h">{KIND[candidate.kind]}</h3>
-                  <span className="status">{STATUS[candidate.status]}</span>
-                </div>
-                {flux && (
-                  <p className="ev-number">
-                    <strong>
-                      {signed(flux.value)} ± {Math.round(flux.uncertainty ?? 0)} µJy
-                    </strong>
-                    <span className="muted">
-                      {' '}
-                      measured change at peak, visit {peak + 1}
-                      {refFlux
-                        ? `; usual brightness ${Math.round(refFlux.value)} ± ${Math.round(refFlux.uncertainty ?? 0)} µJy`
-                        : ''}
-                    </span>
-                  </p>
-                )}
-                <EvidenceChart
-                  candidate={candidate}
-                  observations={obs}
-                  active={epoch}
-                  onSelect={(i) => {
-                    setEpoch(i);
-                    props.announce(`Image A is now visit ${i + 1}.`);
-                  }}
-                />
-                <p className="note">Choose a point to show that visit as image A.</p>
-                <div className="row">
-                  <button onClick={() => selectCandidate(candidate)}>
-                    Show the peak against typical
-                  </button>
-                </div>
-                <Quality o={o} />
+                <p className="note">Other causes not ruled out:</p>
+                <ul>
+                  {ALTERNATIVES.map((a) => (
+                    <li key={a}>{a}</li>
+                  ))}
+                  {candidate.caveats.map((c) => (
+                    <li key={c}>{c}</li>
+                  ))}
+                </ul>
+                <p className="note">
+                  These are possibilities, not findings. Confirming any change needs later SPHEREx
+                  visits or another instrument.
+                </p>
                 <details>
-                  <summary>What else could cause this?</summary>
-                  <ul>
-                    {ALTERNATIVES.map((a) => (
-                      <li key={a}>{a}</li>
-                    ))}
-                    {candidate.caveats.map((c) => (
-                      <li key={c}>{c}</li>
-                    ))}
-                  </ul>
-                  <p className="note">
-                    Unconfirmed. A second instrument or later SPHEREx visits would be needed to
-                    confirm it.
-                  </p>
-                </details>
-                <details>
-                  <summary>Pipeline evidence and method</summary>
+                  <summary>All pipeline evidence and method</summary>
                   <ul>
                     {candidate.evidence.map((e) => (
                       <li key={e}>{e}</li>
@@ -852,17 +886,15 @@ export function Inspect(props: Props) {
                   <p className="note">{candidate.method}</p>
                 </details>
               </section>
-            ) : (
-              <p className="note">
-                {hidden || judging
-                  ? 'The evidence appears once you finish the challenge above.'
-                  : 'No flagged spot selected. Choose one below.'}
-              </p>
             )}
+          </div>
+        )}
 
+        {tab === 'compare' && (
+          <div className="tabpanel" id="tp-compare" role="tabpanel" aria-labelledby="tab-compare">
             {!challenge && place.id === 'sep' && (
               <aside className="invite">
-                <p>Try another: is a flagged spot real or a detector artifact?</p>
+                <p>Try a challenge: is a flagged spot real or a detector artifact?</p>
                 <button
                   className="quiet"
                   onClick={() => {
@@ -874,7 +906,6 @@ export function Inspect(props: Props) {
                 </button>
               </aside>
             )}
-
             <section className="block" aria-labelledby="spots-h">
               <h3 id="spots-h">Other flagged spots</h3>
               <p className="note">
@@ -910,18 +941,39 @@ export function Inspect(props: Props) {
                 </label>
               </div>
             </section>
+            <section className="block" aria-labelledby="col-h">
+              <h3 id="col-h">Colours</h3>
+              <div className="seg" role="radiogroup" aria-label="Display colours">
+                {PALETTES.map((p) => (
+                  <button
+                    key={p.id}
+                    role="radio"
+                    aria-checked={palette === p.id}
+                    disabled={mode === 'change'}
+                    onClick={() => props.onPalette(p.id)}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+              <p className="note">
+                {mode === 'change'
+                  ? 'The change map keeps a fixed orange/blue scale so its signs stay readable.'
+                  : 'Display only: brightness is mapped to these colours on screen. They are not the colours of infrared light.'}
+              </p>
+            </section>
           </div>
         )}
 
-        {tab === 'source' && (
-          <div className="tabpanel" id="tp-source" role="tabpanel" aria-labelledby="tab-source">
+        {tab === 'data' && (
+          <div className="tabpanel" id="tp-data" role="tabpanel" aria-labelledby="tab-data">
             <section className="block" aria-labelledby="light-h">
               <h3 id="light-h">Wavelength</h3>
               <p>
-                This field was processed at one wavelength only,{' '}
+                This field was prepared at one wavelength only,{' '}
                 {band?.wavelength_center_um.toFixed(2)} µm ({band?.wavelength_min_um.toFixed(2)}–
                 {band?.wavelength_max_um.toFixed(2)} µm on detector {band?.detector}). SPHEREx
-                measured many more here, but they are not in this curated set.
+                measured many more here, but they are not in this prepared set.
               </p>
               <button onClick={() => close('wavelengths')}>
                 See this spot at other wavelengths
@@ -942,14 +994,6 @@ export function Inspect(props: Props) {
                     {diff.threshold_sigma}σ are flagged.
                   </li>
                 )}
-                <li>
-                  Pair check (pipeline):{' '}
-                  {state.b === 'typical'
-                    ? 'not needed against the typical image.'
-                    : pair?.status === 'compatible'
-                      ? 'compatible.'
-                      : `${pair?.status}: ${pair && 'reasons' in pair ? pair.reasons.join('; ') : ''}`}
-                </li>
                 <li>Brightness numbers come from the science files, never from these PNGs.</li>
               </ul>
             </section>
@@ -957,11 +1001,11 @@ export function Inspect(props: Props) {
             <section className="block" aria-labelledby="count-h">
               <h3 id="count-h">How many observations?</h3>
               <p aria-live="polite">
-                Showing {obs.length} curated visits, chosen for matching detector and wavelength.{' '}
+                {obs.length} prepared visits, chosen for matching detector and wavelength.{' '}
                 {archive === 'loading'
                   ? 'Checking the SPHEREx archive…'
                   : exposures !== null
-                    ? `The archive lists ${truncated ? 'at least ' : ''}${exposures.toLocaleString('en')} exposures covering this spot, across all detectors and wavelengths.`
+                    ? `The archive lists ${truncated ? 'at least ' : ''}${exposures.toLocaleString('en')} exposures covering this spot, across all detectors and wavelengths; only the prepared ones support measurement here.`
                     : 'The archive count is unavailable right now (it needs the PARALLAX API).'}
               </p>
             </section>
@@ -976,36 +1020,67 @@ export function Inspect(props: Props) {
             </p>
           </div>
         )}
+      </aside>
 
-        <div className="panel-actions">
-          <button onClick={saveComparison}>Save comparison</button>
-          <button className="primary" onClick={() => close()}>
-            {props.returnLabel}
+      <section className="ws-lower" aria-labelledby="lower-h">
+        <div className="ws-lower-head">
+          <button
+            className="quiet ws-lower-toggle"
+            aria-expanded={lowerOpen}
+            aria-controls="lower-body"
+            onClick={() => setLowerOpen(!lowerOpen)}
+            id="lower-h"
+          >
+            <span aria-hidden="true">{lowerOpen ? '▾' : '▸'}</span> Brightness over time
           </button>
+          {lowerOpen && (
+            <div className="seg" role="radiogroup" aria-label="Show as">
+              {(['chart', 'table'] as const).map((v) => (
+                <button key={v} role="radio" aria-checked={lower === v} onClick={() => setLower(v)}>
+                  {v === 'chart' ? 'Chart' : 'Table'}
+                </button>
+              ))}
+            </div>
+          )}
+          {lowerOpen && (
+            <p className="muted ws-key">
+              Change vs typical · µJy · bars ±1σ · × masked · square beyond 5σ
+            </p>
+          )}
         </div>
-      </div>
+        {lowerOpen && (
+          <div id="lower-body" className="ws-lower-body">
+            {lower === 'chart' ? (
+              candidate && !hidden && !judging ? (
+                <div className="ws-chart">
+                  <EvidenceChart
+                    candidate={candidate}
+                    observations={obs}
+                    active={epoch}
+                    onSelect={chooseDate}
+                  />
+                  <Timeline observations={obs} active={epoch} b={state.b} />
+                </div>
+              ) : (
+                <p className="note">
+                  {hidden || judging
+                    ? 'The chart appears once you finish the challenge.'
+                    : 'Choose a flagged spot to see its brightness on every date.'}
+                </p>
+              )
+            ) : (
+              <ObservationTable
+                observations={obs}
+                candidate={hidden || judging ? undefined : candidate}
+                active={epoch}
+                b={state.b}
+                onSelect={chooseDate}
+              />
+            )}
+          </div>
+        )}
+      </section>
     </div>
-  );
-}
-
-function Quality({ o }: { o: Observation | undefined }) {
-  if (!o) return null;
-  return (
-    <section className="block" aria-labelledby="q-h">
-      <h3 id="q-h">Quality of image A</h3>
-      <dl className="facts">
-        <dt>Masked</dt>
-        <dd>
-          {o.quality.masked_fraction == null
-            ? 'unknown'
-            : `${(o.quality.masked_fraction * 100).toFixed(1)}% of pixels`}
-        </dd>
-        <dt>Sharpness</dt>
-        <dd>PSF FWHM {o.quality.psf_fwhm_arcsec?.toFixed(1) ?? 'unknown'}″</dd>
-        <dt>Checks</dt>
-        <dd>{o.quality.notes.join(' · ') || 'none recorded'}</dd>
-      </dl>
-    </section>
   );
 }
 
@@ -1017,7 +1092,7 @@ function Provenance({ title, o }: { title: string; o: Observation }) {
         <dt>Observed</dt>
         <dd>
           {longDate(o.epoch.mjd_mid)} · MJD {o.epoch.mjd_mid.toFixed(4)} (
-          {o.epoch.time_scale.toUpperCase()})
+          {o.epoch.time_scale.toUpperCase()}) · {isoDate(o.epoch.mjd_mid)}
         </dd>
         <dt>Exposure</dt>
         <dd>{o.epoch.exposure_s?.toFixed(0) ?? 'unknown'} s</dd>
@@ -1029,6 +1104,14 @@ function Provenance({ title, o }: { title: string; o: Observation }) {
         <dd>
           {o.provenance.collection} · {o.provenance.data_release} ·{' '}
           {o.provenance.calibration_version}
+        </dd>
+        <dt>Quality</dt>
+        <dd>
+          {o.quality.masked_fraction == null
+            ? 'masked fraction unknown'
+            : `${(o.quality.masked_fraction * 100).toFixed(1)}% masked`}{' '}
+          · PSF FWHM {o.quality.psf_fwhm_arcsec?.toFixed(1) ?? 'unknown'}″ ·{' '}
+          {o.quality.notes.join(' · ') || 'no notes'}
         </dd>
         <dt>Display</dt>
         <dd>{o.assets.display_stretch}</dd>
